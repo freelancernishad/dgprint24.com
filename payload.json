@@ -1,0 +1,324 @@
+{
+    "categoryId": "flyer-10-5-2025-pmodt9h4",
+    "productName": "Product Name",
+    "productDescription": "<p><span style=\"color: rgb(10, 10, 10); font-family: ui-sans-serif, system-ui, sans-serif, &quot;Apple Color Emoji&quot;, &quot;Segoe UI Emoji&quot;, &quot;Segoe UI Symbol&quot;, &quot;Noto Color Emoji&quot;; font-size: 14px; white-space-collapse: collapse;\">Description</span></p>",
+    "active": true,
+    "productOptions": {
+        "faqs": [
+            {
+                "question": "FAQ Question",
+                "answer": "Answer",
+                "id": "1760976113469"
+            },
+            {
+                "question": "FAQ Question 2",
+                "answer": "Answer",
+                "id": "1760976123167"
+            }
+        ],
+        "advanceOptions": {
+            "productType": "banner",
+            "advancedOptions": {
+                "minwidth": 1,
+                "maxwidth": 100,
+                "minheight": 1,
+                "maxheight": 100,
+                "basePricePerSqFt": 100,
+                "priceRanges": [
+                    {
+                        "id": "1760976279570",
+                        "minQuantity": 1,
+                        "maxQuantity": 25,
+                        "pricePerSqFt": 10
+                    },
+                    {
+                        "id": "1760976290801",
+                        "minQuantity": 26,
+                        "maxQuantity": 50,
+                        "pricePerSqFt": 20
+                    }
+                ],
+                "turnaroundRange": [
+                    {
+                        "id": "1760976314889",
+                        "minQuantity": 1,
+                        "maxQuantity": 25,
+                        "turnarounds": [
+                            {
+                                "id": "cm7sjcm8i0000l5s77fzuegnt",
+                                "runsize": null,
+                                "categoryName": "",
+                                "categoryId": "",
+                                "turnaroundLabel": "4 Business Days",
+                                "turnaroundValue": 4,
+                                "price": 0,
+                                "discount": null,
+                                "note": "",
+                                "createdAt": "2025-03-03T04:04:00.784Z",
+                                "updatedAt": "2025-03-03T04:04:00.784Z"
+                            }
+                        ],
+                        "discount": 5
+                    },
+                    {
+                        "id": "1760976334743",
+                        "minQuantity": 26,
+                        "maxQuantity": 50,
+                        "turnarounds": [
+                            {
+                                "id": "cm7sjcm8i0000l5s77fzuegnt",
+                                "runsize": null,
+                                "categoryName": "",
+                                "categoryId": "",
+                                "turnaroundLabel": "4 Business Days",
+                                "turnaroundValue": 4,
+                                "price": 0,
+                                "discount": null,
+                                "note": "",
+                                "createdAt": "2025-03-03T04:04:00.784Z",
+                                "updatedAt": "2025-03-03T04:04:00.784Z"
+                            },
+                            {
+                                "id": "cm7sjd6a30001l5s7nhwoiq7w",
+                                "runsize": null,
+                                "categoryName": "",
+                                "categoryId": "",
+                                "turnaroundLabel": "Next Business Day",
+                                "turnaroundValue": 1,
+                                "price": 10,
+                                "discount": null,
+                                "note": "",
+                                "createdAt": "2025-03-03T04:04:26.762Z",
+                                "updatedAt": "2025-03-03T04:04:26.762Z"
+                            }
+                        ],
+                        "discount": 10
+                    }
+                ],
+                "shippingRange": [
+                    {
+                        "id": "1760976353523",
+                        "minQuantity": 1,
+                        "maxQuantity": 25,
+                        "shippings": [
+                            {
+                                "id": "cm7sjeq3m0004l5s745p4ut44",
+                                "runsize": null,
+                                "categoryName": "",
+                                "categoryId": "",
+                                "shippingLabel": "Standard Shipping",
+                                "shippingValue": 3,
+                                "price": 20,
+                                "note": "",
+                                "createdAt": "2025-03-03T04:05:39.105Z",
+                                "updatedAt": "2025-03-03T04:05:39.105Z"
+                            },
+                            {
+                                "id": "cm8wkiqk2000kl5s7a2x9o54m",
+                                "runsize": null,
+                                "categoryName": "",
+                                "categoryId": "",
+                                "shippingLabel": "Pickup from Store",
+                                "shippingValue": 1,
+                                "price": 0,
+                                "note": "",
+                                "createdAt": "2025-03-31T04:27:32.976Z",
+                                "updatedAt": "2025-03-31T04:27:32.976Z"
+                            }
+                        ],
+                        "discount": 5
+                    }
+                ]
+            },
+            "jobSamplePrice": 15,
+            "digitalProofPrice": 15
+        },
+        "dynamicOptions": [
+            {
+                "optionName": "SIDE",
+                "options": [
+                    {
+                        "optionName": "4/0 ONE SIDE",
+                        "options": []
+                    },
+                    {
+                        "optionName": "4/4 BOTH SIDES",
+                        "options": []
+                    }
+                ]
+            },
+            {
+                "optionName": "SIZE",
+                "options": [
+                    {
+                        "optionName": "5.5\"X8.5\"",
+                        "options": []
+                    },
+                    {
+                        "optionName": "8.5\"X11\"",
+                        "options": []
+                    }
+                ]
+            }
+        ],
+        "priceConfig": [
+            {
+                "id": "gv45tt5jf4",
+                "options": {
+                    "SIDE": {
+                        "selected": "4/0 ONE SIDE"
+                    },
+                    "SIZE": {
+                        "selected": "5.5\"X8.5\""
+                    }
+                },
+                "runsize": 100,
+                "price": "100.0000",
+                "discount": 0,
+                "turnarounds": [
+                    {
+                        "id": "cm7sjcm8i0000l5s77fzuegnt",
+                        "runsize": null,
+                        "categoryName": "",
+                        "categoryId": "",
+                        "turnaroundLabel": "4 Business Days",
+                        "turnaroundValue": 4,
+                        "price": 0,
+                        "discount": null,
+                        "note": "",
+                        "createdAt": "2025-03-03T04:04:00.784Z",
+                        "updatedAt": "2025-03-03T04:04:00.784Z"
+                    }
+                ],
+                "shippings": [
+                    {
+                        "id": "cm7sjeq3m0004l5s745p4ut44",
+                        "runsize": null,
+                        "categoryName": "",
+                        "categoryId": "",
+                        "shippingLabel": "Standard Shipping",
+                        "shippingValue": 3,
+                        "price": 20,
+                        "note": "",
+                        "createdAt": "2025-03-03T04:05:39.105Z",
+                        "updatedAt": "2025-03-03T04:05:39.105Z"
+                    }
+                ]
+            },
+            {
+                "id": "mh821t25os",
+                "options": {
+                    "SIDE": {
+                        "selected": "4/0 ONE SIDE"
+                    },
+                    "SIZE": {
+                        "selected": "5.5\"X8.5\""
+                    }
+                },
+                "runsize": 200,
+                "price": "200.0000",
+                "discount": 10,
+                "turnarounds": [
+                    {
+                        "id": "cm7sjcm8i0000l5s77fzuegnt",
+                        "runsize": null,
+                        "categoryName": "",
+                        "categoryId": "",
+                        "turnaroundLabel": "4 Business Days",
+                        "turnaroundValue": 4,
+                        "price": 0,
+                        "discount": null,
+                        "note": "",
+                        "createdAt": "2025-03-03T04:04:00.784Z",
+                        "updatedAt": "2025-03-03T04:04:00.784Z"
+                    }
+                ],
+                "shippings": [
+                    {
+                        "id": "cm7sjeq3m0004l5s745p4ut44",
+                        "runsize": null,
+                        "categoryName": "",
+                        "categoryId": "",
+                        "shippingLabel": "Standard Shipping",
+                        "shippingValue": 3,
+                        "price": 20,
+                        "note": "",
+                        "createdAt": "2025-03-03T04:05:39.105Z",
+                        "updatedAt": "2025-03-03T04:05:39.105Z"
+                    }
+                ]
+            },
+            {
+                "id": "8wsth5xfni",
+                "options": {
+                    "SIDE": {
+                        "selected": "4/4 BOTH SIDES"
+                    },
+                    "SIZE": {
+                        "selected": "5.5\"X8.5\""
+                    }
+                },
+                "runsize": 100,
+                "price": "200.0000",
+                "discount": 10,
+                "turnarounds": [
+                    {
+                        "id": "cm7sjcm8i0000l5s77fzuegnt",
+                        "runsize": null,
+                        "categoryName": "",
+                        "categoryId": "",
+                        "turnaroundLabel": "4 Business Days",
+                        "turnaroundValue": 4,
+                        "price": 0,
+                        "discount": null,
+                        "note": "",
+                        "createdAt": "2025-03-03T04:04:00.784Z",
+                        "updatedAt": "2025-03-03T04:04:00.784Z"
+                    },
+                    {
+                        "id": "cm7sjd6a30001l5s7nhwoiq7w",
+                        "runsize": null,
+                        "categoryName": "",
+                        "categoryId": "",
+                        "turnaroundLabel": "Next Business Day",
+                        "turnaroundValue": 1,
+                        "price": 10,
+                        "discount": null,
+                        "note": "",
+                        "createdAt": "2025-03-03T04:04:26.762Z",
+                        "updatedAt": "2025-03-03T04:04:26.762Z"
+                    }
+                ],
+                "shippings": [
+                    {
+                        "id": "cmgelqf8c0007kgqm984swdqf",
+                        "runsize": null,
+                        "categoryName": "",
+                        "categoryId": "",
+                        "shippingLabel": "Standard Shipping",
+                        "shippingValue": 3,
+                        "price": 50,
+                        "note": "5k gloss text 5.5\"x8.5\"",
+                        "createdAt": "2025-10-06T03:59:18.675Z",
+                        "updatedAt": "2025-10-06T03:59:18.675Z"
+                    },
+                    {
+                        "id": "cm7sjeq3m0004l5s745p4ut44",
+                        "runsize": null,
+                        "categoryName": "",
+                        "categoryId": "",
+                        "shippingLabel": "Standard Shipping",
+                        "shippingValue": 3,
+                        "price": 20,
+                        "note": "",
+                        "createdAt": "2025-03-03T04:05:39.105Z",
+                        "updatedAt": "2025-03-03T04:05:39.105Z"
+                    }
+                ]
+            }
+        ]
+    },
+    "productImages": [
+        "https://digitalprint.sfo3.digitaloceanspaces.com/1760976551310-download.webp"
+    ]
+}

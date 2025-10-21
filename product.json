@@ -1,0 +1,2701 @@
+{
+    "encoded": {
+        "data": {
+            "productId": "black-edge-business-cards-4vfaswed",
+            "productName": "Black Edge Business Cards",
+            "productDescription": "<p>4over’s sturdy, ultra thick, 32pt black edge business cards are modern, sleek, and undeniably impressive. This unique business card features a black-colored core fixed between two layers of bright white.&nbsp;</p><p><br></p><p>Printed on premium uncoated face stock and in a wide variety of sizes, black edge business cards are perfect for bold high-impact branding.</p><p><br></p><h3><strong>Black Edge Business Card Uses</strong></h3><p><br></p><ul><li>Real Estate</li><li>Law Professionals</li><li>Artist/Photographer</li><li>Retail</li><li>Travel Agent</li><li>Interior Design</li></ul>",
+            "active": true,
+            "popularProduct": true,
+            "thumbnail": "https://digitalprint.sfo3.digitaloceanspaces.com/1746866171464-business-card-black-edge.webp",
+            "images": [
+                "https://digitalprint.sfo3.digitaloceanspaces.com/1746866171464-business-card-black-edge.webp",
+                "https://digitalprint.sfo3.digitaloceanspaces.com/1746866171990-black-edge-business-cards.webp",
+                "https://digitalprint.sfo3.digitaloceanspaces.com/1746866172239-business-card-black-edge2.webp",
+                "https://digitalprint.sfo3.digitaloceanspaces.com/1746866172478-business-card-black-edge2-zoomed.webp"
+            ],
+            "basePrice": 0,
+            "productOptions": {
+                "faqs": [
+                    {
+                        "id": "1746866035660",
+                        "answer": "Black edge business cards are made of three premium quality stocks adhered together creating an ultra-thick, 32pt triple layered card with a colored core. Face Stock: 9pt bright white premium uncoated with a smooth finish. Insert Stock: 14pt premium opaque black.\n",
+                        "question": "What materials are used to make a black edge business card?"
+                    },
+                    {
+                        "id": "1746866049597",
+                        "answer": "Yes, black edge business cards are made of premium uncoated paper and are easily written on.",
+                        "question": "Can you write on black edge business cards?"
+                    },
+                    {
+                        "id": "1746866062797",
+                        "answer": "No. Black edge business cards are also offered with optional rounded corners.",
+                        "question": "Are square edges the only type of corners available for black edge business cards?"
+                    },
+                    {
+                        "id": "1746866075287",
+                        "answer": "Yes. You can choose between horizontal or vertical templates.",
+                        "question": "Can black edge business cards be printed horizontally or vertically?"
+                    },
+                    {
+                        "id": "1746866089876",
+                        "answer": "Black edge business cards are made to last for years under normal conditions. Cards exposed to exceedingly high temperatures will have undesirable results. For example, if one were to expose these cards to a very high heat for extended periods of time, like in the windshield of a car, the longevity of the cards will be compromised. Black edge business cards should not be exposed to excessive heat or cold, as well as excessively dry or humid environments.\n",
+                        "question": "How long do black edge business cards last?"
+                    }
+                ],
+                "priceConfig": [
+                    {
+                        "id": "45ij0s6l0m",
+                        "price": "42.4400",
+                        "options": {
+                            "Size": {
+                                "selected": "1.5” x 3.5”",
+                                "1.5” x 3.5”": {
+                                    "Shape": {
+                                        "selected": "Rectangle"
+                                    }
+                                }
+                            },
+                            "Stock": {
+                                "selected": "32PT Uncoated"
+                            },
+                            "Coating": {
+                                "selected": "No Coating"
+                            },
+                            "Colorspec": {
+                                "selected": "4/4 (4 color both sides)"
+                            }
+                        },
+                        "runsize": 500,
+                        "discount": 0,
+                        "shippings": [
+                            {
+                                "id": "cm7sjeq3m0004l5s745p4ut44",
+                                "note": "",
+                                "price": 20,
+                                "runsize": null,
+                                "createdAt": "2025-03-03T04:05:39.105Z",
+                                "updatedAt": "2025-03-03T04:05:39.105Z",
+                                "categoryId": "",
+                                "categoryName": "",
+                                "shippingLabel": "Standard Shipping",
+                                "shippingValue": 3
+                            },
+                            {
+                                "id": "cm8wkiqk2000kl5s7a2x9o54m",
+                                "note": "",
+                                "price": 0,
+                                "runsize": null,
+                                "createdAt": "2025-03-31T04:27:32.976Z",
+                                "updatedAt": "2025-03-31T04:27:32.976Z",
+                                "categoryId": "",
+                                "categoryName": "",
+                                "shippingLabel": "Pickup from Store",
+                                "shippingValue": 1
+                            }
+                        ],
+                        "turnarounds": [
+                            {
+                                "id": "cm7sjcm8i0000l5s77fzuegnt",
+                                "note": "",
+                                "price": 0,
+                                "runsize": null,
+                                "discount": null,
+                                "createdAt": "2025-03-03T04:04:00.784Z",
+                                "updatedAt": "2025-03-03T04:04:00.784Z",
+                                "categoryId": "",
+                                "categoryName": "",
+                                "turnaroundLabel": "4 Business Days",
+                                "turnaroundValue": 4
+                            }
+                        ]
+                    },
+                    {
+                        "id": "eg3ped32ct",
+                        "price": "64.6700",
+                        "options": {
+                            "Size": {
+                                "selected": "1.5” x 3.5”",
+                                "1.5” x 3.5”": {
+                                    "Shape": {
+                                        "selected": "Rectangle"
+                                    }
+                                }
+                            },
+                            "Stock": {
+                                "selected": "32PT Uncoated"
+                            },
+                            "Coating": {
+                                "selected": "No Coating"
+                            },
+                            "Colorspec": {
+                                "selected": "4/4 (4 color both sides)"
+                            }
+                        },
+                        "runsize": 1000,
+                        "discount": 0,
+                        "shippings": [
+                            {
+                                "id": "cm7sjeq3m0004l5s745p4ut44",
+                                "note": "",
+                                "price": 20,
+                                "runsize": null,
+                                "createdAt": "2025-03-03T04:05:39.105Z",
+                                "updatedAt": "2025-03-03T04:05:39.105Z",
+                                "categoryId": "",
+                                "categoryName": "",
+                                "shippingLabel": "Standard Shipping",
+                                "shippingValue": 3
+                            },
+                            {
+                                "id": "cm8wkiqk2000kl5s7a2x9o54m",
+                                "note": "",
+                                "price": 0,
+                                "runsize": null,
+                                "createdAt": "2025-03-31T04:27:32.976Z",
+                                "updatedAt": "2025-03-31T04:27:32.976Z",
+                                "categoryId": "",
+                                "categoryName": "",
+                                "shippingLabel": "Pickup from Store",
+                                "shippingValue": 1
+                            }
+                        ],
+                        "turnarounds": [
+                            {
+                                "id": "cm7sjcm8i0000l5s77fzuegnt",
+                                "note": "",
+                                "price": 0,
+                                "runsize": null,
+                                "discount": null,
+                                "createdAt": "2025-03-03T04:04:00.784Z",
+                                "updatedAt": "2025-03-03T04:04:00.784Z",
+                                "categoryId": "",
+                                "categoryName": "",
+                                "turnaroundLabel": "4 Business Days",
+                                "turnaroundValue": 4
+                            }
+                        ]
+                    },
+                    {
+                        "id": "2v8xpf2bpn",
+                        "price": "41.4200",
+                        "options": {
+                            "Size": {
+                                "selected": "1.5” x 3.5”",
+                                "1.5” x 3.5”": {
+                                    "Shape": {
+                                        "selected": "Rectangle"
+                                    }
+                                }
+                            },
+                            "Stock": {
+                                "selected": "32PT Uncoated"
+                            },
+                            "Coating": {
+                                "selected": "No Coating"
+                            },
+                            "Colorspec": {
+                                "selected": "4/0 (4 Color front)"
+                            }
+                        },
+                        "runsize": 500,
+                        "discount": 0,
+                        "shippings": [
+                            {
+                                "id": "cm7sjeq3m0004l5s745p4ut44",
+                                "note": "",
+                                "price": 20,
+                                "runsize": null,
+                                "createdAt": "2025-03-03T04:05:39.105Z",
+                                "updatedAt": "2025-03-03T04:05:39.105Z",
+                                "categoryId": "",
+                                "categoryName": "",
+                                "shippingLabel": "Standard Shipping",
+                                "shippingValue": 3
+                            },
+                            {
+                                "id": "cm8wkiqk2000kl5s7a2x9o54m",
+                                "note": "",
+                                "price": 0,
+                                "runsize": null,
+                                "createdAt": "2025-03-31T04:27:32.976Z",
+                                "updatedAt": "2025-03-31T04:27:32.976Z",
+                                "categoryId": "",
+                                "categoryName": "",
+                                "shippingLabel": "Pickup from Store",
+                                "shippingValue": 1
+                            }
+                        ],
+                        "turnarounds": [
+                            {
+                                "id": "cm7sjcm8i0000l5s77fzuegnt",
+                                "note": "",
+                                "price": 0,
+                                "runsize": null,
+                                "discount": null,
+                                "createdAt": "2025-03-03T04:04:00.784Z",
+                                "updatedAt": "2025-03-03T04:04:00.784Z",
+                                "categoryId": "",
+                                "categoryName": "",
+                                "turnaroundLabel": "4 Business Days",
+                                "turnaroundValue": 4
+                            }
+                        ]
+                    },
+                    {
+                        "id": "wmssda4yki",
+                        "price": "62.0700",
+                        "options": {
+                            "Size": {
+                                "selected": "1.5” x 3.5”",
+                                "1.5” x 3.5”": {
+                                    "Shape": {
+                                        "selected": "Rectangle"
+                                    }
+                                }
+                            },
+                            "Stock": {
+                                "selected": "32PT Uncoated"
+                            },
+                            "Coating": {
+                                "selected": "No Coating"
+                            },
+                            "Colorspec": {
+                                "selected": "4/0 (4 Color front)"
+                            }
+                        },
+                        "runsize": 1000,
+                        "discount": 0,
+                        "shippings": [
+                            {
+                                "id": "cm7sjeq3m0004l5s745p4ut44",
+                                "note": "",
+                                "price": 20,
+                                "runsize": null,
+                                "createdAt": "2025-03-03T04:05:39.105Z",
+                                "updatedAt": "2025-03-03T04:05:39.105Z",
+                                "categoryId": "",
+                                "categoryName": "",
+                                "shippingLabel": "Standard Shipping",
+                                "shippingValue": 3
+                            },
+                            {
+                                "id": "cm8wkiqk2000kl5s7a2x9o54m",
+                                "note": "",
+                                "price": 0,
+                                "runsize": null,
+                                "createdAt": "2025-03-31T04:27:32.976Z",
+                                "updatedAt": "2025-03-31T04:27:32.976Z",
+                                "categoryId": "",
+                                "categoryName": "",
+                                "shippingLabel": "Pickup from Store",
+                                "shippingValue": 1
+                            }
+                        ],
+                        "turnarounds": [
+                            {
+                                "id": "cm7sjcm8i0000l5s77fzuegnt",
+                                "note": "",
+                                "price": 0,
+                                "runsize": null,
+                                "discount": null,
+                                "createdAt": "2025-03-03T04:04:00.784Z",
+                                "updatedAt": "2025-03-03T04:04:00.784Z",
+                                "categoryId": "",
+                                "categoryName": "",
+                                "turnaroundLabel": "4 Business Days",
+                                "turnaroundValue": 4
+                            }
+                        ]
+                    },
+                    {
+                        "id": "xp6jszg1bm",
+                        "price": "42.4400",
+                        "options": {
+                            "Size": {
+                                "selected": "1.5” x 3.5”",
+                                "1.5” x 3.5”": {
+                                    "Shape": {
+                                        "selected": "Rectangle"
+                                    }
+                                }
+                            },
+                            "Stock": {
+                                "selected": "32PT Uncoated"
+                            },
+                            "Coating": {
+                                "selected": "No Coating"
+                            },
+                            "Colorspec": {
+                                "selected": "4/1"
+                            }
+                        },
+                        "runsize": 500,
+                        "discount": 0,
+                        "shippings": [
+                            {
+                                "id": "cm7sjeq3m0004l5s745p4ut44",
+                                "note": "",
+                                "price": 20,
+                                "runsize": null,
+                                "createdAt": "2025-03-03T04:05:39.105Z",
+                                "updatedAt": "2025-03-03T04:05:39.105Z",
+                                "categoryId": "",
+                                "categoryName": "",
+                                "shippingLabel": "Standard Shipping",
+                                "shippingValue": 3
+                            },
+                            {
+                                "id": "cm8wkiqk2000kl5s7a2x9o54m",
+                                "note": "",
+                                "price": 0,
+                                "runsize": null,
+                                "createdAt": "2025-03-31T04:27:32.976Z",
+                                "updatedAt": "2025-03-31T04:27:32.976Z",
+                                "categoryId": "",
+                                "categoryName": "",
+                                "shippingLabel": "Pickup from Store",
+                                "shippingValue": 1
+                            }
+                        ],
+                        "turnarounds": [
+                            {
+                                "id": "cm7sjcm8i0000l5s77fzuegnt",
+                                "note": "",
+                                "price": 0,
+                                "runsize": null,
+                                "discount": null,
+                                "createdAt": "2025-03-03T04:04:00.784Z",
+                                "updatedAt": "2025-03-03T04:04:00.784Z",
+                                "categoryId": "",
+                                "categoryName": "",
+                                "turnaroundLabel": "4 Business Days",
+                                "turnaroundValue": 4
+                            }
+                        ]
+                    },
+                    {
+                        "id": "dxuz33i60d",
+                        "price": "64.6700",
+                        "options": {
+                            "Size": {
+                                "selected": "1.5” x 3.5”",
+                                "1.5” x 3.5”": {
+                                    "Shape": {
+                                        "selected": "Rectangle"
+                                    }
+                                }
+                            },
+                            "Stock": {
+                                "selected": "32PT Uncoated"
+                            },
+                            "Coating": {
+                                "selected": "No Coating"
+                            },
+                            "Colorspec": {
+                                "selected": "4/1"
+                            }
+                        },
+                        "runsize": 1000,
+                        "discount": 0,
+                        "shippings": [
+                            {
+                                "id": "cm7sjeq3m0004l5s745p4ut44",
+                                "note": "",
+                                "price": 20,
+                                "runsize": null,
+                                "createdAt": "2025-03-03T04:05:39.105Z",
+                                "updatedAt": "2025-03-03T04:05:39.105Z",
+                                "categoryId": "",
+                                "categoryName": "",
+                                "shippingLabel": "Standard Shipping",
+                                "shippingValue": 3
+                            },
+                            {
+                                "id": "cm8wkiqk2000kl5s7a2x9o54m",
+                                "note": "",
+                                "price": 0,
+                                "runsize": null,
+                                "createdAt": "2025-03-31T04:27:32.976Z",
+                                "updatedAt": "2025-03-31T04:27:32.976Z",
+                                "categoryId": "",
+                                "categoryName": "",
+                                "shippingLabel": "Pickup from Store",
+                                "shippingValue": 1
+                            }
+                        ],
+                        "turnarounds": [
+                            {
+                                "id": "cm7sjcm8i0000l5s77fzuegnt",
+                                "note": "",
+                                "price": 0,
+                                "runsize": null,
+                                "discount": null,
+                                "createdAt": "2025-03-03T04:04:00.784Z",
+                                "updatedAt": "2025-03-03T04:04:00.784Z",
+                                "categoryId": "",
+                                "categoryName": "",
+                                "turnaroundLabel": "4 Business Days",
+                                "turnaroundValue": 4
+                            }
+                        ]
+                    },
+                    {
+                        "id": "akeeyhn328",
+                        "price": "42.4400",
+                        "options": {
+                            "Size": {
+                                "selected": "1.75” x 3.5”",
+                                "1.75” x 3.5”": {
+                                    "Shape": {
+                                        "selected": "Rectangle"
+                                    }
+                                }
+                            },
+                            "Stock": {
+                                "selected": "32PT Uncoated"
+                            },
+                            "Coating": {
+                                "selected": "No Coating"
+                            },
+                            "Colorspec": {
+                                "selected": "4/4 (4 color both sides)"
+                            }
+                        },
+                        "runsize": 500,
+                        "discount": 0,
+                        "shippings": [
+                            {
+                                "id": "cm7sjeq3m0004l5s745p4ut44",
+                                "note": "",
+                                "price": 20,
+                                "runsize": null,
+                                "createdAt": "2025-03-03T04:05:39.105Z",
+                                "updatedAt": "2025-03-03T04:05:39.105Z",
+                                "categoryId": "",
+                                "categoryName": "",
+                                "shippingLabel": "Standard Shipping",
+                                "shippingValue": 3
+                            },
+                            {
+                                "id": "cm8wkiqk2000kl5s7a2x9o54m",
+                                "note": "",
+                                "price": 0,
+                                "runsize": null,
+                                "createdAt": "2025-03-31T04:27:32.976Z",
+                                "updatedAt": "2025-03-31T04:27:32.976Z",
+                                "categoryId": "",
+                                "categoryName": "",
+                                "shippingLabel": "Pickup from Store",
+                                "shippingValue": 1
+                            }
+                        ],
+                        "turnarounds": [
+                            {
+                                "id": "cm7sjcm8i0000l5s77fzuegnt",
+                                "note": "",
+                                "price": 0,
+                                "runsize": null,
+                                "discount": null,
+                                "createdAt": "2025-03-03T04:04:00.784Z",
+                                "updatedAt": "2025-03-03T04:04:00.784Z",
+                                "categoryId": "",
+                                "categoryName": "",
+                                "turnaroundLabel": "4 Business Days",
+                                "turnaroundValue": 4
+                            }
+                        ]
+                    },
+                    {
+                        "id": "j3nppc0o7h",
+                        "price": "64.6700",
+                        "options": {
+                            "Size": {
+                                "selected": "1.75” x 3.5”",
+                                "1.75” x 3.5”": {
+                                    "Shape": {
+                                        "selected": "Rectangle"
+                                    }
+                                }
+                            },
+                            "Stock": {
+                                "selected": "32PT Uncoated"
+                            },
+                            "Coating": {
+                                "selected": "No Coating"
+                            },
+                            "Colorspec": {
+                                "selected": "4/4 (4 color both sides)"
+                            }
+                        },
+                        "runsize": 1000,
+                        "discount": 0,
+                        "shippings": [
+                            {
+                                "id": "cm7sjeq3m0004l5s745p4ut44",
+                                "note": "",
+                                "price": 20,
+                                "runsize": null,
+                                "createdAt": "2025-03-03T04:05:39.105Z",
+                                "updatedAt": "2025-03-03T04:05:39.105Z",
+                                "categoryId": "",
+                                "categoryName": "",
+                                "shippingLabel": "Standard Shipping",
+                                "shippingValue": 3
+                            },
+                            {
+                                "id": "cm8wkiqk2000kl5s7a2x9o54m",
+                                "note": "",
+                                "price": 0,
+                                "runsize": null,
+                                "createdAt": "2025-03-31T04:27:32.976Z",
+                                "updatedAt": "2025-03-31T04:27:32.976Z",
+                                "categoryId": "",
+                                "categoryName": "",
+                                "shippingLabel": "Pickup from Store",
+                                "shippingValue": 1
+                            }
+                        ],
+                        "turnarounds": [
+                            {
+                                "id": "cm7sjcm8i0000l5s77fzuegnt",
+                                "note": "",
+                                "price": 0,
+                                "runsize": null,
+                                "discount": null,
+                                "createdAt": "2025-03-03T04:04:00.784Z",
+                                "updatedAt": "2025-03-03T04:04:00.784Z",
+                                "categoryId": "",
+                                "categoryName": "",
+                                "turnaroundLabel": "4 Business Days",
+                                "turnaroundValue": 4
+                            }
+                        ]
+                    },
+                    {
+                        "id": "fwummyjop9",
+                        "price": "42.4400",
+                        "options": {
+                            "Size": {
+                                "selected": "1.75” x 3.5”",
+                                "1.75” x 3.5”": {
+                                    "Shape": {
+                                        "selected": "Rectangle"
+                                    }
+                                }
+                            },
+                            "Stock": {
+                                "selected": "32PT Uncoated"
+                            },
+                            "Coating": {
+                                "selected": "No Coating"
+                            },
+                            "Colorspec": {
+                                "selected": "4/1"
+                            }
+                        },
+                        "runsize": 500,
+                        "discount": 0,
+                        "shippings": [
+                            {
+                                "id": "cm7sjeq3m0004l5s745p4ut44",
+                                "note": "",
+                                "price": 20,
+                                "runsize": null,
+                                "createdAt": "2025-03-03T04:05:39.105Z",
+                                "updatedAt": "2025-03-03T04:05:39.105Z",
+                                "categoryId": "",
+                                "categoryName": "",
+                                "shippingLabel": "Standard Shipping",
+                                "shippingValue": 3
+                            },
+                            {
+                                "id": "cm8wkiqk2000kl5s7a2x9o54m",
+                                "note": "",
+                                "price": 0,
+                                "runsize": null,
+                                "createdAt": "2025-03-31T04:27:32.976Z",
+                                "updatedAt": "2025-03-31T04:27:32.976Z",
+                                "categoryId": "",
+                                "categoryName": "",
+                                "shippingLabel": "Pickup from Store",
+                                "shippingValue": 1
+                            }
+                        ],
+                        "turnarounds": [
+                            {
+                                "id": "cm7sjcm8i0000l5s77fzuegnt",
+                                "note": "",
+                                "price": 0,
+                                "runsize": null,
+                                "discount": null,
+                                "createdAt": "2025-03-03T04:04:00.784Z",
+                                "updatedAt": "2025-03-03T04:04:00.784Z",
+                                "categoryId": "",
+                                "categoryName": "",
+                                "turnaroundLabel": "4 Business Days",
+                                "turnaroundValue": 4
+                            }
+                        ]
+                    },
+                    {
+                        "id": "xb0saqd9ro",
+                        "price": "64.6700",
+                        "options": {
+                            "Size": {
+                                "selected": "1.75” x 3.5”",
+                                "1.75” x 3.5”": {
+                                    "Shape": {
+                                        "selected": "Rectangle"
+                                    }
+                                }
+                            },
+                            "Stock": {
+                                "selected": "32PT Uncoated"
+                            },
+                            "Coating": {
+                                "selected": "No Coating"
+                            },
+                            "Colorspec": {
+                                "selected": "4/1"
+                            }
+                        },
+                        "runsize": 1000,
+                        "discount": 0,
+                        "shippings": [
+                            {
+                                "id": "cm7sjeq3m0004l5s745p4ut44",
+                                "note": "",
+                                "price": 20,
+                                "runsize": null,
+                                "createdAt": "2025-03-03T04:05:39.105Z",
+                                "updatedAt": "2025-03-03T04:05:39.105Z",
+                                "categoryId": "",
+                                "categoryName": "",
+                                "shippingLabel": "Standard Shipping",
+                                "shippingValue": 3
+                            },
+                            {
+                                "id": "cm8wkiqk2000kl5s7a2x9o54m",
+                                "note": "",
+                                "price": 0,
+                                "runsize": null,
+                                "createdAt": "2025-03-31T04:27:32.976Z",
+                                "updatedAt": "2025-03-31T04:27:32.976Z",
+                                "categoryId": "",
+                                "categoryName": "",
+                                "shippingLabel": "Pickup from Store",
+                                "shippingValue": 1
+                            }
+                        ],
+                        "turnarounds": [
+                            {
+                                "id": "cm7sjcm8i0000l5s77fzuegnt",
+                                "note": "",
+                                "price": 0,
+                                "runsize": null,
+                                "discount": null,
+                                "createdAt": "2025-03-03T04:04:00.784Z",
+                                "updatedAt": "2025-03-03T04:04:00.784Z",
+                                "categoryId": "",
+                                "categoryName": "",
+                                "turnaroundLabel": "4 Business Days",
+                                "turnaroundValue": 4
+                            }
+                        ]
+                    },
+                    {
+                        "id": "5lqe1w4yn2",
+                        "price": "41.4200",
+                        "options": {
+                            "Size": {
+                                "selected": "1.75” x 3.5”",
+                                "1.75” x 3.5”": {
+                                    "Shape": {
+                                        "selected": "Rectangle"
+                                    }
+                                }
+                            },
+                            "Stock": {
+                                "selected": "32PT Uncoated"
+                            },
+                            "Coating": {
+                                "selected": "No Coating"
+                            },
+                            "Colorspec": {
+                                "selected": "4/0 (4 Color front)"
+                            }
+                        },
+                        "runsize": 500,
+                        "discount": 0,
+                        "shippings": [
+                            {
+                                "id": "cm7sjeq3m0004l5s745p4ut44",
+                                "note": "",
+                                "price": 20,
+                                "runsize": null,
+                                "createdAt": "2025-03-03T04:05:39.105Z",
+                                "updatedAt": "2025-03-03T04:05:39.105Z",
+                                "categoryId": "",
+                                "categoryName": "",
+                                "shippingLabel": "Standard Shipping",
+                                "shippingValue": 3
+                            },
+                            {
+                                "id": "cm8wkiqk2000kl5s7a2x9o54m",
+                                "note": "",
+                                "price": 0,
+                                "runsize": null,
+                                "createdAt": "2025-03-31T04:27:32.976Z",
+                                "updatedAt": "2025-03-31T04:27:32.976Z",
+                                "categoryId": "",
+                                "categoryName": "",
+                                "shippingLabel": "Pickup from Store",
+                                "shippingValue": 1
+                            }
+                        ],
+                        "turnarounds": [
+                            {
+                                "id": "cm7sjcm8i0000l5s77fzuegnt",
+                                "note": "",
+                                "price": 0,
+                                "runsize": null,
+                                "discount": null,
+                                "createdAt": "2025-03-03T04:04:00.784Z",
+                                "updatedAt": "2025-03-03T04:04:00.784Z",
+                                "categoryId": "",
+                                "categoryName": "",
+                                "turnaroundLabel": "4 Business Days",
+                                "turnaroundValue": 4
+                            }
+                        ]
+                    },
+                    {
+                        "id": "ckxnlaas27",
+                        "price": "62.0700",
+                        "options": {
+                            "Size": {
+                                "selected": "1.75” x 3.5”",
+                                "1.75” x 3.5”": {
+                                    "Shape": {
+                                        "selected": "Rectangle"
+                                    }
+                                }
+                            },
+                            "Stock": {
+                                "selected": "32PT Uncoated"
+                            },
+                            "Coating": {
+                                "selected": "No Coating"
+                            },
+                            "Colorspec": {
+                                "selected": "4/0 (4 Color front)"
+                            }
+                        },
+                        "runsize": 1000,
+                        "discount": 0,
+                        "shippings": [
+                            {
+                                "id": "cm7sjeq3m0004l5s745p4ut44",
+                                "note": "",
+                                "price": 20,
+                                "runsize": null,
+                                "createdAt": "2025-03-03T04:05:39.105Z",
+                                "updatedAt": "2025-03-03T04:05:39.105Z",
+                                "categoryId": "",
+                                "categoryName": "",
+                                "shippingLabel": "Standard Shipping",
+                                "shippingValue": 3
+                            },
+                            {
+                                "id": "cm8wkiqk2000kl5s7a2x9o54m",
+                                "note": "",
+                                "price": 0,
+                                "runsize": null,
+                                "createdAt": "2025-03-31T04:27:32.976Z",
+                                "updatedAt": "2025-03-31T04:27:32.976Z",
+                                "categoryId": "",
+                                "categoryName": "",
+                                "shippingLabel": "Pickup from Store",
+                                "shippingValue": 1
+                            }
+                        ],
+                        "turnarounds": [
+                            {
+                                "id": "cm7sjcm8i0000l5s77fzuegnt",
+                                "note": "",
+                                "price": 0,
+                                "runsize": null,
+                                "discount": null,
+                                "createdAt": "2025-03-03T04:04:00.784Z",
+                                "updatedAt": "2025-03-03T04:04:00.784Z",
+                                "categoryId": "",
+                                "categoryName": "",
+                                "turnaroundLabel": "4 Business Days",
+                                "turnaroundValue": 4
+                            }
+                        ]
+                    },
+                    {
+                        "id": "fbwkmvxvdi",
+                        "price": "48.5000",
+                        "options": {
+                            "Size": {
+                                "selected": "2” x 2”",
+                                "2” x 2”": {
+                                    "Shape": {
+                                        "selected": "Square"
+                                    }
+                                }
+                            },
+                            "Stock": {
+                                "selected": "32PT Uncoated"
+                            },
+                            "Coating": {
+                                "selected": "No Coating"
+                            },
+                            "Colorspec": {
+                                "selected": "4/4 (4 color both sides)"
+                            }
+                        },
+                        "runsize": 500,
+                        "discount": 0,
+                        "shippings": [
+                            {
+                                "id": "cm7sjeq3m0004l5s745p4ut44",
+                                "note": "",
+                                "price": 20,
+                                "runsize": null,
+                                "createdAt": "2025-03-03T04:05:39.105Z",
+                                "updatedAt": "2025-03-03T04:05:39.105Z",
+                                "categoryId": "",
+                                "categoryName": "",
+                                "shippingLabel": "Standard Shipping",
+                                "shippingValue": 3
+                            },
+                            {
+                                "id": "cm8wkiqk2000kl5s7a2x9o54m",
+                                "note": "",
+                                "price": 0,
+                                "runsize": null,
+                                "createdAt": "2025-03-31T04:27:32.976Z",
+                                "updatedAt": "2025-03-31T04:27:32.976Z",
+                                "categoryId": "",
+                                "categoryName": "",
+                                "shippingLabel": "Pickup from Store",
+                                "shippingValue": 1
+                            }
+                        ],
+                        "turnarounds": [
+                            {
+                                "id": "cm7sjcm8i0000l5s77fzuegnt",
+                                "note": "",
+                                "price": 0,
+                                "runsize": null,
+                                "discount": null,
+                                "createdAt": "2025-03-03T04:04:00.784Z",
+                                "updatedAt": "2025-03-03T04:04:00.784Z",
+                                "categoryId": "",
+                                "categoryName": "",
+                                "turnaroundLabel": "4 Business Days",
+                                "turnaroundValue": 4
+                            }
+                        ]
+                    },
+                    {
+                        "id": "5kflo0psuj",
+                        "price": "73.9100",
+                        "options": {
+                            "Size": {
+                                "selected": "2” x 2”",
+                                "2” x 2”": {
+                                    "Shape": {
+                                        "selected": "Square"
+                                    }
+                                }
+                            },
+                            "Stock": {
+                                "selected": "32PT Uncoated"
+                            },
+                            "Coating": {
+                                "selected": "No Coating"
+                            },
+                            "Colorspec": {
+                                "selected": "4/4 (4 color both sides)"
+                            }
+                        },
+                        "runsize": 1000,
+                        "discount": 0,
+                        "shippings": [
+                            {
+                                "id": "cm7sjeq3m0004l5s745p4ut44",
+                                "note": "",
+                                "price": 20,
+                                "runsize": null,
+                                "createdAt": "2025-03-03T04:05:39.105Z",
+                                "updatedAt": "2025-03-03T04:05:39.105Z",
+                                "categoryId": "",
+                                "categoryName": "",
+                                "shippingLabel": "Standard Shipping",
+                                "shippingValue": 3
+                            },
+                            {
+                                "id": "cm8wkiqk2000kl5s7a2x9o54m",
+                                "note": "",
+                                "price": 0,
+                                "runsize": null,
+                                "createdAt": "2025-03-31T04:27:32.976Z",
+                                "updatedAt": "2025-03-31T04:27:32.976Z",
+                                "categoryId": "",
+                                "categoryName": "",
+                                "shippingLabel": "Pickup from Store",
+                                "shippingValue": 1
+                            }
+                        ],
+                        "turnarounds": [
+                            {
+                                "id": "cm7sjcm8i0000l5s77fzuegnt",
+                                "note": "",
+                                "price": 0,
+                                "runsize": null,
+                                "discount": null,
+                                "createdAt": "2025-03-03T04:04:00.784Z",
+                                "updatedAt": "2025-03-03T04:04:00.784Z",
+                                "categoryId": "",
+                                "categoryName": "",
+                                "turnaroundLabel": "4 Business Days",
+                                "turnaroundValue": 4
+                            }
+                        ]
+                    },
+                    {
+                        "id": "v10vdb4yt8",
+                        "price": "48.5000",
+                        "options": {
+                            "Size": {
+                                "selected": "2” x 2”",
+                                "2” x 2”": {
+                                    "Shape": {
+                                        "selected": "Square"
+                                    }
+                                }
+                            },
+                            "Stock": {
+                                "selected": "32PT Uncoated"
+                            },
+                            "Coating": {
+                                "selected": "No Coating"
+                            },
+                            "Colorspec": {
+                                "selected": "4/1"
+                            }
+                        },
+                        "runsize": 500,
+                        "discount": 0,
+                        "shippings": [
+                            {
+                                "id": "cm7sjeq3m0004l5s745p4ut44",
+                                "note": "",
+                                "price": 20,
+                                "runsize": null,
+                                "createdAt": "2025-03-03T04:05:39.105Z",
+                                "updatedAt": "2025-03-03T04:05:39.105Z",
+                                "categoryId": "",
+                                "categoryName": "",
+                                "shippingLabel": "Standard Shipping",
+                                "shippingValue": 3
+                            },
+                            {
+                                "id": "cm8wkiqk2000kl5s7a2x9o54m",
+                                "note": "",
+                                "price": 0,
+                                "runsize": null,
+                                "createdAt": "2025-03-31T04:27:32.976Z",
+                                "updatedAt": "2025-03-31T04:27:32.976Z",
+                                "categoryId": "",
+                                "categoryName": "",
+                                "shippingLabel": "Pickup from Store",
+                                "shippingValue": 1
+                            }
+                        ],
+                        "turnarounds": [
+                            {
+                                "id": "cm7sjcm8i0000l5s77fzuegnt",
+                                "note": "",
+                                "price": 0,
+                                "runsize": null,
+                                "discount": null,
+                                "createdAt": "2025-03-03T04:04:00.784Z",
+                                "updatedAt": "2025-03-03T04:04:00.784Z",
+                                "categoryId": "",
+                                "categoryName": "",
+                                "turnaroundLabel": "4 Business Days",
+                                "turnaroundValue": 4
+                            }
+                        ]
+                    },
+                    {
+                        "id": "5bb24zwcej",
+                        "price": "73.9100",
+                        "options": {
+                            "Size": {
+                                "selected": "2” x 2”",
+                                "2” x 2”": {
+                                    "Shape": {
+                                        "selected": "Square"
+                                    }
+                                }
+                            },
+                            "Stock": {
+                                "selected": "32PT Uncoated"
+                            },
+                            "Coating": {
+                                "selected": "No Coating"
+                            },
+                            "Colorspec": {
+                                "selected": "4/1"
+                            }
+                        },
+                        "runsize": 1000,
+                        "discount": 0,
+                        "shippings": [
+                            {
+                                "id": "cm7sjeq3m0004l5s745p4ut44",
+                                "note": "",
+                                "price": 20,
+                                "runsize": null,
+                                "createdAt": "2025-03-03T04:05:39.105Z",
+                                "updatedAt": "2025-03-03T04:05:39.105Z",
+                                "categoryId": "",
+                                "categoryName": "",
+                                "shippingLabel": "Standard Shipping",
+                                "shippingValue": 3
+                            },
+                            {
+                                "id": "cm8wkiqk2000kl5s7a2x9o54m",
+                                "note": "",
+                                "price": 0,
+                                "runsize": null,
+                                "createdAt": "2025-03-31T04:27:32.976Z",
+                                "updatedAt": "2025-03-31T04:27:32.976Z",
+                                "categoryId": "",
+                                "categoryName": "",
+                                "shippingLabel": "Pickup from Store",
+                                "shippingValue": 1
+                            }
+                        ],
+                        "turnarounds": [
+                            {
+                                "id": "cm7sjcm8i0000l5s77fzuegnt",
+                                "note": "",
+                                "price": 0,
+                                "runsize": null,
+                                "discount": null,
+                                "createdAt": "2025-03-03T04:04:00.784Z",
+                                "updatedAt": "2025-03-03T04:04:00.784Z",
+                                "categoryId": "",
+                                "categoryName": "",
+                                "turnaroundLabel": "4 Business Days",
+                                "turnaroundValue": 4
+                            }
+                        ]
+                    },
+                    {
+                        "id": "tshtrofgbo",
+                        "price": "47.3500",
+                        "options": {
+                            "Size": {
+                                "selected": "2” x 2”",
+                                "2” x 2”": {
+                                    "Shape": {
+                                        "selected": "Square"
+                                    }
+                                }
+                            },
+                            "Stock": {
+                                "selected": "32PT Uncoated"
+                            },
+                            "Coating": {
+                                "selected": "No Coating"
+                            },
+                            "Colorspec": {
+                                "selected": "4/0 (4 Color front)"
+                            }
+                        },
+                        "runsize": 500,
+                        "discount": 0,
+                        "shippings": [
+                            {
+                                "id": "cm7sjeq3m0004l5s745p4ut44",
+                                "note": "",
+                                "price": 20,
+                                "runsize": null,
+                                "createdAt": "2025-03-03T04:05:39.105Z",
+                                "updatedAt": "2025-03-03T04:05:39.105Z",
+                                "categoryId": "",
+                                "categoryName": "",
+                                "shippingLabel": "Standard Shipping",
+                                "shippingValue": 3
+                            },
+                            {
+                                "id": "cm8wkiqk2000kl5s7a2x9o54m",
+                                "note": "",
+                                "price": 0,
+                                "runsize": null,
+                                "createdAt": "2025-03-31T04:27:32.976Z",
+                                "updatedAt": "2025-03-31T04:27:32.976Z",
+                                "categoryId": "",
+                                "categoryName": "",
+                                "shippingLabel": "Pickup from Store",
+                                "shippingValue": 1
+                            }
+                        ],
+                        "turnarounds": [
+                            {
+                                "id": "cm7sjcm8i0000l5s77fzuegnt",
+                                "note": "",
+                                "price": 0,
+                                "runsize": null,
+                                "discount": null,
+                                "createdAt": "2025-03-03T04:04:00.784Z",
+                                "updatedAt": "2025-03-03T04:04:00.784Z",
+                                "categoryId": "",
+                                "categoryName": "",
+                                "turnaroundLabel": "4 Business Days",
+                                "turnaroundValue": 4
+                            }
+                        ]
+                    },
+                    {
+                        "id": "x0d84aj89g",
+                        "price": "70.8700",
+                        "options": {
+                            "Size": {
+                                "selected": "2” x 2”",
+                                "2” x 2”": {
+                                    "Shape": {
+                                        "selected": "Square"
+                                    }
+                                }
+                            },
+                            "Stock": {
+                                "selected": "32PT Uncoated"
+                            },
+                            "Coating": {
+                                "selected": "No Coating"
+                            },
+                            "Colorspec": {
+                                "selected": "4/0 (4 Color front)"
+                            }
+                        },
+                        "runsize": 1000,
+                        "discount": 0,
+                        "shippings": [
+                            {
+                                "id": "cm7sjeq3m0004l5s745p4ut44",
+                                "note": "",
+                                "price": 20,
+                                "runsize": null,
+                                "createdAt": "2025-03-03T04:05:39.105Z",
+                                "updatedAt": "2025-03-03T04:05:39.105Z",
+                                "categoryId": "",
+                                "categoryName": "",
+                                "shippingLabel": "Standard Shipping",
+                                "shippingValue": 3
+                            },
+                            {
+                                "id": "cm8wkiqk2000kl5s7a2x9o54m",
+                                "note": "",
+                                "price": 0,
+                                "runsize": null,
+                                "createdAt": "2025-03-31T04:27:32.976Z",
+                                "updatedAt": "2025-03-31T04:27:32.976Z",
+                                "categoryId": "",
+                                "categoryName": "",
+                                "shippingLabel": "Pickup from Store",
+                                "shippingValue": 1
+                            }
+                        ],
+                        "turnarounds": [
+                            {
+                                "id": "cm7sjcm8i0000l5s77fzuegnt",
+                                "note": "",
+                                "price": 0,
+                                "runsize": null,
+                                "discount": null,
+                                "createdAt": "2025-03-03T04:04:00.784Z",
+                                "updatedAt": "2025-03-03T04:04:00.784Z",
+                                "categoryId": "",
+                                "categoryName": "",
+                                "turnaroundLabel": "4 Business Days",
+                                "turnaroundValue": 4
+                            }
+                        ]
+                    },
+                    {
+                        "id": "f0t2una5io",
+                        "price": "48.5000",
+                        "options": {
+                            "Size": {
+                                "selected": "2” x 3”",
+                                "2” x 3”": {
+                                    "Shape": {
+                                        "selected": "Rectangle"
+                                    }
+                                }
+                            },
+                            "Stock": {
+                                "selected": "32PT Uncoated"
+                            },
+                            "Coating": {
+                                "selected": "No Coating"
+                            },
+                            "Colorspec": {
+                                "selected": "4/4 (4 color both sides)"
+                            }
+                        },
+                        "runsize": 500,
+                        "discount": 0,
+                        "shippings": [
+                            {
+                                "id": "cm7sjeq3m0004l5s745p4ut44",
+                                "note": "",
+                                "price": 20,
+                                "runsize": null,
+                                "createdAt": "2025-03-03T04:05:39.105Z",
+                                "updatedAt": "2025-03-03T04:05:39.105Z",
+                                "categoryId": "",
+                                "categoryName": "",
+                                "shippingLabel": "Standard Shipping",
+                                "shippingValue": 3
+                            },
+                            {
+                                "id": "cm8wkiqk2000kl5s7a2x9o54m",
+                                "note": "",
+                                "price": 0,
+                                "runsize": null,
+                                "createdAt": "2025-03-31T04:27:32.976Z",
+                                "updatedAt": "2025-03-31T04:27:32.976Z",
+                                "categoryId": "",
+                                "categoryName": "",
+                                "shippingLabel": "Pickup from Store",
+                                "shippingValue": 1
+                            }
+                        ],
+                        "turnarounds": [
+                            {
+                                "id": "cm7sjcm8i0000l5s77fzuegnt",
+                                "note": "",
+                                "price": 0,
+                                "runsize": null,
+                                "discount": null,
+                                "createdAt": "2025-03-03T04:04:00.784Z",
+                                "updatedAt": "2025-03-03T04:04:00.784Z",
+                                "categoryId": "",
+                                "categoryName": "",
+                                "turnaroundLabel": "4 Business Days",
+                                "turnaroundValue": 4
+                            }
+                        ]
+                    },
+                    {
+                        "id": "hwlntp29pc",
+                        "price": "73.9100",
+                        "options": {
+                            "Size": {
+                                "selected": "2” x 3”",
+                                "2” x 3”": {
+                                    "Shape": {
+                                        "selected": "Rectangle"
+                                    }
+                                }
+                            },
+                            "Stock": {
+                                "selected": "32PT Uncoated"
+                            },
+                            "Coating": {
+                                "selected": "No Coating"
+                            },
+                            "Colorspec": {
+                                "selected": "4/4 (4 color both sides)"
+                            }
+                        },
+                        "runsize": 1000,
+                        "discount": 0,
+                        "shippings": [
+                            {
+                                "id": "cm7sjeq3m0004l5s745p4ut44",
+                                "note": "",
+                                "price": 20,
+                                "runsize": null,
+                                "createdAt": "2025-03-03T04:05:39.105Z",
+                                "updatedAt": "2025-03-03T04:05:39.105Z",
+                                "categoryId": "",
+                                "categoryName": "",
+                                "shippingLabel": "Standard Shipping",
+                                "shippingValue": 3
+                            },
+                            {
+                                "id": "cm8wkiqk2000kl5s7a2x9o54m",
+                                "note": "",
+                                "price": 0,
+                                "runsize": null,
+                                "createdAt": "2025-03-31T04:27:32.976Z",
+                                "updatedAt": "2025-03-31T04:27:32.976Z",
+                                "categoryId": "",
+                                "categoryName": "",
+                                "shippingLabel": "Pickup from Store",
+                                "shippingValue": 1
+                            }
+                        ],
+                        "turnarounds": [
+                            {
+                                "id": "cm7sjcm8i0000l5s77fzuegnt",
+                                "note": "",
+                                "price": 0,
+                                "runsize": null,
+                                "discount": null,
+                                "createdAt": "2025-03-03T04:04:00.784Z",
+                                "updatedAt": "2025-03-03T04:04:00.784Z",
+                                "categoryId": "",
+                                "categoryName": "",
+                                "turnaroundLabel": "4 Business Days",
+                                "turnaroundValue": 4
+                            }
+                        ]
+                    },
+                    {
+                        "id": "p91zj0ybrk",
+                        "price": "48.5000",
+                        "options": {
+                            "Size": {
+                                "selected": "2” x 3”",
+                                "2” x 3”": {
+                                    "Shape": {
+                                        "selected": "Rectangle"
+                                    }
+                                }
+                            },
+                            "Stock": {
+                                "selected": "32PT Uncoated"
+                            },
+                            "Coating": {
+                                "selected": "No Coating"
+                            },
+                            "Colorspec": {
+                                "selected": "4/1"
+                            }
+                        },
+                        "runsize": 500,
+                        "discount": 0,
+                        "shippings": [
+                            {
+                                "id": "cm7sjeq3m0004l5s745p4ut44",
+                                "note": "",
+                                "price": 20,
+                                "runsize": null,
+                                "createdAt": "2025-03-03T04:05:39.105Z",
+                                "updatedAt": "2025-03-03T04:05:39.105Z",
+                                "categoryId": "",
+                                "categoryName": "",
+                                "shippingLabel": "Standard Shipping",
+                                "shippingValue": 3
+                            },
+                            {
+                                "id": "cm8wkiqk2000kl5s7a2x9o54m",
+                                "note": "",
+                                "price": 0,
+                                "runsize": null,
+                                "createdAt": "2025-03-31T04:27:32.976Z",
+                                "updatedAt": "2025-03-31T04:27:32.976Z",
+                                "categoryId": "",
+                                "categoryName": "",
+                                "shippingLabel": "Pickup from Store",
+                                "shippingValue": 1
+                            }
+                        ],
+                        "turnarounds": [
+                            {
+                                "id": "cm7sjcm8i0000l5s77fzuegnt",
+                                "note": "",
+                                "price": 0,
+                                "runsize": null,
+                                "discount": null,
+                                "createdAt": "2025-03-03T04:04:00.784Z",
+                                "updatedAt": "2025-03-03T04:04:00.784Z",
+                                "categoryId": "",
+                                "categoryName": "",
+                                "turnaroundLabel": "4 Business Days",
+                                "turnaroundValue": 4
+                            }
+                        ]
+                    },
+                    {
+                        "id": "naiul0lt9l",
+                        "price": "73.9100",
+                        "options": {
+                            "Size": {
+                                "selected": "2” x 3”",
+                                "2” x 3”": {
+                                    "Shape": {
+                                        "selected": "Rectangle"
+                                    }
+                                }
+                            },
+                            "Stock": {
+                                "selected": "32PT Uncoated"
+                            },
+                            "Coating": {
+                                "selected": "No Coating"
+                            },
+                            "Colorspec": {
+                                "selected": "4/1"
+                            }
+                        },
+                        "runsize": 1000,
+                        "discount": 0,
+                        "shippings": [
+                            {
+                                "id": "cm7sjeq3m0004l5s745p4ut44",
+                                "note": "",
+                                "price": 20,
+                                "runsize": null,
+                                "createdAt": "2025-03-03T04:05:39.105Z",
+                                "updatedAt": "2025-03-03T04:05:39.105Z",
+                                "categoryId": "",
+                                "categoryName": "",
+                                "shippingLabel": "Standard Shipping",
+                                "shippingValue": 3
+                            },
+                            {
+                                "id": "cm8wkiqk2000kl5s7a2x9o54m",
+                                "note": "",
+                                "price": 0,
+                                "runsize": null,
+                                "createdAt": "2025-03-31T04:27:32.976Z",
+                                "updatedAt": "2025-03-31T04:27:32.976Z",
+                                "categoryId": "",
+                                "categoryName": "",
+                                "shippingLabel": "Pickup from Store",
+                                "shippingValue": 1
+                            }
+                        ],
+                        "turnarounds": [
+                            {
+                                "id": "cm7sjcm8i0000l5s77fzuegnt",
+                                "note": "",
+                                "price": 0,
+                                "runsize": null,
+                                "discount": null,
+                                "createdAt": "2025-03-03T04:04:00.784Z",
+                                "updatedAt": "2025-03-03T04:04:00.784Z",
+                                "categoryId": "",
+                                "categoryName": "",
+                                "turnaroundLabel": "4 Business Days",
+                                "turnaroundValue": 4
+                            }
+                        ]
+                    },
+                    {
+                        "id": "zmiwe78q8r",
+                        "price": "47.3500",
+                        "options": {
+                            "Size": {
+                                "selected": "2” x 3”",
+                                "2” x 3”": {
+                                    "Shape": {
+                                        "selected": "Rectangle"
+                                    }
+                                }
+                            },
+                            "Stock": {
+                                "selected": "32PT Uncoated"
+                            },
+                            "Coating": {
+                                "selected": "No Coating"
+                            },
+                            "Colorspec": {
+                                "selected": "4/0 (4 Color front)"
+                            }
+                        },
+                        "runsize": 500,
+                        "discount": 0,
+                        "shippings": [
+                            {
+                                "id": "cm7sjeq3m0004l5s745p4ut44",
+                                "note": "",
+                                "price": 20,
+                                "runsize": null,
+                                "createdAt": "2025-03-03T04:05:39.105Z",
+                                "updatedAt": "2025-03-03T04:05:39.105Z",
+                                "categoryId": "",
+                                "categoryName": "",
+                                "shippingLabel": "Standard Shipping",
+                                "shippingValue": 3
+                            },
+                            {
+                                "id": "cm8wkiqk2000kl5s7a2x9o54m",
+                                "note": "",
+                                "price": 0,
+                                "runsize": null,
+                                "createdAt": "2025-03-31T04:27:32.976Z",
+                                "updatedAt": "2025-03-31T04:27:32.976Z",
+                                "categoryId": "",
+                                "categoryName": "",
+                                "shippingLabel": "Pickup from Store",
+                                "shippingValue": 1
+                            }
+                        ],
+                        "turnarounds": [
+                            {
+                                "id": "cm7sjcm8i0000l5s77fzuegnt",
+                                "note": "",
+                                "price": 0,
+                                "runsize": null,
+                                "discount": null,
+                                "createdAt": "2025-03-03T04:04:00.784Z",
+                                "updatedAt": "2025-03-03T04:04:00.784Z",
+                                "categoryId": "",
+                                "categoryName": "",
+                                "turnaroundLabel": "4 Business Days",
+                                "turnaroundValue": 4
+                            }
+                        ]
+                    },
+                    {
+                        "id": "12qrzh6y5l",
+                        "price": "70.8700",
+                        "options": {
+                            "Size": {
+                                "selected": "2” x 3”",
+                                "2” x 3”": {
+                                    "Shape": {
+                                        "selected": "Rectangle"
+                                    }
+                                }
+                            },
+                            "Stock": {
+                                "selected": "32PT Uncoated"
+                            },
+                            "Coating": {
+                                "selected": "No Coating"
+                            },
+                            "Colorspec": {
+                                "selected": "4/0 (4 Color front)"
+                            }
+                        },
+                        "runsize": 1000,
+                        "discount": 0,
+                        "shippings": [
+                            {
+                                "id": "cm7sjeq3m0004l5s745p4ut44",
+                                "note": "",
+                                "price": 20,
+                                "runsize": null,
+                                "createdAt": "2025-03-03T04:05:39.105Z",
+                                "updatedAt": "2025-03-03T04:05:39.105Z",
+                                "categoryId": "",
+                                "categoryName": "",
+                                "shippingLabel": "Standard Shipping",
+                                "shippingValue": 3
+                            },
+                            {
+                                "id": "cm8wkiqk2000kl5s7a2x9o54m",
+                                "note": "",
+                                "price": 0,
+                                "runsize": null,
+                                "createdAt": "2025-03-31T04:27:32.976Z",
+                                "updatedAt": "2025-03-31T04:27:32.976Z",
+                                "categoryId": "",
+                                "categoryName": "",
+                                "shippingLabel": "Pickup from Store",
+                                "shippingValue": 1
+                            }
+                        ],
+                        "turnarounds": [
+                            {
+                                "id": "cm7sjcm8i0000l5s77fzuegnt",
+                                "note": "",
+                                "price": 0,
+                                "runsize": null,
+                                "discount": null,
+                                "createdAt": "2025-03-03T04:04:00.784Z",
+                                "updatedAt": "2025-03-03T04:04:00.784Z",
+                                "categoryId": "",
+                                "categoryName": "",
+                                "turnaroundLabel": "4 Business Days",
+                                "turnaroundValue": 4
+                            }
+                        ]
+                    },
+                    {
+                        "id": "3pqflf1trq",
+                        "price": "48.5000",
+                        "options": {
+                            "Size": {
+                                "selected": "2.125” x 3.375” (EU Standard)",
+                                "2.125” x 3.375” (EU Standard)": {
+                                    "Shape": {
+                                        "selected": "Rectangle"
+                                    }
+                                }
+                            },
+                            "Stock": {
+                                "selected": "32PT Uncoated"
+                            },
+                            "Coating": {
+                                "selected": "No Coating"
+                            },
+                            "Colorspec": {
+                                "selected": "4/4 (4 color both sides)"
+                            }
+                        },
+                        "runsize": 500,
+                        "discount": 0,
+                        "shippings": [
+                            {
+                                "id": "cm7sjeq3m0004l5s745p4ut44",
+                                "note": "",
+                                "price": 20,
+                                "runsize": null,
+                                "createdAt": "2025-03-03T04:05:39.105Z",
+                                "updatedAt": "2025-03-03T04:05:39.105Z",
+                                "categoryId": "",
+                                "categoryName": "",
+                                "shippingLabel": "Standard Shipping",
+                                "shippingValue": 3
+                            },
+                            {
+                                "id": "cm8wkiqk2000kl5s7a2x9o54m",
+                                "note": "",
+                                "price": 0,
+                                "runsize": null,
+                                "createdAt": "2025-03-31T04:27:32.976Z",
+                                "updatedAt": "2025-03-31T04:27:32.976Z",
+                                "categoryId": "",
+                                "categoryName": "",
+                                "shippingLabel": "Pickup from Store",
+                                "shippingValue": 1
+                            }
+                        ],
+                        "turnarounds": [
+                            {
+                                "id": "cm7sjcm8i0000l5s77fzuegnt",
+                                "note": "",
+                                "price": 0,
+                                "runsize": null,
+                                "discount": null,
+                                "createdAt": "2025-03-03T04:04:00.784Z",
+                                "updatedAt": "2025-03-03T04:04:00.784Z",
+                                "categoryId": "",
+                                "categoryName": "",
+                                "turnaroundLabel": "4 Business Days",
+                                "turnaroundValue": 4
+                            }
+                        ]
+                    },
+                    {
+                        "id": "1axsafjnyz",
+                        "price": "73.9100",
+                        "options": {
+                            "Size": {
+                                "selected": "2.125” x 3.375” (EU Standard)",
+                                "2.125” x 3.375” (EU Standard)": {
+                                    "Shape": {
+                                        "selected": "Rectangle"
+                                    }
+                                }
+                            },
+                            "Stock": {
+                                "selected": "32PT Uncoated"
+                            },
+                            "Coating": {
+                                "selected": "No Coating"
+                            },
+                            "Colorspec": {
+                                "selected": "4/4 (4 color both sides)"
+                            }
+                        },
+                        "runsize": 1000,
+                        "discount": 0,
+                        "shippings": [
+                            {
+                                "id": "cm7sjeq3m0004l5s745p4ut44",
+                                "note": "",
+                                "price": 20,
+                                "runsize": null,
+                                "createdAt": "2025-03-03T04:05:39.105Z",
+                                "updatedAt": "2025-03-03T04:05:39.105Z",
+                                "categoryId": "",
+                                "categoryName": "",
+                                "shippingLabel": "Standard Shipping",
+                                "shippingValue": 3
+                            },
+                            {
+                                "id": "cm8wkiqk2000kl5s7a2x9o54m",
+                                "note": "",
+                                "price": 0,
+                                "runsize": null,
+                                "createdAt": "2025-03-31T04:27:32.976Z",
+                                "updatedAt": "2025-03-31T04:27:32.976Z",
+                                "categoryId": "",
+                                "categoryName": "",
+                                "shippingLabel": "Pickup from Store",
+                                "shippingValue": 1
+                            }
+                        ],
+                        "turnarounds": [
+                            {
+                                "id": "cm7sjcm8i0000l5s77fzuegnt",
+                                "note": "",
+                                "price": 0,
+                                "runsize": null,
+                                "discount": null,
+                                "createdAt": "2025-03-03T04:04:00.784Z",
+                                "updatedAt": "2025-03-03T04:04:00.784Z",
+                                "categoryId": "",
+                                "categoryName": "",
+                                "turnaroundLabel": "4 Business Days",
+                                "turnaroundValue": 4
+                            }
+                        ]
+                    },
+                    {
+                        "id": "9t008y0peq",
+                        "price": "48.5000",
+                        "options": {
+                            "Size": {
+                                "selected": "2.125” x 3.375” (EU Standard)",
+                                "2.125” x 3.375” (EU Standard)": {
+                                    "Shape": {
+                                        "selected": "Rectangle"
+                                    }
+                                }
+                            },
+                            "Stock": {
+                                "selected": "32PT Uncoated"
+                            },
+                            "Coating": {
+                                "selected": "No Coating"
+                            },
+                            "Colorspec": {
+                                "selected": "4/1"
+                            }
+                        },
+                        "runsize": 500,
+                        "discount": 0,
+                        "shippings": [
+                            {
+                                "id": "cm7sjeq3m0004l5s745p4ut44",
+                                "note": "",
+                                "price": 20,
+                                "runsize": null,
+                                "createdAt": "2025-03-03T04:05:39.105Z",
+                                "updatedAt": "2025-03-03T04:05:39.105Z",
+                                "categoryId": "",
+                                "categoryName": "",
+                                "shippingLabel": "Standard Shipping",
+                                "shippingValue": 3
+                            },
+                            {
+                                "id": "cm8wkiqk2000kl5s7a2x9o54m",
+                                "note": "",
+                                "price": 0,
+                                "runsize": null,
+                                "createdAt": "2025-03-31T04:27:32.976Z",
+                                "updatedAt": "2025-03-31T04:27:32.976Z",
+                                "categoryId": "",
+                                "categoryName": "",
+                                "shippingLabel": "Pickup from Store",
+                                "shippingValue": 1
+                            }
+                        ],
+                        "turnarounds": [
+                            {
+                                "id": "cm7sjcm8i0000l5s77fzuegnt",
+                                "note": "",
+                                "price": 0,
+                                "runsize": null,
+                                "discount": null,
+                                "createdAt": "2025-03-03T04:04:00.784Z",
+                                "updatedAt": "2025-03-03T04:04:00.784Z",
+                                "categoryId": "",
+                                "categoryName": "",
+                                "turnaroundLabel": "4 Business Days",
+                                "turnaroundValue": 4
+                            }
+                        ]
+                    },
+                    {
+                        "id": "namau2dnko",
+                        "price": "73.9100",
+                        "options": {
+                            "Size": {
+                                "selected": "2.125” x 3.375” (EU Standard)",
+                                "2.125” x 3.375” (EU Standard)": {
+                                    "Shape": {
+                                        "selected": "Rectangle"
+                                    }
+                                }
+                            },
+                            "Stock": {
+                                "selected": "32PT Uncoated"
+                            },
+                            "Coating": {
+                                "selected": "No Coating"
+                            },
+                            "Colorspec": {
+                                "selected": "4/1"
+                            }
+                        },
+                        "runsize": 1000,
+                        "discount": 0,
+                        "shippings": [
+                            {
+                                "id": "cm7sjeq3m0004l5s745p4ut44",
+                                "note": "",
+                                "price": 20,
+                                "runsize": null,
+                                "createdAt": "2025-03-03T04:05:39.105Z",
+                                "updatedAt": "2025-03-03T04:05:39.105Z",
+                                "categoryId": "",
+                                "categoryName": "",
+                                "shippingLabel": "Standard Shipping",
+                                "shippingValue": 3
+                            },
+                            {
+                                "id": "cm8wkiqk2000kl5s7a2x9o54m",
+                                "note": "",
+                                "price": 0,
+                                "runsize": null,
+                                "createdAt": "2025-03-31T04:27:32.976Z",
+                                "updatedAt": "2025-03-31T04:27:32.976Z",
+                                "categoryId": "",
+                                "categoryName": "",
+                                "shippingLabel": "Pickup from Store",
+                                "shippingValue": 1
+                            }
+                        ],
+                        "turnarounds": [
+                            {
+                                "id": "cm7sjcm8i0000l5s77fzuegnt",
+                                "note": "",
+                                "price": 0,
+                                "runsize": null,
+                                "discount": null,
+                                "createdAt": "2025-03-03T04:04:00.784Z",
+                                "updatedAt": "2025-03-03T04:04:00.784Z",
+                                "categoryId": "",
+                                "categoryName": "",
+                                "turnaroundLabel": "4 Business Days",
+                                "turnaroundValue": 4
+                            }
+                        ]
+                    },
+                    {
+                        "id": "w2qld6o5rn",
+                        "price": "47.3500",
+                        "options": {
+                            "Size": {
+                                "selected": "2.125” x 3.375” (EU Standard)",
+                                "2.125” x 3.375” (EU Standard)": {
+                                    "Shape": {
+                                        "selected": "Rectangle"
+                                    }
+                                }
+                            },
+                            "Stock": {
+                                "selected": "32PT Uncoated"
+                            },
+                            "Coating": {
+                                "selected": "No Coating"
+                            },
+                            "Colorspec": {
+                                "selected": "4/0 (4 Color front)"
+                            }
+                        },
+                        "runsize": 500,
+                        "discount": 0,
+                        "shippings": [
+                            {
+                                "id": "cm7sjeq3m0004l5s745p4ut44",
+                                "note": "",
+                                "price": 20,
+                                "runsize": null,
+                                "createdAt": "2025-03-03T04:05:39.105Z",
+                                "updatedAt": "2025-03-03T04:05:39.105Z",
+                                "categoryId": "",
+                                "categoryName": "",
+                                "shippingLabel": "Standard Shipping",
+                                "shippingValue": 3
+                            },
+                            {
+                                "id": "cm8wkiqk2000kl5s7a2x9o54m",
+                                "note": "",
+                                "price": 0,
+                                "runsize": null,
+                                "createdAt": "2025-03-31T04:27:32.976Z",
+                                "updatedAt": "2025-03-31T04:27:32.976Z",
+                                "categoryId": "",
+                                "categoryName": "",
+                                "shippingLabel": "Pickup from Store",
+                                "shippingValue": 1
+                            }
+                        ],
+                        "turnarounds": [
+                            {
+                                "id": "cm7sjcm8i0000l5s77fzuegnt",
+                                "note": "",
+                                "price": 0,
+                                "runsize": null,
+                                "discount": null,
+                                "createdAt": "2025-03-03T04:04:00.784Z",
+                                "updatedAt": "2025-03-03T04:04:00.784Z",
+                                "categoryId": "",
+                                "categoryName": "",
+                                "turnaroundLabel": "4 Business Days",
+                                "turnaroundValue": 4
+                            }
+                        ]
+                    },
+                    {
+                        "id": "llh7nbsk12",
+                        "price": "70.8700",
+                        "options": {
+                            "Size": {
+                                "selected": "2.125” x 3.375” (EU Standard)",
+                                "2.125” x 3.375” (EU Standard)": {
+                                    "Shape": {
+                                        "selected": "Rectangle"
+                                    }
+                                }
+                            },
+                            "Stock": {
+                                "selected": "32PT Uncoated"
+                            },
+                            "Coating": {
+                                "selected": "No Coating"
+                            },
+                            "Colorspec": {
+                                "selected": "4/0 (4 Color front)"
+                            }
+                        },
+                        "runsize": 1000,
+                        "discount": 0,
+                        "shippings": [
+                            {
+                                "id": "cm7sjeq3m0004l5s745p4ut44",
+                                "note": "",
+                                "price": 20,
+                                "runsize": null,
+                                "createdAt": "2025-03-03T04:05:39.105Z",
+                                "updatedAt": "2025-03-03T04:05:39.105Z",
+                                "categoryId": "",
+                                "categoryName": "",
+                                "shippingLabel": "Standard Shipping",
+                                "shippingValue": 3
+                            },
+                            {
+                                "id": "cm8wkiqk2000kl5s7a2x9o54m",
+                                "note": "",
+                                "price": 0,
+                                "runsize": null,
+                                "createdAt": "2025-03-31T04:27:32.976Z",
+                                "updatedAt": "2025-03-31T04:27:32.976Z",
+                                "categoryId": "",
+                                "categoryName": "",
+                                "shippingLabel": "Pickup from Store",
+                                "shippingValue": 1
+                            }
+                        ],
+                        "turnarounds": [
+                            {
+                                "id": "cm7sjcm8i0000l5s77fzuegnt",
+                                "note": "",
+                                "price": 0,
+                                "runsize": null,
+                                "discount": null,
+                                "createdAt": "2025-03-03T04:04:00.784Z",
+                                "updatedAt": "2025-03-03T04:04:00.784Z",
+                                "categoryId": "",
+                                "categoryName": "",
+                                "turnaroundLabel": "4 Business Days",
+                                "turnaroundValue": 4
+                            }
+                        ]
+                    },
+                    {
+                        "id": "9aes6zeuq1",
+                        "price": "48.5000",
+                        "options": {
+                            "Size": {
+                                "selected": "2.5” x 2.5”",
+                                "2.5” x 2.5”": {
+                                    "Shape": {
+                                        "selected": "Square"
+                                    }
+                                }
+                            },
+                            "Stock": {
+                                "selected": "32PT Uncoated"
+                            },
+                            "Coating": {
+                                "selected": "No Coating"
+                            },
+                            "Colorspec": {
+                                "selected": "4/4 (4 color both sides)"
+                            }
+                        },
+                        "runsize": 500,
+                        "discount": 0,
+                        "shippings": [
+                            {
+                                "id": "cm7sjeq3m0004l5s745p4ut44",
+                                "note": "",
+                                "price": 20,
+                                "runsize": null,
+                                "createdAt": "2025-03-03T04:05:39.105Z",
+                                "updatedAt": "2025-03-03T04:05:39.105Z",
+                                "categoryId": "",
+                                "categoryName": "",
+                                "shippingLabel": "Standard Shipping",
+                                "shippingValue": 3
+                            },
+                            {
+                                "id": "cm8wkiqk2000kl5s7a2x9o54m",
+                                "note": "",
+                                "price": 0,
+                                "runsize": null,
+                                "createdAt": "2025-03-31T04:27:32.976Z",
+                                "updatedAt": "2025-03-31T04:27:32.976Z",
+                                "categoryId": "",
+                                "categoryName": "",
+                                "shippingLabel": "Pickup from Store",
+                                "shippingValue": 1
+                            }
+                        ],
+                        "turnarounds": [
+                            {
+                                "id": "cm7sjcm8i0000l5s77fzuegnt",
+                                "note": "",
+                                "price": 0,
+                                "runsize": null,
+                                "discount": null,
+                                "createdAt": "2025-03-03T04:04:00.784Z",
+                                "updatedAt": "2025-03-03T04:04:00.784Z",
+                                "categoryId": "",
+                                "categoryName": "",
+                                "turnaroundLabel": "4 Business Days",
+                                "turnaroundValue": 4
+                            }
+                        ]
+                    },
+                    {
+                        "id": "8jgwsp8jy7",
+                        "price": "48.5000",
+                        "options": {
+                            "Size": {
+                                "selected": "2.5” x 2.5”",
+                                "2.5” x 2.5”": {
+                                    "Shape": {
+                                        "selected": "Square"
+                                    }
+                                }
+                            },
+                            "Stock": {
+                                "selected": "32PT Uncoated"
+                            },
+                            "Coating": {
+                                "selected": "No Coating"
+                            },
+                            "Colorspec": {
+                                "selected": "4/1"
+                            }
+                        },
+                        "runsize": 500,
+                        "discount": 0,
+                        "shippings": [
+                            {
+                                "id": "cm7sjeq3m0004l5s745p4ut44",
+                                "note": "",
+                                "price": 20,
+                                "runsize": null,
+                                "createdAt": "2025-03-03T04:05:39.105Z",
+                                "updatedAt": "2025-03-03T04:05:39.105Z",
+                                "categoryId": "",
+                                "categoryName": "",
+                                "shippingLabel": "Standard Shipping",
+                                "shippingValue": 3
+                            },
+                            {
+                                "id": "cm8wkiqk2000kl5s7a2x9o54m",
+                                "note": "",
+                                "price": 0,
+                                "runsize": null,
+                                "createdAt": "2025-03-31T04:27:32.976Z",
+                                "updatedAt": "2025-03-31T04:27:32.976Z",
+                                "categoryId": "",
+                                "categoryName": "",
+                                "shippingLabel": "Pickup from Store",
+                                "shippingValue": 1
+                            },
+                            {
+                                "id": "cm8wkj8rs000ll5s7svcvsr1o",
+                                "note": "",
+                                "price": 60,
+                                "runsize": null,
+                                "createdAt": "2025-03-31T04:27:56.581Z",
+                                "updatedAt": "2025-03-31T04:27:56.581Z",
+                                "categoryId": "",
+                                "categoryName": "",
+                                "shippingLabel": "Next Day Air ",
+                                "shippingValue": 1
+                            }
+                        ],
+                        "turnarounds": [
+                            {
+                                "id": "cm7sjcm8i0000l5s77fzuegnt",
+                                "note": "",
+                                "price": 0,
+                                "runsize": null,
+                                "discount": null,
+                                "createdAt": "2025-03-03T04:04:00.784Z",
+                                "updatedAt": "2025-03-03T04:04:00.784Z",
+                                "categoryId": "",
+                                "categoryName": "",
+                                "turnaroundLabel": "4 Business Days",
+                                "turnaroundValue": 4
+                            }
+                        ]
+                    },
+                    {
+                        "id": "btw9xjl7y2",
+                        "price": "47.3500",
+                        "options": {
+                            "Size": {
+                                "selected": "2.5” x 2.5”",
+                                "2.5” x 2.5”": {
+                                    "Shape": {
+                                        "selected": "Square"
+                                    }
+                                }
+                            },
+                            "Stock": {
+                                "selected": "32PT Uncoated"
+                            },
+                            "Coating": {
+                                "selected": "No Coating"
+                            },
+                            "Colorspec": {
+                                "selected": "4/0 (4 Color front)"
+                            }
+                        },
+                        "runsize": 500,
+                        "discount": 0,
+                        "shippings": [
+                            {
+                                "id": "cm7sjeq3m0004l5s745p4ut44",
+                                "note": "",
+                                "price": 20,
+                                "runsize": null,
+                                "createdAt": "2025-03-03T04:05:39.105Z",
+                                "updatedAt": "2025-03-03T04:05:39.105Z",
+                                "categoryId": "",
+                                "categoryName": "",
+                                "shippingLabel": "Standard Shipping",
+                                "shippingValue": 3
+                            },
+                            {
+                                "id": "cm8wkiqk2000kl5s7a2x9o54m",
+                                "note": "",
+                                "price": 0,
+                                "runsize": null,
+                                "createdAt": "2025-03-31T04:27:32.976Z",
+                                "updatedAt": "2025-03-31T04:27:32.976Z",
+                                "categoryId": "",
+                                "categoryName": "",
+                                "shippingLabel": "Pickup from Store",
+                                "shippingValue": 1
+                            },
+                            {
+                                "id": "cm8wkj8rs000ll5s7svcvsr1o",
+                                "note": "",
+                                "price": 60,
+                                "runsize": null,
+                                "createdAt": "2025-03-31T04:27:56.581Z",
+                                "updatedAt": "2025-03-31T04:27:56.581Z",
+                                "categoryId": "",
+                                "categoryName": "",
+                                "shippingLabel": "Next Day Air ",
+                                "shippingValue": 1
+                            }
+                        ],
+                        "turnarounds": [
+                            {
+                                "id": "cm7sjcm8i0000l5s77fzuegnt",
+                                "note": "",
+                                "price": 0,
+                                "runsize": null,
+                                "discount": null,
+                                "createdAt": "2025-03-03T04:04:00.784Z",
+                                "updatedAt": "2025-03-03T04:04:00.784Z",
+                                "categoryId": "",
+                                "categoryName": "",
+                                "turnaroundLabel": "4 Business Days",
+                                "turnaroundValue": 4
+                            }
+                        ]
+                    },
+                    {
+                        "id": "b41yp4hhjr",
+                        "price": "48.5000",
+                        "options": {
+                            "Size": {
+                                "selected": "2” x 3.5” (US Standard)",
+                                "2” x 3.5” (US Standard)": {
+                                    "Shape": {
+                                        "selected": "Rectangle"
+                                    }
+                                }
+                            },
+                            "Stock": {
+                                "selected": "32PT Uncoated"
+                            },
+                            "Coating": {
+                                "selected": "No Coating"
+                            },
+                            "Colorspec": {
+                                "selected": "4/4 (4 color both sides)"
+                            }
+                        },
+                        "runsize": 500,
+                        "discount": 0,
+                        "shippings": [
+                            {
+                                "id": "cm7sjeq3m0004l5s745p4ut44",
+                                "note": "",
+                                "price": 20,
+                                "runsize": null,
+                                "createdAt": "2025-03-03T04:05:39.105Z",
+                                "updatedAt": "2025-03-03T04:05:39.105Z",
+                                "categoryId": "",
+                                "categoryName": "",
+                                "shippingLabel": "Standard Shipping",
+                                "shippingValue": 3
+                            },
+                            {
+                                "id": "cm8wkiqk2000kl5s7a2x9o54m",
+                                "note": "",
+                                "price": 0,
+                                "runsize": null,
+                                "createdAt": "2025-03-31T04:27:32.976Z",
+                                "updatedAt": "2025-03-31T04:27:32.976Z",
+                                "categoryId": "",
+                                "categoryName": "",
+                                "shippingLabel": "Pickup from Store",
+                                "shippingValue": 1
+                            }
+                        ],
+                        "turnarounds": [
+                            {
+                                "id": "cm7sjcm8i0000l5s77fzuegnt",
+                                "note": "",
+                                "price": 0,
+                                "runsize": null,
+                                "discount": null,
+                                "createdAt": "2025-03-03T04:04:00.784Z",
+                                "updatedAt": "2025-03-03T04:04:00.784Z",
+                                "categoryId": "",
+                                "categoryName": "",
+                                "turnaroundLabel": "4 Business Days",
+                                "turnaroundValue": 4
+                            }
+                        ]
+                    },
+                    {
+                        "id": "3ogp74epnr",
+                        "price": "48.5000",
+                        "options": {
+                            "Size": {
+                                "selected": "2” x 3.5” (US Standard)",
+                                "2” x 3.5” (US Standard)": {
+                                    "Shape": {
+                                        "selected": "Rectangle"
+                                    }
+                                }
+                            },
+                            "Stock": {
+                                "selected": "32PT Uncoated"
+                            },
+                            "Coating": {
+                                "selected": "No Coating"
+                            },
+                            "Colorspec": {
+                                "selected": "4/1"
+                            }
+                        },
+                        "runsize": 500,
+                        "discount": 0,
+                        "shippings": [
+                            {
+                                "id": "cm7sjeq3m0004l5s745p4ut44",
+                                "note": "",
+                                "price": 20,
+                                "runsize": null,
+                                "createdAt": "2025-03-03T04:05:39.105Z",
+                                "updatedAt": "2025-03-03T04:05:39.105Z",
+                                "categoryId": "",
+                                "categoryName": "",
+                                "shippingLabel": "Standard Shipping",
+                                "shippingValue": 3
+                            },
+                            {
+                                "id": "cm8wkiqk2000kl5s7a2x9o54m",
+                                "note": "",
+                                "price": 0,
+                                "runsize": null,
+                                "createdAt": "2025-03-31T04:27:32.976Z",
+                                "updatedAt": "2025-03-31T04:27:32.976Z",
+                                "categoryId": "",
+                                "categoryName": "",
+                                "shippingLabel": "Pickup from Store",
+                                "shippingValue": 1
+                            }
+                        ],
+                        "turnarounds": [
+                            {
+                                "id": "cm7sjcm8i0000l5s77fzuegnt",
+                                "note": "",
+                                "price": 0,
+                                "runsize": null,
+                                "discount": null,
+                                "createdAt": "2025-03-03T04:04:00.784Z",
+                                "updatedAt": "2025-03-03T04:04:00.784Z",
+                                "categoryId": "",
+                                "categoryName": "",
+                                "turnaroundLabel": "4 Business Days",
+                                "turnaroundValue": 4
+                            }
+                        ]
+                    },
+                    {
+                        "id": "ved19lx1oh",
+                        "price": "47.3500",
+                        "options": {
+                            "Size": {
+                                "selected": "2” x 3.5” (US Standard)",
+                                "2” x 3.5” (US Standard)": {
+                                    "Shape": {
+                                        "selected": "Rectangle"
+                                    }
+                                }
+                            },
+                            "Stock": {
+                                "selected": "32PT Uncoated"
+                            },
+                            "Coating": {
+                                "selected": "No Coating"
+                            },
+                            "Colorspec": {
+                                "selected": "4/0 (4 Color front)"
+                            }
+                        },
+                        "runsize": 500,
+                        "discount": 0,
+                        "shippings": [
+                            {
+                                "id": "cm7sjeq3m0004l5s745p4ut44",
+                                "note": "",
+                                "price": 20,
+                                "runsize": null,
+                                "createdAt": "2025-03-03T04:05:39.105Z",
+                                "updatedAt": "2025-03-03T04:05:39.105Z",
+                                "categoryId": "",
+                                "categoryName": "",
+                                "shippingLabel": "Standard Shipping",
+                                "shippingValue": 3
+                            },
+                            {
+                                "id": "cm8wkiqk2000kl5s7a2x9o54m",
+                                "note": "",
+                                "price": 0,
+                                "runsize": null,
+                                "createdAt": "2025-03-31T04:27:32.976Z",
+                                "updatedAt": "2025-03-31T04:27:32.976Z",
+                                "categoryId": "",
+                                "categoryName": "",
+                                "shippingLabel": "Pickup from Store",
+                                "shippingValue": 1
+                            }
+                        ],
+                        "turnarounds": [
+                            {
+                                "id": "cm7sjcm8i0000l5s77fzuegnt",
+                                "note": "",
+                                "price": 0,
+                                "runsize": null,
+                                "discount": null,
+                                "createdAt": "2025-03-03T04:04:00.784Z",
+                                "updatedAt": "2025-03-03T04:04:00.784Z",
+                                "categoryId": "",
+                                "categoryName": "",
+                                "turnaroundLabel": "4 Business Days",
+                                "turnaroundValue": 4
+                            }
+                        ]
+                    },
+                    {
+                        "id": "gax04m3xw4",
+                        "price": "0.0000",
+                        "options": {
+                            "Size": {
+                                "selected": "1.5” x 3.5”",
+                                "1.5” x 3.5”": {
+                                    "Shape": {
+                                        "selected": "Rectangle"
+                                    }
+                                }
+                            },
+                            "Stock": {
+                                "selected": "32PT Uncoated"
+                            },
+                            "Coating": {
+                                "selected": "No Coating"
+                            },
+                            "Colorspec": {
+                                "selected": "4/4 (4 color both sides)"
+                            }
+                        },
+                        "runsize": 100,
+                        "discount": 0,
+                        "shippings": [
+                            {
+                                "id": "cm7sjeq3m0004l5s745p4ut44",
+                                "note": "",
+                                "price": 20,
+                                "runsize": null,
+                                "createdAt": "2025-03-03T04:05:39.105Z",
+                                "updatedAt": "2025-03-03T04:05:39.105Z",
+                                "categoryId": "",
+                                "categoryName": "",
+                                "shippingLabel": "Standard Shipping",
+                                "shippingValue": 3
+                            }
+                        ],
+                        "turnarounds": [
+                            {
+                                "id": "cm7sjcm8i0000l5s77fzuegnt",
+                                "note": "",
+                                "price": 0,
+                                "runsize": null,
+                                "discount": null,
+                                "createdAt": "2025-03-03T04:04:00.784Z",
+                                "updatedAt": "2025-03-03T04:04:00.784Z",
+                                "categoryId": "",
+                                "categoryName": "",
+                                "turnaroundLabel": "4 Business Days",
+                                "turnaroundValue": 4
+                            }
+                        ]
+                    }
+                ],
+                "advanceOptions": {
+                    "productType": "general",
+                    "jobSamplePrice": 9.99,
+                    "advancedOptions": {},
+                    "digitalProofPrice": 5
+                },
+                "dynamicOptions": [
+                    {
+                        "options": [
+                            {
+                                "options": [],
+                                "optionName": "Choose an option below"
+                            },
+                            {
+                                "options": [
+                                    {
+                                        "options": [
+                                            {
+                                                "options": [],
+                                                "optionName": "Choose an option below"
+                                            },
+                                            {
+                                                "options": [],
+                                                "optionName": "Rectangle"
+                                            }
+                                        ],
+                                        "optionName": "Shape"
+                                    }
+                                ],
+                                "optionName": "1.5” x 3.5”"
+                            },
+                            {
+                                "options": [
+                                    {
+                                        "options": [
+                                            {
+                                                "options": [],
+                                                "optionName": "Choose an option below"
+                                            },
+                                            {
+                                                "options": [],
+                                                "optionName": "Rectangle"
+                                            }
+                                        ],
+                                        "optionName": "Shape"
+                                    }
+                                ],
+                                "optionName": "1.75” x 3.5”"
+                            },
+                            {
+                                "options": [
+                                    {
+                                        "options": [
+                                            {
+                                                "options": [],
+                                                "optionName": "Choose an option below"
+                                            },
+                                            {
+                                                "options": [],
+                                                "optionName": "Square"
+                                            }
+                                        ],
+                                        "optionName": "Shape"
+                                    }
+                                ],
+                                "optionName": "2” x 2”"
+                            },
+                            {
+                                "options": [
+                                    {
+                                        "options": [
+                                            {
+                                                "options": [],
+                                                "optionName": "Choose an option below"
+                                            },
+                                            {
+                                                "options": [],
+                                                "optionName": "Rectangle"
+                                            }
+                                        ],
+                                        "optionName": "Shape"
+                                    }
+                                ],
+                                "optionName": "2” x 3”"
+                            },
+                            {
+                                "options": [
+                                    {
+                                        "options": [
+                                            {
+                                                "options": [],
+                                                "optionName": "Choose an option below"
+                                            },
+                                            {
+                                                "options": [],
+                                                "optionName": "Rectangle"
+                                            }
+                                        ],
+                                        "optionName": "Shape"
+                                    }
+                                ],
+                                "optionName": "2” x 3.5” (US Standard)"
+                            },
+                            {
+                                "options": [
+                                    {
+                                        "options": [
+                                            {
+                                                "options": [],
+                                                "optionName": "Choose an option below"
+                                            },
+                                            {
+                                                "options": [],
+                                                "optionName": "Rectangle"
+                                            }
+                                        ],
+                                        "optionName": "Shape"
+                                    }
+                                ],
+                                "optionName": "2.125” x 3.375” (EU Standard)"
+                            },
+                            {
+                                "options": [
+                                    {
+                                        "options": [
+                                            {
+                                                "options": [],
+                                                "optionName": "Choose an option below"
+                                            },
+                                            {
+                                                "options": [],
+                                                "optionName": "Square"
+                                            }
+                                        ],
+                                        "optionName": "Shape"
+                                    }
+                                ],
+                                "optionName": "2.5” x 2.5”"
+                            }
+                        ],
+                        "optionName": "Size"
+                    },
+                    {
+                        "options": [
+                            {
+                                "options": [],
+                                "optionName": "Choose an option below"
+                            },
+                            {
+                                "options": [],
+                                "optionName": "32PT Uncoated"
+                            }
+                        ],
+                        "optionName": "Stock"
+                    },
+                    {
+                        "options": [
+                            {
+                                "options": [],
+                                "optionName": "Choose an option below"
+                            },
+                            {
+                                "options": [],
+                                "optionName": "4/4 (4 color both sides)"
+                            },
+                            {
+                                "options": [],
+                                "optionName": "4/1"
+                            },
+                            {
+                                "options": [],
+                                "optionName": "4/0 (4 Color front)"
+                            }
+                        ],
+                        "optionName": "Colorspec"
+                    },
+                    {
+                        "options": [
+                            {
+                                "options": [],
+                                "optionName": "Choose an option below"
+                            },
+                            {
+                                "options": [],
+                                "optionName": "No Coating"
+                            }
+                        ],
+                        "optionName": "Coating"
+                    }
+                ]
+            },
+            "showInNavbar": false,
+            "createdAt": "2025-05-10T08:36:13.559Z",
+            "updatedAt": "2025-06-16T19:31:20.286Z",
+            "categoryId": "business-card-f8qhzbsv"
+        },
+        "isError": false,
+        "error": {}
+    },
+    "jrn": 100147208931314
+}
