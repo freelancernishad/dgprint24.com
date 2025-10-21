@@ -12,8 +12,8 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('price_configuration_turnarounds', function (Blueprint $table) {
-            $table->string('id')->primary(); // Primary key is a string
-            $table->foreignId('price_config_id')->constrained('price_configurations')->onDelete('cascade');
+            $table->id();
+            $table->foreignId('price_configuration_id')->constrained('price_configurations')->onDelete('cascade');
             $table->string('turnaroundLabel');
             $table->integer('turnaroundValue');
             $table->decimal('price', 10, 2)->default(0);

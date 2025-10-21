@@ -26,6 +26,7 @@ class ApiResponse
         // Capture the response
         $response = $next($request);
 
+
         // Check if the response is a valid Response object
         if ($response instanceof Response) {
             // Decode the response content if it's JSON

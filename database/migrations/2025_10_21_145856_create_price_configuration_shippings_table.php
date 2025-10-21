@@ -12,8 +12,8 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('price_configuration_shippings', function (Blueprint $table) {
-            $table->string('id')->primary(); // Primary key is a string
-            $table->foreignId('price_config_id')->constrained('price_configurations')->onDelete('cascade');
+            $table->id();
+            $table->foreignId('price_configuration_id')->constrained('price_configurations')->onDelete('cascade');
             $table->string('shippingLabel');
             $table->integer('shippingValue');
             $table->decimal('price', 10, 2);

@@ -18,11 +18,11 @@ class Product extends Model
         'base_price',
         'active',
         'popular_product',
-        'product_options',
+        'dynamicOptions',
     ];
 
     protected $casts = [
-        'product_options' => 'array',
+        'dynamicOptions' => 'array',
         'active' => 'boolean',
         'popular_product' => 'boolean',
         'base_price' => 'decimal:2'

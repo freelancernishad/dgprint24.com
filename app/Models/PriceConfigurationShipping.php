@@ -11,7 +11,7 @@ class PriceConfigurationShipping extends Model
 
     protected $fillable = [
         'id', // Primary key
-        'price_config_id',
+        'price_configuration_id',
         'shippingLabel',
         'shippingValue',
         'price',

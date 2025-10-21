@@ -118,3 +118,11 @@ if (file_exists($BlogPostRoutes = __DIR__.'/Common/Blogs/BlogPostRoutes.php')) {
 
 
 
+
+// Load AdminRoutes
+if (file_exists($AdminRoutes = __DIR__.'/Admins/AdminRoutes.php')) {
+    require $AdminRoutes;
+}
+
+
+
