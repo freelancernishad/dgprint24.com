@@ -205,11 +205,29 @@ public function getPrice(Request $request, $productId)
         ]
     ];
 
-    // যদেখানো হয়, কোন কনফিগারেশন পাওয়া গেছে সেটার শিপিং এবং টার্নআরাউন্ড অপশনগুলো `details` অবজেক্টের ভেতরে যোগ করুন
-    if ($priceConfigData) {
-        $response['details_pricing']['shippings'] = $priceConfigData->shippings;
-        $response['details_pricing']['turnarounds'] =  $priceConfigData->turnarounds;
-    }
+
+
+
+
+
+
+
+// কোয়ান্টিটি অনুযায়ী শিপিং রেঞ্জ ফিল্টার করুন
+ $filteredShippingRanges = $product->shippingRanges->filter(function ($range) use ($quantity) {
+    return $quantity >= $range->min_quantity &&
+           ($range->max_quantity === null || $quantity <= $range->max_quantity);
+});
+
+// কোয়ান্টিটি অনুযায়ী টার্নআরাউন্ড রেঞ্জ ফিল্টার করুন
+ $filteredTurnaroundRanges = $product->turnaroundRanges->filter(function ($range) use ($quantity) {
+    return $quantity >= $range->min_quantity &&
+           ($range->max_quantity === null || $quantity <= $range->max_quantity);
+});
+
+// ফিল্টার করা রেঞ্জগুলো রেসপন্সে যোগ করুন
+ $response['details_pricing']['shippings'] = $filteredShippingRanges;
+ $response['details_pricing']['turnarounds'] = $filteredTurnaroundRanges;
+
 
     return response()->json($response);
 }

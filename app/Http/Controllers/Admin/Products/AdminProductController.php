@@ -88,14 +88,59 @@ class AdminProductController extends Controller
             // প্রাইজ রেঞ্জ গুলো সেভ করুন
 
         // প্রাইজ রেঞ্জ গুলো সেভ করুন (এখানে ডট নোটেশন পাথ ব্যবহার করে ডেটা বের করা হচ্ছে)
-        $priceRanges = $validatedData['productOptions']['advanceOptions']['advancedOptions']['priceRanges'] ?? [];
-        foreach ($priceRanges as $rangeData) {
-            $product->priceRanges()->create([
-                'min_quantity' => $rangeData['minQuantity'],
-                'max_quantity' => $rangeData['maxQuantity'] ?? null,
-                'price_per_sq_ft' => $rangeData['pricePerSqFt'],
-            ]);
+
+            if (isset($validatedData['productOptions']['advanceOptions']['advancedOptions']['priceRanges']) && is_array($validatedData['productOptions']['advanceOptions']['advancedOptions']['priceRanges'])) {
+
+                $priceRanges = $validatedData['productOptions']['advanceOptions']['advancedOptions']['priceRanges'] ?? [];
+                foreach ($priceRanges as $rangeData) {
+                    $product->priceRanges()->create([
+                        'min_quantity' => $rangeData['minQuantity'],
+                        'max_quantity' => $rangeData['maxQuantity'] ?? null,
+                        'price_per_sq_ft' => $rangeData['pricePerSqFt'],
+                    ]);
+                }
+
+
+
+            }
+
+
+
+
+
+
+                // নতুন কোড: TurnaroundRange সেভ করুন
+        if (isset($validatedData['productOptions']['advanceOptions']['advancedOptions']['turnaroundRange']) && is_array($validatedData['productOptions']['advanceOptions']['advancedOptions']['turnaroundRange'])) {
+
+            $turnaroundRanges = $validatedData['productOptions']['advanceOptions']['advancedOptions']['turnaroundRange'] ?? [];
+
+            foreach ($turnaroundRanges as $turnaroundRangeData) {
+                $turnaroundRange = $product->turnaroundRanges()->create([
+                    'min_quantity' => $turnaroundRangeData['minQuantity'],
+                    'max_quantity' => $turnaroundRangeData['maxQuantity'] ?? null,
+                    'discount' => $turnaroundRangeData['discount'] ?? 0,
+                    'turnarounds' => $turnaroundRangeData['turnarounds'] ?? [],
+                ]);
+            }
         }
+
+        // নতুন কোড: ShippingRange সেভ করুন
+        if (isset($validatedData['productOptions']['advanceOptions']['advancedOptions']['shippingRange']) && is_array($validatedData['productOptions']['advanceOptions']['advancedOptions']['shippingRange'])) {
+
+            $shippingRanges = $validatedData['productOptions']['advanceOptions']['advancedOptions']['shippingRange'] ?? [];
+
+            foreach ($shippingRanges as $shippingRangeData) {
+                $shippingRange = $product->shippingRanges()->create([
+                    'min_quantity' => $shippingRangeData['minQuantity'],
+                    'max_quantity' => $shippingRangeData['maxQuantity'] ?? null,
+                    'discount' => $shippingRangeData['discount'] ?? 0,
+                    'shippings' => $shippingRangeData['shippings'] ?? [],
+                ]);
+            }
+        }
+
+
+
 
 
             // প্রোডাক্ট ইমেজ সেভ

@@ -57,4 +57,14 @@ class Product extends Model
     {
         return $this->hasMany(ProductPriceRange::class);
     }
+
+    public function turnaroundRanges()
+    {
+        return $this->hasMany(ProductTurnaroundRange::class);
+    }
+
+    public function shippingRanges()
+    {
+        return $this->hasMany(ProductShippingRange::class);
+    }
 }
