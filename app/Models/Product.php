@@ -19,13 +19,17 @@ class Product extends Model
         'active',
         'popular_product',
         'dynamicOptions',
+        'job_sample_price',
+        'digital_proof_price',
     ];
 
     protected $casts = [
         'dynamicOptions' => 'array',
         'active' => 'boolean',
         'popular_product' => 'boolean',
-        'base_price' => 'decimal:2'
+        'base_price' => 'decimal:2',
+        'job_sample_price' => 'decimal:2',
+        'digital_proof_price' => 'decimal:2',
     ];
 
     public function category()
@@ -46,5 +50,11 @@ class Product extends Model
     public function priceConfigurations()
     {
         return $this->hasMany(PriceConfiguration::class);
+    }
+
+    // নতুন রিলেশনশিপ যোগ করুন
+    public function priceRanges()
+    {
+        return $this->hasMany(ProductPriceRange::class);
     }
 }

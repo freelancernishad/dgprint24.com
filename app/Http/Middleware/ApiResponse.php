@@ -32,6 +32,8 @@ class ApiResponse
             // Decode the response content if it's JSON
             $responseData = json_decode($response->getContent(), true) ?? [];
 
+            Log::info('ApiResponse Middleware - Original Response Data:', $responseData);
+
 
             // Extract the first error message from response data
             $errorMessage = $this->getFirstErrorMessage($responseData, $response->status());
@@ -91,6 +93,11 @@ class ApiResponse
 
         // Check if the response contains a token
         if (isset($responseData['token']) || isset($responseData['id'])) {
+            // If a token is present, return the original response
+            return $responseData;
+        }
+        // Check if the response contains a token
+        if (isset($responseData['details_pricing'])) {
             // If a token is present, return the original response
             return $responseData;
         }

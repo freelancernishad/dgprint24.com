@@ -52,6 +52,12 @@ class AdminProductController extends Controller
             'priceConfig.*.options' => 'required|array',
             'priceConfig.*.shippings' => 'required|array',
             'priceConfig.*.turnarounds' => 'required|array',
+
+
+            'jobSamplePrice' => 'nullable|numeric|min:0',
+            'digitalProofPrice' => 'nullable|numeric|min:0',
+
+
         ]);
 
         if ($validator->fails()) {
@@ -59,6 +65,8 @@ class AdminProductController extends Controller
         }
 
         $validatedData = $validator->validated();
+
+        Log::info($validatedData['productOptions']);
 
         DB::beginTransaction();
         try {
@@ -69,9 +77,26 @@ class AdminProductController extends Controller
                 'product_name' => $validatedData['productName'],
                 'product_description' => $validatedData['productDescription'],
                 // পরিবর্তন ২: ডাটাবেসে সেভ করার সময় অ্যারেকে JSON স্ট্রিং-এ কনভার্ট করুন
-                'dynamicOptions' => $validatedData['productOptions']['dynamicOptions'],
+                'dynamicOptions' => $validatedData['productOptions']['dynamicOptions'] ?? null,
                 'active' => true,
+                'job_sample_price' => $validatedData['jobSamplePrice'] ?? 0,
+                'digital_proof_price' => $validatedData['digitalProofPrice'] ?? 0,
             ]);
+
+
+
+            // প্রাইজ রেঞ্জ গুলো সেভ করুন
+
+        // প্রাইজ রেঞ্জ গুলো সেভ করুন (এখানে ডট নোটেশন পাথ ব্যবহার করে ডেটা বের করা হচ্ছে)
+        $priceRanges = $validatedData['productOptions']['advanceOptions']['advancedOptions']['priceRanges'] ?? [];
+        foreach ($priceRanges as $rangeData) {
+            $product->priceRanges()->create([
+                'min_quantity' => $rangeData['minQuantity'],
+                'max_quantity' => $rangeData['maxQuantity'] ?? null,
+                'price_per_sq_ft' => $rangeData['pricePerSqFt'],
+            ]);
+        }
+
 
             // প্রোডাক্ট ইমেজ সেভ
             if (!empty($validatedData['productImages'])) {
@@ -144,6 +169,7 @@ class AdminProductController extends Controller
             return response()->json($newProduct, 201);
 
         } catch (\Exception $e) {
+            Log::error('Product creation failed: ' . $e->getMessage());
             DB::rollBack();
             return response()->json(['error' => $e], 500);
         }
