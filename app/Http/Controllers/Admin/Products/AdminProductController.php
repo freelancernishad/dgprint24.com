@@ -75,6 +75,7 @@ class AdminProductController extends Controller
                 'product_id' => 'product-' . Str::uuid(),
                 'category_id' => $validatedData['categoryId'],
                 'product_name' => $validatedData['productName'],
+                'product_type' => $validatedData['productOptions']['advanceOptions']['productType'],
                 'product_description' => $validatedData['productDescription'],
                 // পরিবর্তন ২: ডাটাবেসে সেভ করার সময় অ্যারেকে JSON স্ট্রিং-এ কনভার্ট করুন
                 'dynamicOptions' => $validatedData['productOptions']['dynamicOptions'] ?? null,
@@ -138,6 +139,24 @@ class AdminProductController extends Controller
                 ]);
             }
         }
+
+
+
+        if (isset($validatedData['productOptions']['advanceOptions']['advancedOptions'])) {
+            // ডাটাটিকে একটি ভেরিয়েবলে রাখুন, যাতে বারবার লিখতে না হয়
+            $dimensionPricingsData = $validatedData['productOptions']['advanceOptions']['advancedOptions'] ?? [];
+            // এখন নিরাপদে ডাটা অ্যাক্সেস করুন
+            $product->dimensionPricing()->create([
+                'product_id' => $product->id, // এটি আসলে লাগবে না, Laravel নিজেই যোগ করে
+                'minwidth' => (float)($dimensionPricingsData['minwidth'] ?? 0),
+                'maxwidth' => isset($dimensionPricingsData['maxwidth']) ? (float)$dimensionPricingsData['maxwidth'] : null,
+                'minheight' => (float)($dimensionPricingsData['minheight'] ?? 0),
+                'maxheight' => isset($dimensionPricingsData['maxheight']) ? (float)$dimensionPricingsData['maxheight'] : null,
+                'basePricePerSqFt' => number_format((float)($dimensionPricingsData['basePricePerSqFt'] ?? 0), 2, '.', '')
+            ]);
+
+        }
+
 
 
 
@@ -210,7 +229,7 @@ class AdminProductController extends Controller
 
             DB::commit();
             // সফলভাবে তৈরি হওয়া প্রোডাক্টটি রিলেশনসহ লোড করে রিটার্ন করুন
-            $newProduct = Product::with(['category', 'faqs', 'images', 'priceConfigurations.shippings', 'priceConfigurations.turnarounds'])->find($product->id);
+            $newProduct = Product::with(['category', 'faqs', 'images', 'priceConfigurations.shippings', 'priceConfigurations.turnarounds','dimensionPricing'])->find($product->id);
             return response()->json($newProduct, 201);
 
         } catch (\Exception $e) {

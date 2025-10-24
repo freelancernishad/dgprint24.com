@@ -2,8 +2,9 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Middleware\AuthenticateAdmin;
-use App\Http\Controllers\Admin\Products\CategoryController;
+
 use App\Http\Controllers\Global\Products\ProductController;
+use App\Http\Controllers\Global\Products\CategoryController;
 use App\Http\Controllers\Admin\Products\AdminProductController;
 use App\Http\Controllers\Admin\Products\AdminCategoryController;
 use App\Http\Controllers\Admin\Subscriptions\PlanSubscriptionsController;

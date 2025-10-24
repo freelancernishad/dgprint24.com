@@ -13,6 +13,7 @@ class Product extends Model
         'product_id',
         'category_id',
         'product_name',
+        'product_type',
         'product_description',
         'thumbnail',
         'base_price',
@@ -31,6 +32,19 @@ class Product extends Model
         'job_sample_price' => 'decimal:2',
         'digital_proof_price' => 'decimal:2',
     ];
+
+
+    public function dimensionPricing()
+    {
+        // একটি প্রোডাক্টের একাধিক ডাইমেনশন মূল্য থাকতে পারে
+        return $this->hasOne(ProductDimensionPricing::class);
+    }
+
+    public function dimensionPricings()
+    {
+        // একটি প্রোডাক্টের একাধিক ডাইমেনশন মূল্য থাকতে পারে
+        return $this->hasMany(ProductDimensionPricing::class);
+    }
 
     public function category()
     {

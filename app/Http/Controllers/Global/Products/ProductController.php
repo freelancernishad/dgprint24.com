@@ -16,17 +16,19 @@ class ProductController extends Controller
      */
     public function index(Request $request)
     {
-        $products = Product::with(['category:id,name'])
+        $products = Product::with(['category:id,name','images'])
             ->where('active', true)
             ->when($request->category_id, function ($query, $categoryId) {
                 return $query->where('category_id', $categoryId);
             })
-            ->select('id', 'product_id', 'product_name', 'thumbnail', 'popular_product', 'category_id')
+            ->select('id', 'product_id', 'product_name', 'thumbnail', 'base_price', 'job_sample_price', 'digital_proof_price', 'active', 'popular_product','category_id')
             ->latest()
             ->paginate(20);
 
         return response()->json($products);
     }
+
+
 
     /**
      * Display the specified resource.
@@ -38,10 +40,6 @@ class ProductController extends Controller
             'category:id,name',
             'faqs',
             'images',
-            // শুধুমাত্র প্রাইজ কনফিগারেশনের লিস্ট আনুন, শিপিং/টার্নআরাউন্ড নয়
-            'priceConfigurations' => function ($query) {
-                $query->select('id', 'product_id', 'runsize', 'price', 'discount', 'options');
-            }
         ])
         ->where('active', true)
         ->where('product_id', $productId)
@@ -210,23 +208,21 @@ public function getPrice(Request $request, $productId)
 
 
 
+    // কোয়ান্টিটি অনুযায়ী শিপিং রেঞ্জ ফিল্টার করুন এবং keys রিসেট করুন
+    $filteredShippingRanges = $product->shippingRanges->filter(function ($range) use ($quantity) {
+        return $quantity >= $range->min_quantity &&
+            ($range->max_quantity === null || $quantity <= $range->max_quantity);
+    })->values(); // <-- এখানে values() যোগ করুন
 
+    // কোয়ান্টিটি অনুযায়ী টার্নআরাউন্ড রেঞ্জ ফিল্টার করুন এবং keys রিসেট করুন
+    $filteredTurnaroundRanges = $product->turnaroundRanges->filter(function ($range) use ($quantity) {
+        return $quantity >= $range->min_quantity &&
+            ($range->max_quantity === null || $quantity <= $range->max_quantity);
+    })->values(); // <-- এখানেও values() যোগ করুন
 
-// কোয়ান্টিটি অনুযায়ী শিপিং রেঞ্জ ফিল্টার করুন
- $filteredShippingRanges = $product->shippingRanges->filter(function ($range) use ($quantity) {
-    return $quantity >= $range->min_quantity &&
-           ($range->max_quantity === null || $quantity <= $range->max_quantity);
-});
-
-// কোয়ান্টিটি অনুযায়ী টার্নআরাউন্ড রেঞ্জ ফিল্টার করুন
- $filteredTurnaroundRanges = $product->turnaroundRanges->filter(function ($range) use ($quantity) {
-    return $quantity >= $range->min_quantity &&
-           ($range->max_quantity === null || $quantity <= $range->max_quantity);
-});
-
-// ফিল্টার করা রেঞ্জগুলো রেসপন্সে যোগ করুন
- $response['details_pricing']['shippings'] = $filteredShippingRanges;
- $response['details_pricing']['turnarounds'] = $filteredTurnaroundRanges;
+    // ফিল্টার করা রেঞ্জগুলো রেসপন্সে যোগ করুন
+    $response['details_pricing']['shippings'] = $filteredShippingRanges;
+    $response['details_pricing']['turnarounds'] = $filteredTurnaroundRanges;
 
 
     return response()->json($response);

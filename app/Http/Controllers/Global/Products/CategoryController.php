@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Admin\Products;
+namespace App\Http\Controllers\Global\Products;
 
 use App\Models\Category;
 
