@@ -1,8 +1,13 @@
 <?php
 
+use App\Models\Shipping;
+use App\Models\TurnAroundTime;
+
 use Illuminate\Support\Facades\Route;
 use App\Http\Middleware\AuthenticateAdmin;
-
+use App\Http\Controllers\Admin\TaxController;
+use App\Http\Controllers\Admin\ShippingController;
+use App\Http\Controllers\Admin\TurnAroundTimeController;
 use App\Http\Controllers\Global\Products\ProductController;
 use App\Http\Controllers\Global\Products\CategoryController;
 use App\Http\Controllers\Admin\Products\AdminProductController;
@@ -22,6 +27,35 @@ Route::prefix('admin')->middleware(AuthenticateAdmin::class)->group(function () 
 
     // অ্যাডমিন প্রোডাক্ট রিলেটেড রাউটসমূহ
     Route::apiResource('products', AdminProductController::class);
+
+
+
+        // কাস্টম রাউট মডেল বাইন্ডিং: turnaround_id দিয়ে মডেল খুঁজুন
+        Route::bind('turnaround_time', function ($value) {
+            return TurnAroundTime::where('turnaround_id', $value)->firstOrFail();
+        });
+
+    // টার্নআরাউন্ড টাইম সংক্রান্ত CRUD রাউট
+    Route::apiResource('turnaround-times', TurnAroundTimeController::class);
+
+
+
+        // কাস্টম রাউট মডেল বাইন্ডিং: shipping_id দিয়ে মডেল খুঁজুন
+        Route::bind('shipping', function ($value) {
+            return Shipping::where('shipping_id', $value)->firstOrFail();
+        });
+
+        // শিপিং সংক্রান্ত CRUD রাউট
+        Route::apiResource('shippings', ShippingController::class);
+
+
+
+
+        // ট্যাক্স সংক্রান্ত CRUD রাউট
+        Route::apiResource('taxes', TaxController::class);
+
+
+
 
 });
 

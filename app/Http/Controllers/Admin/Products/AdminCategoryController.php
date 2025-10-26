@@ -3,16 +3,14 @@
 namespace App\Http\Controllers\Admin\Products;
 
 use App\Http\Controllers\Controller;
-
 use App\Models\Category;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 
-
 class AdminCategoryController extends Controller
 {
-     /**
+    /**
      * Display a listing of the resource.
      * অ্যাডমিন প্যানেলে সব ক্যাটাগরির লিস্ট দেখানোর জন্য।
      */
@@ -28,22 +26,67 @@ class AdminCategoryController extends Controller
 
     /**
      * Store a newly created resource in storage.
-     * নতুন ক্যাটাগরি তৈরি করা (যদিও আপনি ব্যবহার নাও করতে পারেন)।
+     * নতুন ক্যাটাগরি তৈরি করা।
      */
     public function store(Request $request)
     {
         $validatedData = $request->validate([
-            'name' => 'required|string|max:255|unique:categories,name',
+            'categoryName' => 'required|string|max:255|unique:categories,name',
+            'categoryDescription' => 'nullable|string',
+            'catagoryImage' => 'nullable|string|url',
+            'varients' => 'nullable|array', // পরিবর্তন: string থেকে array
+            'tags' => 'nullable|array',    // পরিবর্তন: string থেকে array
+            'active' => 'nullable|boolean',
             'parent_id' => 'nullable|exists:categories,id',
         ]);
 
+        // আর json_decode করার দরকার নেই, কারণ Laravel স্বয়ংক্রিয়ভাবে অ্যারে নিবে
         $category = Category::create([
-            'name' => $validatedData['name'],
-            'category_id' => 'cat-' . Str::uuid(),
+            'name' => $validatedData['categoryName'],
+            'category_description' => $validatedData['categoryDescription'] ?? null,
+            'category_image' => $validatedData['catagoryImage'] ?? null,
+            'variants' => $validatedData['varients'], // সরাসরি অ্যারে ব্যবহার করুন
+            'tags' => $validatedData['tags'],        // সরাসরি অ্যারে ব্যবহার করুন
+            'active' => $validatedData['active'] ?? true,
             'parent_id' => $validatedData['parent_id'] ?? null,
         ]);
 
         return response()->json($category, 201);
+    }
+
+    /**
+     * Update the specified resource in storage.
+     * কোনো ক্যাটাগরির নাম বা প্যারেন্ট পরিবর্তন করা।
+     */
+    public function update(Request $request, Category $category)
+    {
+        $validatedData = $request->validate([
+            'categoryName' => [
+                'required',
+                'string',
+                'max:255',
+                Rule::unique('categories', 'name')->ignore($category->id),
+            ],
+            'categoryDescription' => 'nullable|string',
+            'catagoryImage' => 'nullable|string|url',
+            'varients' => 'nullable|array', // পরিবর্তন: string থেকে array
+            'tags' => 'nullable|array',    // পরিবর্তন: string থেকে array
+            'active' => 'nullable|boolean',
+            'parent_id' => 'nullable|exists:categories,id|not_in:' . $category->id,
+        ]);
+
+        // আর json_decode করার দরকার নেই
+        $category->update([
+            'name' => $validatedData['categoryName'],
+            'category_description' => $validatedData['categoryDescription'] ?? $category->category_description,
+            'category_image' => $validatedData['catagoryImage'] ?? $category->category_image,
+            'variants' => $validatedData['varients'] ?? $category->variants, // সরাসরি অ্যারে ব্যবহার করুন
+            'tags' => $validatedData['tags'] ?? $category->tags,        // সরাসরি অ্যারে ব্যবহার করুন
+            'active' => $validatedData['active'] ?? $category->active,
+            'parent_id' => $validatedData['parent_id'] ?? $category->parent_id,
+        ]);
+
+        return response()->json($category);
     }
 
     /**
@@ -54,26 +97,7 @@ class AdminCategoryController extends Controller
         return response()->json($category);
     }
 
-    /**
-     * Update the specified resource in storage.
-     * কোনো ক্যাটাগরির নাম বা প্যারেন্ট পরিবর্তন করা।
-     */
-    public function update(Request $request, Category $category)
-    {
-        $validatedData = $request->validate([
-            'name' => [
-                'required',
-                'string',
-                'max:255',
-                Rule::unique('categories')->ignore($category->id), // নিজের নাম ছাড়া অন্য কারো সাথে মিললে হবে না
-            ],
-            'parent_id' => 'nullable|exists:categories,id|not_in:' . $category->id, // নিজেকে নিজের প্যারেন্ট বানানো যাবে না
-        ]);
 
-        $category->update($validatedData);
-
-        return response()->json($category);
-    }
 
     /**
      * Remove the specified resource from storage.
