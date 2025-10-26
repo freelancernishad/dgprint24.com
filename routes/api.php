@@ -126,3 +126,10 @@ if (file_exists($AdminRoutes = __DIR__.'/Admins/AdminRoutes.php')) {
 
 
 
+// Load CartRoutes
+if (file_exists($CartRoutes = __DIR__.'/Global/CartRoutes.php')) {
+    require $CartRoutes;
+}
+
+
+

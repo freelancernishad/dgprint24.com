@@ -26,13 +26,10 @@ class ApiResponse
         // Capture the response
         $response = $next($request);
 
-
         // Check if the response is a valid Response object
         if ($response instanceof Response) {
             // Decode the response content if it's JSON
             $responseData = json_decode($response->getContent(), true) ?? [];
-
-            Log::info('ApiResponse Middleware - Original Response Data:', $responseData);
 
 
             // Extract the first error message from response data
@@ -45,6 +42,7 @@ class ApiResponse
                 'isError' => false,
                 'error' => null,
                 'status_code' => $response->status(),
+                'session_id' => $request->header('X-Session-ID') == '' ? session()->getId() : $request->header('X-Session-ID'),
             ];
 
             // Check if the response status indicates an error (>=400)
@@ -93,11 +91,6 @@ class ApiResponse
 
         // Check if the response contains a token
         if (isset($responseData['token']) || isset($responseData['id'])) {
-            // If a token is present, return the original response
-            return $responseData;
-        }
-        // Check if the response contains a token
-        if (isset($responseData['details_pricing'])) {
             // If a token is present, return the original response
             return $responseData;
         }
