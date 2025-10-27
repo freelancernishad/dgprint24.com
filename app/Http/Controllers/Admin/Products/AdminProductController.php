@@ -210,6 +210,7 @@ class AdminProductController extends Controller
 
                 foreach ($configData['shippings'] as $shippingData) {
                     $priceConfig->shippings()->create([
+                        'shipping_id' => $shippingData['shipping_id'] ?? null,
                         'shippingLabel' => $shippingData['shippingLabel'],
                         'shippingValue' => $shippingData['shippingValue'],
                         'price' => $shippingData['price'],
@@ -219,6 +220,7 @@ class AdminProductController extends Controller
 
                 foreach ($configData['turnarounds'] as $turnaroundData) {
                     $priceConfig->turnarounds()->create([
+                        'turnaround_id' => $turnaroundData['turnaround_id'] ?? null,
                         'turnaroundLabel' => $turnaroundData['turnaroundLabel'],
                         'turnaroundValue' => $turnaroundData['turnaroundValue'],
                         'price' => $turnaroundData['price'] ?? 0,
