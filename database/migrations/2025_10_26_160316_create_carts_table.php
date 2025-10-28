@@ -29,7 +29,7 @@ return new class extends Migration
             // Core Cart Details
             $table->unsignedInteger('quantity');
             $table->decimal('price_at_time', 10, 2); // পণ্যটি যোগ করার সময় প্রতি ইউনিটের মূল্য
-            $table->string('session_id')->nullable(); // গেস্ট ইউজারদের জন্য
+            $table->string('session_id',190)->nullable(); // গেস্ট ইউজারদের জন্য
             $table->json('options')->nullable(); // প্রোডাক্ট অপশন (যেমন: সাইজ, রঙ, ডিজাইন)
 
             // Status
