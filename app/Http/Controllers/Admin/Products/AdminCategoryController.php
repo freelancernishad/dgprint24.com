@@ -30,7 +30,7 @@ class AdminCategoryController extends Controller
      */
     public function store(Request $request)
     {
-        $validatedData = $request->validate([
+        $validator = validator($request->all(), [
             'categoryName' => 'required|string|max:255|unique:categories,name',
             'categoryDescription' => 'nullable|string',
             'catagoryImage' => 'nullable|string|url',
@@ -39,6 +39,12 @@ class AdminCategoryController extends Controller
             'active' => 'nullable|boolean',
             'parent_id' => 'nullable|exists:categories,id',
         ]);
+
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 422);
+        }
+
+        $validatedData = $validator->validated();
 
         // আর json_decode করার দরকার নেই, কারণ Laravel স্বয়ংক্রিয়ভাবে অ্যারে নিবে
         $category = Category::create([
