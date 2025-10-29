@@ -13,7 +13,7 @@ class Admin extends Authenticatable implements JWTSubject, MustVerifyEmail
 {
     use HasFactory, Notifiable, CanResetPassword;
 
-    protected $fillable = [
+   protected $fillable = [
         'name',
         'email',
         'password',
@@ -21,6 +21,16 @@ class Admin extends Authenticatable implements JWTSubject, MustVerifyEmail
         'otp',
         'otp_expires_at',
         'email_verification_hash',
+        'role',
+        'user_id',
+        'profile_picture',
+        'phone_number',
+        'status',
+        'date_of_birth',
+        'gender',
+        'driving_license',
+        'work_place',
+        'last_login_at',
     ];
 
     protected $hidden = [
@@ -36,6 +46,8 @@ class Admin extends Authenticatable implements JWTSubject, MustVerifyEmail
         'email_verified_at' => 'datetime',
         'otp_expires_at' => 'datetime',
         'password' => 'hashed',
+        'date_of_birth' => 'date',
+        'last_login_at' => 'datetime',
     ];
 
     public function getJWTIdentifier()
@@ -50,6 +62,7 @@ class Admin extends Authenticatable implements JWTSubject, MustVerifyEmail
             'name' => $this->name,
             'email' => $this->email,
             'username' => $this->username,
+            'role' => $this->role ?? 'admin',
             'email_verified' => !is_null($this->email_verified_at),
             "guard" => "admin",
             "model" => Admin::class
