@@ -2,15 +2,16 @@
 
 namespace App\Http\Controllers\Admin\AdminManagement;
 
-use App\Http\Controllers\Controller;
+use Carbon\Carbon;
 use App\Models\Admin;
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
+use Illuminate\Http\JsonResponse;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Validation\Rule;
-use Illuminate\Support\Str;
-use Carbon\Carbon;
-use Illuminate\Http\JsonResponse;
 
 class AdminManagementController extends Controller
 {
@@ -137,9 +138,14 @@ class AdminManagementController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\JsonResponse
      */
-    public function update(Request $request, int $id): JsonResponse
+    public function update(Request $request, int $id=null): JsonResponse
     {
+
         $admin = Admin::find($id);
+        if(Auth::guard('admin')->check()){
+            $admin = Auth::guard('admin')->user();
+        }
+
 
         if (!$admin) {
             return response()->json([
