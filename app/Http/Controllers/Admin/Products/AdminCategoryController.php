@@ -2,11 +2,12 @@
 
 namespace App\Http\Controllers\Admin\Products;
 
-use App\Http\Controllers\Controller;
 use App\Models\Category;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
+use App\Http\Controllers\Controller;
+use App\Services\FileSystem\FileUploadService;
 
 class AdminCategoryController extends Controller
 {
