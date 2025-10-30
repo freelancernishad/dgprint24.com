@@ -35,7 +35,7 @@ class AdminCategoryController extends Controller
             'categoryName' => 'required|string|max:255|unique:categories,name',
             'categoryDescription' => 'nullable|string',
             'catagoryImage' => 'nullable|file|mimes:jpeg,jpg,png,gif',
-            'varients' => 'nullable|array', // পরিবর্তন: string থেকে array
+            'varients' => 'nullable', // পরিবর্তন: string থেকে array
             'tags' => 'nullable|array',    // পরিবর্তন: string থেকে array
             'active' => 'nullable|boolean',
             'parent_id' => 'nullable|exists:categories,id',
