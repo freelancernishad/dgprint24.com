@@ -33,7 +33,7 @@ class AdminCategoryController extends Controller
         $validator = validator($request->all(), [
             'categoryName' => 'required|string|max:255|unique:categories,name',
             'categoryDescription' => 'nullable|string',
-            'catagoryImage' => 'nullable|string|url',
+            'catagoryImage' => 'nullable|file|mimes:jpeg,jpg,png,gif',
             'varients' => 'nullable|array', // পরিবর্তন: string থেকে array
             'tags' => 'nullable|array',    // পরিবর্তন: string থেকে array
             'active' => 'nullable|boolean',
@@ -46,11 +46,27 @@ class AdminCategoryController extends Controller
 
         $validatedData = $validator->validated();
 
+
+        $categoryImageUrl = null;
+
+        // যদি ছবি আসে, S3 এ আপলোড কর
+        if ($request->hasFile('catagoryImage')) {
+            $file = $request->file('catagoryImage');
+            $filename = time() . '_' . $file->getClientOriginalName();
+            $resizedContent = file_get_contents($file->getRealPath()); // যদি চাইছ resize করো, পরে কোডে adjust করতে পারো
+            $label = 'category';
+
+            $categoryImageUrl = (new FileUploadService())->uploadContentToS3(
+                $resizedContent,
+                'dgprint24/uploads/images/category/' . $label . '_' . $filename
+            );
+        }
+
         // আর json_decode করার দরকার নেই, কারণ Laravel স্বয়ংক্রিয়ভাবে অ্যারে নিবে
         $category = Category::create([
             'name' => $validatedData['categoryName'],
             'category_description' => $validatedData['categoryDescription'] ?? null,
-            'category_image' => $validatedData['catagoryImage'] ?? null,
+            'category_image' => $categoryImageUrl,
             'variants' => $validatedData['varients'], // সরাসরি অ্যারে ব্যবহার করুন
             'tags' => $validatedData['tags'],        // সরাসরি অ্যারে ব্যবহার করুন
             'active' => $validatedData['active'] ?? true,
