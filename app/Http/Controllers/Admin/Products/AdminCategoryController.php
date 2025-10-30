@@ -37,7 +37,7 @@ class AdminCategoryController extends Controller
             'catagoryImage' => 'nullable|file|mimes:jpeg,jpg,png,gif',
             'varients' => 'nullable', // পরিবর্তন: string থেকে array
             'tags' => 'nullable|array',    // পরিবর্তন: string থেকে array
-            'active' => 'nullable|boolean',
+            'active' => 'nullable',
             'parent_id' => 'nullable|exists:categories,id',
         ]);
 
@@ -63,6 +63,10 @@ class AdminCategoryController extends Controller
             );
         }
 
+        $activeStatus = false; // ডিফল্টভাবে false সেট করুন
+        if ($validatedData['active'] == true) {
+            $activeStatus = true; 
+        }
         // আর json_decode করার দরকার নেই, কারণ Laravel স্বয়ংক্রিয়ভাবে অ্যারে নিবে
         $category = Category::create([
             'name' => $validatedData['categoryName'],
@@ -70,7 +74,7 @@ class AdminCategoryController extends Controller
             'category_image' => $categoryImageUrl,
             'variants' => $validatedData['varients'], // সরাসরি অ্যারে ব্যবহার করুন
             'tags' => $validatedData['tags'],        // সরাসরি অ্যারে ব্যবহার করুন
-            'active' => $validatedData['active'] ?? true,
+            'active' => $activeStatus,
             'parent_id' => $validatedData['parent_id'] ?? null,
         ]);
 
