@@ -54,18 +54,17 @@ class AdminCategoryController extends Controller
         if ($request->hasFile('catagoryImage')) {
             $file = $request->file('catagoryImage');
             $filename = time() . '_' . $file->getClientOriginalName();
-            $resizedContent = file_get_contents($file->getRealPath()); // যদি চাইছ resize করো, পরে কোডে adjust করতে পারো
             $label = 'category';
 
-            $categoryImageUrl = (new FileUploadService())->uploadContentToS3(
-                $resizedContent,
+            $categoryImageUrl = (new FileUploadService())->uploadFileToS3(
+                $file,
                 'dgprint24/uploads/images/category/' . $label . '_' . $filename
             );
         }
 
         $activeStatus = false; // ডিফল্টভাবে false সেট করুন
         if ($validatedData['active'] == true) {
-            $activeStatus = true; 
+            $activeStatus = true;
         }
         // আর json_decode করার দরকার নেই, কারণ Laravel স্বয়ংক্রিয়ভাবে অ্যারে নিবে
         $category = Category::create([
