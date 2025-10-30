@@ -155,18 +155,18 @@ class AdminManagementController extends Controller
         }
 
         $validator = validator()->make($request->all(), [
-            'name' => 'required|string|max:255',
-            'email' => ['required', 'string', 'email', 'max:255', Rule::unique('admins')->ignore($admin->id)],
-            'username' => ['required', 'string', 'max:255', Rule::unique('admins')->ignore($admin->id)],
+            'name' => 'nullable|string|max:255',
+            'email' => ['nullable', 'string', 'email', 'max:255', Rule::unique('admins')->ignore($admin->id)],
+            'username' => ['nullable', 'string', 'max:255', Rule::unique('admins')->ignore($admin->id)],
             'password' => 'nullable|string|min:8|confirmed',
-            'role' => 'required|string|in:admin,super_admin,moderator',
+            'role' => 'nullable|string|in:admin,super_admin,moderator',
             'phone_number' => 'nullable|string|max:20',
             'date_of_birth' => 'nullable|date',
             'gender' => 'nullable|string|in:male,female,other',
             'driving_license' => 'nullable|string|max:255',
             'work_place' => 'nullable|string|max:255',
             'profile_picture' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-            'status' => 'required|boolean',
+            'status' => 'nullable|boolean',
         ]);
 
         if ($validator->fails()) {
