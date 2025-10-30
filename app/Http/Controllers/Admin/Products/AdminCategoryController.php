@@ -68,11 +68,11 @@ class AdminCategoryController extends Controller
         }
         // আর json_decode করার দরকার নেই, কারণ Laravel স্বয়ংক্রিয়ভাবে অ্যারে নিবে
         $category = Category::create([
-            'name' => $validatedData['categoryName'],
+            'name' => $validatedData['categoryName'] ?? null,
             'category_description' => $validatedData['categoryDescription'] ?? null,
             'category_image' => $categoryImageUrl,
-            'variants' => $validatedData['varients'], // সরাসরি অ্যারে ব্যবহার করুন
-            'tags' => $validatedData['tags'],        // সরাসরি অ্যারে ব্যবহার করুন
+            'variants' => $validatedData['varients'] ?? [],
+            'tags' => $validatedData['tags'] ?? [],        
             'active' => $activeStatus,
             'parent_id' => $validatedData['parent_id'] ?? null,
         ]);
