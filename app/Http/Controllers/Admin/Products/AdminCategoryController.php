@@ -72,7 +72,7 @@ class AdminCategoryController extends Controller
             'category_description' => $validatedData['categoryDescription'] ?? null,
             'category_image' => $categoryImageUrl,
             'variants' => $validatedData['varients'] ?? [],
-            'tags' => $validatedData['tags'] ?? [],        
+            'tags' => $validatedData['tags'] ?? [],
             'active' => $activeStatus,
             'parent_id' => $validatedData['parent_id'] ?? null,
         ]);
@@ -94,18 +94,32 @@ class AdminCategoryController extends Controller
                 Rule::unique('categories', 'name')->ignore($category->id),
             ],
             'categoryDescription' => 'nullable|string',
-            'catagoryImage' => 'nullable|string|url',
-            'varients' => 'nullable|array', // পরিবর্তন: string থেকে array
+            'catagoryImage' => 'nullable|file|mimes:jpeg,jpg,png,gif',
+            'varients' => 'nullable', // পরিবর্তন: string থেকে array
             'tags' => 'nullable|array',    // পরিবর্তন: string থেকে array
             'active' => 'nullable|boolean',
             'parent_id' => 'nullable|exists:categories,id|not_in:' . $category->id,
         ]);
 
+
+
+        $categoryImageUrl = null;
+        // যদি ছবি আসে, S3 এ আপলোড কর
+        if ($request->hasFile('catagoryImage')) {
+            $file = $request->file('catagoryImage');
+            $filename = time() . '_' . $file->getClientOriginalName();
+            $label = 'category';
+
+            $categoryImageUrl = (new FileUploadService())->uploadFileToS3(
+                $file,
+                'dgprint24/uploads/images/category/' . $label . '_' . $filename
+            );
+        }
         // আর json_decode করার দরকার নেই
         $category->update([
             'name' => $validatedData['categoryName'],
             'category_description' => $validatedData['categoryDescription'] ?? $category->category_description,
-            'category_image' => $validatedData['catagoryImage'] ?? $category->category_image,
+            'category_image' => $categoryImageUrl ?? $category->category_image,
             'variants' => $validatedData['varients'] ?? $category->variants, // সরাসরি অ্যারে ব্যবহার করুন
             'tags' => $validatedData['tags'] ?? $category->tags,        // সরাসরি অ্যারে ব্যবহার করুন
             'active' => $validatedData['active'] ?? $category->active,
