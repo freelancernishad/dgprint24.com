@@ -34,7 +34,7 @@ class AdminCategoryController extends Controller
         $validator = validator($request->all(), [
             'categoryName' => 'required|string|max:255|unique:categories,name',
             'categoryDescription' => 'nullable|string',
-            'catagoryImage' => 'nullable|file|mimes:jpeg,jpg,png,gif',
+            'catagoryImage' => 'nullable|file|mimes:jpeg,jpg,png,gif,bmp,webp,svg,tiff,ico',
             'varients' => 'nullable', // পরিবর্তন: string থেকে array
             'tags' => 'nullable|array',    // পরিবর্তন: string থেকে array
             'active' => 'nullable',
@@ -94,7 +94,7 @@ class AdminCategoryController extends Controller
                 Rule::unique('categories', 'name')->ignore($category->id),
             ],
             'categoryDescription' => 'nullable|string',
-            'catagoryImage' => 'nullable|file|mimes:jpeg,jpg,png,gif',
+            'catagoryImage' => 'nullable|file|mimes:jpeg,jpg,png,gif,bmp,webp,svg,tiff,ico',
             'varients' => 'nullable', // পরিবর্তন: string থেকে array
             'tags' => 'nullable|array',    // পরিবর্তন: string থেকে array
             'active' => 'nullable|boolean',
