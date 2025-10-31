@@ -50,6 +50,7 @@ Route::prefix('admin')->middleware(AuthenticateAdmin::class)->group(function () 
     Route::patch('turnaround-times/{turnaround_time}', [TurnAroundTimeController::class, 'update']);
     // Soft delete
     Route::delete('turnaround-time/{turnaround_time_id}', [TurnAroundTimeController::class, 'destroy']);
+    Route::get('turnaround-times/trashed', [TurnAroundTimeController::class, 'trashed']);
     // Permanent delete
     Route::delete('turnaround-time/{turnaround_time_id}/force', [TurnAroundTimeController::class, 'forceDestroy']);
     // Restore

@@ -104,6 +104,19 @@ class TurnAroundTimeController extends Controller
         return response()->json(['message' => 'TurnAroundTime soft-deleted successfully.'], 200);
     }
 
+        /**
+     * Display a listing of soft-deleted resources.
+     */
+    public function trashed()
+    {
+        $trashedTurnAroundTimes = TurnAroundTime::onlyTrashed()
+            ->latest('deleted_at')
+            ->paginate(20);
+
+        return response()->json($trashedTurnAroundTimes);
+    }
+
+
     public function forceDestroy($turnaround_time_id)
     {
         $turnaround_time = TurnAroundTime::withTrashed()->find($turnaround_time_id);
