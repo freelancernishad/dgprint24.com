@@ -18,7 +18,7 @@ class AdminCategoryController extends Controller
     public function index()
     {
         // অ্যাডমিনকে সব ক্যাটাগরি দেখানো হবে, এমনকি ইনঅ্যাক্টিভও
-        $categories = Category::with('parent:id,name', 'children:id,name,parent_id')
+        $categories = Category::with('parent', 'children')
             ->orderBy('name')
             ->paginate(50); // পেজিনেশন যোগ করা হয়েছে
 

@@ -8,6 +8,7 @@ use App\Helpers\HelpersFunctions;
 use App\Models\PriceConfiguration;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
+use App\Models\Category;
 
 class ProductController extends Controller
 {
@@ -29,6 +30,29 @@ class ProductController extends Controller
         return response()->json($products);
     }
 
+
+    /**
+     * Get products by category ID.
+     * নির্দিষ্ট ক্যাটাগরি আইডি দিয়ে প্রোডাক্টের লিস্ট দেখানোর জন্য।
+     */
+    public function getByCategory($category_id)
+    {
+
+        $category = Category::where('category_id', $category_id)->first();
+        if (!$category) {
+            return response()->json(['message' => 'Category not found.'], 404);
+        }
+
+        $categoryId = $category->id;
+        $products = Product::with(['category:id,name', 'images'])
+            ->where('active', true)
+            ->where('category_id', $categoryId)
+            ->select('id', 'product_id', 'product_name', 'thumbnail', 'base_price', 'job_sample_price', 'digital_proof_price', 'active', 'popular_product', 'category_id')
+            ->latest()
+            ->paginate(20);
+
+        return response()->json($products);
+    }
 
 
     /**
