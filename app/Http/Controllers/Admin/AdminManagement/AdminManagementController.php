@@ -139,7 +139,72 @@ class AdminManagementController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\JsonResponse
      */
-    public function update(Request $request, int $id=null): JsonResponse
+    public function update(Request $request, int $id): JsonResponse
+    {
+
+        $admin = Admin::find($id);
+
+
+        if (!$admin) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Admin not found.'
+            ], 404);
+        }
+
+        $validator = validator()->make($request->all(), [
+            'name' => 'nullable|string|max:255',
+            'email' => ['nullable', 'string', 'email', 'max:255', Rule::unique('admins')->ignore($admin->id)],
+            'username' => ['nullable', 'string', 'max:255', Rule::unique('admins')->ignore($admin->id)],
+            'password' => 'nullable|string|min:8|confirmed',
+            'role' => 'nullable|string|in:admin,super_admin,moderator',
+            'phone_number' => 'nullable|string|max:20',
+            'date_of_birth' => 'nullable|date',
+            'gender' => 'nullable|string|in:male,female,other',
+            'driving_license' => 'nullable|string|max:255',
+            'work_place' => 'nullable|string|max:255',
+            'profile_picture' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'status' => 'nullable|boolean',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Validation errors.',
+                'errors' => $validator->errors()
+            ], 422);
+        }
+
+        $adminData = $validator->validated();
+
+        // Update password only if provided
+        if (!empty($adminData['password'])) {
+            $adminData['password'] = Hash::make($adminData['password']);
+        } else {
+            unset($adminData['password']);
+        }
+
+        // Handle profile picture update
+        if ($request->hasFile('profile_picture')) {
+            // Delete old picture
+            if ($admin->profile_picture) {
+                Storage::disk('public')->delete($admin->profile_picture);
+            }
+            $path = $request->file('profile_picture')->store('admin/profiles', 'public');
+            $adminData['profile_picture'] = $path;
+        }
+
+        $admin->update($adminData);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Admin updated successfully.',
+            'data' => $admin
+        ], 200);
+    }
+
+
+ public function ProfileUpdate(Request $request, int $id=null): JsonResponse
     {
 
         $admin = Admin::find($id);
