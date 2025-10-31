@@ -35,9 +35,10 @@ class ProductController extends Controller
      * Get products by category ID.
      * নির্দিষ্ট ক্যাটাগরি আইডি দিয়ে প্রোডাক্টের লিস্ট দেখানোর জন্য।
      */
-    public function getByCategory($category_id)
+    public function getByCategory(Request $request, $category_id)
     {
 
+        $per_page = $request->input('per_page', 20);
         $category = Category::where('category_id', $category_id)->first();
         if (!$category) {
             return response()->json(['message' => 'Category not found.'], 404);
@@ -49,7 +50,7 @@ class ProductController extends Controller
             ->where('category_id', $categoryId)
             ->select('id', 'product_id', 'product_name', 'thumbnail', 'base_price', 'job_sample_price', 'digital_proof_price', 'active', 'popular_product', 'category_id')
             ->latest()
-            ->paginate(20);
+            ->paginate($per_page);
 
         return response()->json($products);
     }
