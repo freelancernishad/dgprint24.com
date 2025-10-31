@@ -162,7 +162,6 @@ class AdminManagementController extends Controller
 
         $validator = validator()->make($request->all(), [
             'name' => 'nullable|string|max:255',
-            'email' => ['nullable', 'string', 'email', 'max:255', Rule::unique('admins')->ignore($admin->id)],
             'username' => ['nullable', 'string', 'max:255', Rule::unique('admins')->ignore($admin->id)],
             'password' => 'nullable|string|min:8|confirmed',
             'role' => 'nullable|string|in:admin,super_admin,moderator',
@@ -232,7 +231,6 @@ class AdminManagementController extends Controller
 
         $validator = validator()->make($request->all(), [
             'name' => 'nullable|string|max:255',
-            'email' => ['nullable', 'string', 'email', 'max:255', Rule::unique('admins')->ignore($admin->id)],
             'username' => ['nullable', 'string', 'max:255', Rule::unique('admins')->ignore($admin->id)],
             'password' => 'nullable|string|min:8|confirmed',
             'role' => 'nullable|string|in:admin,super_admin,moderator',
