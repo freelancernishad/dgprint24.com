@@ -88,7 +88,7 @@ class AdminCategoryController extends Controller
     {
         $validator = validator($request->all(), [
             'name' => [
-            'required',
+            'nullable',
             'string',
             'max:255',
             Rule::unique('categories', 'name')->ignore($category->id),
