@@ -32,7 +32,7 @@ class AdminCategoryController extends Controller
     public function store(Request $request)
     {
         $validator = validator($request->all(), [
-            'categoryName' => 'required|string|max:255|unique:categories,name',
+            'name' => 'required|string|max:255|unique:categories,name',
             'categoryDescription' => 'nullable|string',
             'catagoryImage' => 'nullable|file|mimes:jpeg,jpg,png,gif,bmp,webp,svg,tiff,ico',
             'varients' => 'nullable', // পরিবর্তন: string থেকে array
@@ -68,7 +68,7 @@ class AdminCategoryController extends Controller
         }
         // আর json_decode করার দরকার নেই, কারণ Laravel স্বয়ংক্রিয়ভাবে অ্যারে নিবে
         $category = Category::create([
-            'name' => $validatedData['categoryName'] ?? null,
+            'name' => $validatedData['name'] ?? null,
             'category_description' => $validatedData['categoryDescription'] ?? null,
             'category_image' => $categoryImageUrl,
             'variants' => $validatedData['varients'] ?? [],
@@ -87,7 +87,7 @@ class AdminCategoryController extends Controller
     public function update(Request $request, Category $category)
     {
         $validator = validator($request->all(), [
-            'categoryName' => [
+            'name' => [
             'required',
             'string',
             'max:255',
@@ -123,7 +123,7 @@ class AdminCategoryController extends Controller
         }
         // আর json_decode করার দরকার নেই
         $category->update([
-            'name' => $validatedData['categoryName'],
+            'name' => $validatedData['name'],
             'category_description' => $validatedData['categoryDescription'] ?? $category->category_description,
             'category_image' => $categoryImageUrl ?? $category->category_image,
             'variants' => $validatedData['varients'] ?? $category->variants, // সরাসরি অ্যারে ব্যবহার করুন
