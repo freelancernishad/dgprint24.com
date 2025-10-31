@@ -12,6 +12,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
+use App\Services\FileSystem\FileUploadService;
 
 class AdminManagementController extends Controller
 {
@@ -91,12 +92,19 @@ class AdminManagementController extends Controller
         $adminData = $validator->validated();
         $adminData['password'] = Hash::make($adminData['password']);
 
-        // Handle profile picture upload
+                // যদি ছবি আসে, S3 এ আপলোড কর
         if ($request->hasFile('profile_picture')) {
-            $path = $request->file('profile_picture')->store('admin/profiles', 'public');
-            $adminData['profile_picture'] = $path;
+            $file = $request->file('profile_picture');
+            $filename = time() . '_' . $file->getClientOriginalName();
+            $label = 'profile';
+
+            $profileImageUrl = (new FileUploadService())->uploadFileToS3(
+                $file,
+                'dgprint24/uploads/images/profile/' . $label . '_' . $filename
+            );
         }
 
+        $adminData['profile_picture'] = $profileImageUrl ?? null;
         $adminData['email_verified_at'] = now();
 
         $admin = Admin::create($adminData);
@@ -184,16 +192,18 @@ class AdminManagementController extends Controller
             unset($adminData['password']);
         }
 
-        // Handle profile picture update
+                // যদি ছবি আসে, S3 এ আপলোড কর
         if ($request->hasFile('profile_picture')) {
-            // Delete old picture
-            if ($admin->profile_picture) {
-                Storage::disk('public')->delete($admin->profile_picture);
-            }
-            $path = $request->file('profile_picture')->store('admin/profiles', 'public');
-            $adminData['profile_picture'] = $path;
-        }
+            $file = $request->file('profile_picture');
+            $filename = time() . '_' . $file->getClientOriginalName();
+            $label = 'profile';
 
+            $profileImageUrl = (new FileUploadService())->uploadFileToS3(
+                $file,
+                'dgprint24/uploads/images/profile/' . $label . '_' . $filename
+            );
+        }
+        $adminData['profile_picture'] = $profileImageUrl ?? $admin->profile_picture;
         $admin->update($adminData);
 
         return response()->json([
@@ -252,15 +262,21 @@ class AdminManagementController extends Controller
             unset($adminData['password']);
         }
 
-        // Handle profile picture update
+
+
+
+                // যদি ছবি আসে, S3 এ আপলোড কর
         if ($request->hasFile('profile_picture')) {
-            // Delete old picture
-            if ($admin->profile_picture) {
-                Storage::disk('public')->delete($admin->profile_picture);
-            }
-            $path = $request->file('profile_picture')->store('admin/profiles', 'public');
-            $adminData['profile_picture'] = $path;
+            $file = $request->file('profile_picture');
+            $filename = time() . '_' . $file->getClientOriginalName();
+            $label = 'profile';
+
+            $profileImageUrl = (new FileUploadService())->uploadFileToS3(
+                $file,
+                'dgprint24/uploads/images/profile/' . $label . '_' . $filename
+            );
         }
+        $adminData['profile_picture'] = $profileImageUrl ?? $admin->profile_picture;
 
         $admin->update($adminData);
 
