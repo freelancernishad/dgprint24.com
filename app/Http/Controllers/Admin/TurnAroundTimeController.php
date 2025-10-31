@@ -30,7 +30,7 @@ class TurnAroundTimeController extends Controller
     public function store(Request $request)
     {
         $validator = \Illuminate\Support\Facades\Validator::make($request->all(), [
-            'name' => 'required|string|max:255',
+            'name' => 'nullable|string|max:255',
             'category_name' => 'nullable|string|max:255',
             'category_id' => 'nullable|string|exists:categories,category_id',
             'turnaround_label' => 'nullable|string|max:255',
@@ -70,12 +70,12 @@ class TurnAroundTimeController extends Controller
     public function update(Request $request, TurnAroundTime $turnaround_time)
     {
         $validatedData = $request->validate([
-            'name' => 'required|string|max:255',
-            'category_name' => 'required|string|max:255',
-            'category_id' => 'required|string|exists:categories,category_id',
-            'turnaround_label' => 'required|string|max:255',
-            'turnaround_value' => 'required|integer|min:1',
-            'price' => 'required|numeric|min:0',
+            'name' => 'nullable|string|max:255',
+            'category_name' => 'nullable|string|max:255',
+            'category_id' => 'nullable|string|exists:categories,category_id',
+            'turnaround_label' => 'nullable|string|max:255',
+            'turnaround_value' => 'nullable|integer|min:1',
+            'price' => 'nullable|numeric|min:0',
             'discount' => 'nullable|numeric|min:0|max:100',
             'note' => 'nullable|string',
             'runsize' => 'nullable|integer|min:1',
