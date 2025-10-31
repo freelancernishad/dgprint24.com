@@ -97,8 +97,40 @@ class TurnAroundTimeController extends Controller
         if (!$turnaround_time) {
             return response()->json(['status' => 'error', 'message' => 'TurnAroundTime not found.'], 404);
         }
+
+        // Perform soft delete
         $turnaround_time->delete();
 
-        return response()->json(['message' => 'TurnAroundTime deleted successfully.'], 200);
+        return response()->json(['message' => 'TurnAroundTime soft-deleted successfully.'], 200);
+    }
+
+    public function forceDestroy($turnaround_time_id)
+    {
+        $turnaround_time = TurnAroundTime::withTrashed()->find($turnaround_time_id);
+
+        if (!$turnaround_time) {
+            return response()->json(['status' => 'error', 'message' => 'TurnAroundTime not found.'], 404);
+        }
+
+        $turnaround_time->forceDelete();
+
+        return response()->json(['message' => 'TurnAroundTime permanently deleted successfully.'], 200);
+    }
+
+    public function restore($turnaround_time_id)
+    {
+        $turnaround_time = TurnAroundTime::withTrashed()->find($turnaround_time_id);
+
+        if (!$turnaround_time) {
+            return response()->json(['status' => 'error', 'message' => 'TurnAroundTime not found.'], 404);
+        }
+
+        if (!$turnaround_time->trashed()) {
+            return response()->json(['status' => 'error', 'message' => 'TurnAroundTime is not deleted.'], 400);
+        }
+
+        $turnaround_time->restore();
+
+        return response()->json(['message' => 'TurnAroundTime restored successfully.'], 200);
     }
 }
