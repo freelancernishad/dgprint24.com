@@ -17,7 +17,15 @@ use App\Http\Controllers\Admin\Subscriptions\PlanSubscriptionsController;
 Route::prefix('admin')->middleware(AuthenticateAdmin::class)->group(function () {
 
     // অ্যাডমিন ক্যাটাগরি রিলেটেড রাউটসমূহ
-    Route::apiResource('categories', AdminCategoryController::class);
+    // অ্যাডমিন ক্যাটাগরি রিলেটেড রাউটসমূহ (separate routes)
+    Route::get('categories', [AdminCategoryController::class, 'index']);
+    Route::get('categories/{category}', [AdminCategoryController::class, 'show']);
+    Route::post('categories', [AdminCategoryController::class, 'store']);
+    Route::put('categories/{category}', [AdminCategoryController::class, 'update']);
+    Route::post('categories/{category}', [AdminCategoryController::class, 'update']);
+    Route::patch('categories/{category}', [AdminCategoryController::class, 'update']);
+    Route::delete('categories/{category}', [AdminCategoryController::class, 'destroy']);
+
     // এই লাইনটি নিচের রাউটগুলো তৈরি করবে:
     // GET    /api/admin/categories (সব ক্যাটাগরির লিস্ট)
     // GET    /api/admin/categories/{category} (একটি নির্দিষ্ট ক্যাটাগরির বিবরণ)
