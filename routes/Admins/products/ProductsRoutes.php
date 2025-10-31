@@ -38,13 +38,17 @@ Route::prefix('admin')->middleware(AuthenticateAdmin::class)->group(function () 
 
 
 
-        // কাস্টম রাউট মডেল বাইন্ডিং: turnaround_id দিয়ে মডেল খুঁজুন
-        Route::bind('turnaround_time', function ($value) {
-            return TurnAroundTime::where('turnaround_id', $value)->firstOrFail();
-        });
+
 
     // টার্নআরাউন্ড টাইম সংক্রান্ত CRUD রাউট
-    Route::apiResource('turnaround-times', TurnAroundTimeController::class);
+    // টার্নআরাউন্ড টাইম রিলেটেড রাউটসমূহ (separate routes)
+    Route::get('turnaround-times', [TurnAroundTimeController::class, 'index']);
+    Route::get('turnaround-time/{turnaround_time}', [TurnAroundTimeController::class, 'show']);
+    Route::post('turnaround-times', [TurnAroundTimeController::class, 'store']);
+    Route::put('turnaround-times/{turnaround_time}', [TurnAroundTimeController::class, 'update']);
+    Route::post('turnaround-times/{turnaround_time}', [TurnAroundTimeController::class, 'update']);
+    Route::patch('turnaround-times/{turnaround_time}', [TurnAroundTimeController::class, 'update']);
+    Route::delete('turnaround-time/{turnaround_time_id}', [TurnAroundTimeController::class, 'destroy']);
 
 
 

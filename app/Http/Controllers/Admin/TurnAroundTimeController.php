@@ -90,10 +90,15 @@ class TurnAroundTimeController extends Controller
      * Remove the specified resource from storage.
      * টার্নআরাউন্ড টাইম ডিলিট করার জন্য।
      */
-    public function destroy(TurnAroundTime $turnaround_time)
+    public function destroy($turnaround_time_id)
     {
+        $turnaround_time = TurnAroundTime::find($turnaround_time_id);
+
+        if (!$turnaround_time) {
+            return response()->json(['status' => 'error', 'message' => 'TurnAroundTime not found.'], 404);
+        }
         $turnaround_time->delete();
 
-        return response()->json(null, 204);
+        return response()->json(['message' => 'TurnAroundTime deleted successfully.'], 200);
     }
 }

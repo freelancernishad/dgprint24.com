@@ -26,10 +26,12 @@ class ApiResponse
         // Capture the response
         $response = $next($request);
 
+
         // Check if the response is a valid Response object
         if ($response instanceof Response) {
             // Decode the response content if it's JSON
             $responseData = json_decode($response->getContent(), true) ?? [];
+
 
 
             // Extract the first error message from response data
