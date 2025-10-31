@@ -14,7 +14,7 @@ Route::prefix('auth/admin')->group(function () {
     Route::middleware(AuthenticateAdmin::class)->group(function () { // Applying admin middleware
         Route::post('logout', [AdminAuthController::class, 'logout']);
         Route::get('me', [AdminAuthController::class, 'me']);
-        Route::put('/me', [AdminManagementController::class, 'ProfileUpdate']);
+        Route::post('/me', [AdminManagementController::class, 'ProfileUpdate']);
         Route::post('/change-password', [AdminAuthController::class, 'changePassword']);
         Route::get('check-token', [AdminAuthController::class, 'checkToken']);
     });
@@ -41,7 +41,7 @@ Route::prefix('admin')->group(function () {
         Route::get('/', [AdminManagementController::class, 'index'])->name('index');
         Route::post('/', [AdminManagementController::class, 'store'])->name('store');
         Route::get('/{id}', [AdminManagementController::class, 'show'])->name('show');
-        Route::put('/{id}', [AdminManagementController::class, 'update'])->name('update');
+        Route::post('/{id}', [AdminManagementController::class, 'update'])->name('update');
         Route::delete('/{id}', [AdminManagementController::class, 'destroy'])->name('destroy');
         Route::patch('/{id}/status', [AdminManagementController::class, 'updateStatus'])->name('update-status');
         Route::post('/bulk-update-status', [AdminManagementController::class, 'bulkUpdateStatus'])->name('bulk-update-status');
