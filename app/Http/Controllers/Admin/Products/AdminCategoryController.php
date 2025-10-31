@@ -86,20 +86,26 @@ class AdminCategoryController extends Controller
      */
     public function update(Request $request, Category $category)
     {
-        $validatedData = $request->validate([
+        $validator = validator($request->all(), [
             'categoryName' => [
-                'required',
-                'string',
-                'max:255',
-                Rule::unique('categories', 'name')->ignore($category->id),
+            'required',
+            'string',
+            'max:255',
+            Rule::unique('categories', 'name')->ignore($category->id),
             ],
             'categoryDescription' => 'nullable|string',
             'catagoryImage' => 'nullable|file|mimes:jpeg,jpg,png,gif,bmp,webp,svg,tiff,ico',
             'varients' => 'nullable', // পরিবর্তন: string থেকে array
             'tags' => 'nullable|array',    // পরিবর্তন: string থেকে array
-            'active' => 'nullable|boolean',
-            'parent_id' => 'nullable|exists:categories,id|not_in:' . $category->id,
+            'active' => 'nullable',
+            'parent_id' => ['nullable', 'exists:categories,id', 'not_in:' . $category->id],
         ]);
+
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 422);
+        }
+
+        $validatedData = $validator->validated();
 
 
 
