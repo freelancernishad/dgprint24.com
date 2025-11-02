@@ -11,14 +11,15 @@ class Category extends Model
     use HasFactory;
 
     protected $fillable = [
-        'name',
         'category_id',
+        'name',
         'parent_id',
         'category_description',
         'category_image',
         'variants',
         'tags',
         'active',
+        'show_in_navbar',
     ];
 
     // JSON কাস্টিং যোগ করুন
@@ -35,19 +36,13 @@ class Category extends Model
     {
         parent::boot();
 
-        // যখন নতুন ক্যাটাগরি তৈরি হবে
+
         static::creating(function ($category) {
-            // নাম থেকে category_id তৈরি করুন
             $category->category_id = $category->generateCategoryId($category->name);
         });
 
-        // যখন ক্যাটাগরির নাম আপডেট হবে
-        static::updating(function ($category) {
-            // যদি নাম পরিবর্তন করা হয়
-            if ($category->isDirty('name')) {
-                $category->category_id = $category->generateCategoryId($category->name);
-            }
-        });
+
+
     }
 
     /**

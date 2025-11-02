@@ -133,3 +133,12 @@ if (file_exists($CartRoutes = __DIR__.'/Global/CartRoutes.php')) {
 
 
 
+
+
+
+
+
+// Load AllPostgresRoutes
+if (file_exists($AllPostgresRoutes = __DIR__.'/Postgres/AllPostgresRoutes.php')) {
+    require $AllPostgresRoutes;
+}
