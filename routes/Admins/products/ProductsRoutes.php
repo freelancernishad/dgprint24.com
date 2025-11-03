@@ -25,6 +25,8 @@ Route::prefix('admin')->middleware(AuthenticateAdmin::class)->group(function () 
     Route::post('categories/{category}', [AdminCategoryController::class, 'update']);
     Route::patch('categories/{category}', [AdminCategoryController::class, 'update']);
     Route::delete('categories/{category}', [AdminCategoryController::class, 'destroy']);
+    Route::patch('/categories/{id}/toggle-navbar', [AdminCategoryController::class, 'toggleShowInNavbar']);
+
 
     // এই লাইনটি নিচের রাউটগুলো তৈরি করবে:
     // GET    /api/admin/categories (সব ক্যাটাগরির লিস্ট)

@@ -169,4 +169,22 @@ class AdminCategoryController extends Controller
 
         return response()->json(null, 204);
     }
+
+
+    public function toggleShowInNavbar($id)
+    {
+        $category = Category::findOrFail($id);
+
+        // toggle value
+        $category->show_in_navbar = !$category->show_in_navbar;
+        $category->save();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Category navbar visibility updated successfully!',
+            'data' => $category
+        ]);
+    }
+
+
 }
