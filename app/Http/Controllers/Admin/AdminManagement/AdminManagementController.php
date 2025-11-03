@@ -69,7 +69,6 @@ class AdminManagementController extends Controller
         $validator = validator()->make($request->all(), [
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:admins',
-            'username' => 'nullable|string|max:255|unique:admins',
             'password' => 'required|string|min:8|confirmed',
             'role' => 'required|string|in:admin,printer,designer,deliveryman',
             'phone_number' => 'nullable|string|max:20',
@@ -107,6 +106,8 @@ class AdminManagementController extends Controller
         $adminData['profile_picture'] = $profileImageUrl ?? null;
         $adminData['email_verified_at'] = now();
 
+        $username = explode('@', $request->email)[0];
+        $adminData['username'] = $username;
 
 
 
