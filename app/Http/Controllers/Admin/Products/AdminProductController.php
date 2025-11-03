@@ -8,6 +8,7 @@ use Illuminate\Support\Str;
 use App\Models\ProductImage;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
+use App\Helpers\HelpersFunctions;
 use App\Models\PriceConfiguration;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -185,18 +186,25 @@ class AdminProductController extends Controller
 
 
 
+            $helpers = new HelpersFunctions();
+            $flatOptions = $helpers->flattenSelectedOptions($configData['options']);
 
 
-            $flatOptions = [];
-            foreach ($configData['options'] as $key => $value) {
-                // ধরুন, $key = 'SIDE', $value = ['selected' => '4/0 ONE SIDE']
-                // আমরা শুধু 'selected' এর ভ্যালু নিব
-                if (isset($value['selected'])) {
-                    $flatOptions[$key] = $value['selected'];
-                }else {
-                    $flatOptions[$key] = $value; // অথবা অন্য কোনো ডিফল্ট ভ্যালু
-                }
-            }
+            // $flatOptions = [];
+            // foreach ($configData['options'] as $key => $value) {
+            //     // ধরুন, $key = 'SIDE', $value = ['selected' => '4/0 ONE SIDE']
+            //     // আমরা শুধু 'selected' এর ভ্যালু নিব
+            //     if (isset($value['selected'])) {
+            //         $flatOptions[$key] = $value['selected'];
+            //     }else {
+            //         $flatOptions[$key] = $value; // অথবা অন্য কোনো ডিফল্ট ভ্যালু
+            //     }
+            // }
+
+
+
+
+
             // --- নতুন লজিক শেষ ---
 
             $priceConfig = $product->priceConfigurations()->create([

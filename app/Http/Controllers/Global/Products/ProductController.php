@@ -105,6 +105,11 @@ class ProductController extends Controller
 
 
 
+
+
+
+
+
 /**
  * Get pricing for a specific product based on provided parameters.
  */

@@ -88,3 +88,4 @@ Route::get('/products/popular', [ProductController::class, 'mostPopular']);
 Route::get('/product/{productId}', [ProductController::class, 'show']);
 
 Route::get('/product/{productId}/price', [ProductController::class, 'getPrice']);
+Route::post('/product/{productId}/price', [ProductController::class, 'getPrice']);

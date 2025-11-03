@@ -5,6 +5,7 @@ use App\Models\Product;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Models\PriceConfiguration;
+use Illuminate\Support\Facades\Log;
 use Tymon\JWTAuth\Facades\JWTAuth;
 
 class HelpersFunctions
@@ -33,6 +34,38 @@ class HelpersFunctions
         return $payload;
     }
 
+
+    function flattenSelectedOptions(array $options, string $prefix = ''): array {
+        $flat = [];
+
+        foreach ($options as $key => $value) {
+
+            // skip "selected" key from key generation
+            if ($key === 'selected') {
+                continue;
+            }
+
+            $newKey = $prefix ? $prefix . '.' . $key : $key;
+
+            if (is_array($value)) {
+                // যদি selected থাকে তাহলে value নাও
+                if (isset($value['selected'])) {
+                    $flat[$newKey] = $value['selected'];
+                }
+
+                // nested হলে recursive
+                $flat = array_merge($flat, $this->flattenSelectedOptions($value, $newKey));
+            } else {
+                $flat[$newKey] = $value;
+            }
+        }
+
+        return $flat;
+    }
+
+
+
+
     /**
      * Get pricing data based on product ID and parameters.
      *
@@ -44,6 +77,7 @@ class HelpersFunctions
     {
         // ১. প্রথমে প্রোডাক্টটা খুঁজে নিন
         $product = Product::where('product_id', $productId)->where('active', true)->firstOrFail();
+        Log::info('Fetching pricing for Product ID:', ['product_id' => $productId,'product' => $product]);
 
         // প্যারামিটার থেকে ভ্যালুগুলো নিন
         $quantity = $params['runsize'];
@@ -66,11 +100,27 @@ class HelpersFunctions
             $query = PriceConfiguration::with(['shippings', 'turnarounds'])
                 ->where('product_id', $product->id);
 
-            foreach ($params['options'] as $key => $value) {
-                $query->whereRaw("JSON_EXTRACT(options, '$." . $key . "') = ?", [$value]);
-            }
+            //     $options = json_encode($params['options']);
+            Log::info('Flat Options for Price Configuration:', ['options' => $params['options']]);
+            Log::info('JSON Encoded Flat Options:', ['options' => json_encode($params['options'], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE)]);
+
+            // $query->where("options", $options);
+
+            // foreach ($params['options'] as $key => $value) {
+
+            //     Log::info('Filtering Price Config with Option:', ['key' => $key, 'value' => $value]);
+
+            //     $query->whereRaw("JSON_EXTRACT(options, '$." . $key . "') = ?", [$value]);
+            // }
+$query->where('options',json_encode($params['options']));
+
 
             $priceConfigList = $query->get();
+
+            // SQL কোডটি কি দেখা যাবে
+            Log::info('SQL Query:', ['query' => $query->toSql(), 'bindings' => $query->getBindings()]);
+
+            Log::info('Price Config List:', ['list' => $priceConfigList]);
 
             // প্রতিটি প্রাইস কনফিগারেশনের জন্য ডিসকাউন্ট ক্যালকুলেশন করুন
             $priceConfigList = $priceConfigList->map(function($config) use ($quantity) {

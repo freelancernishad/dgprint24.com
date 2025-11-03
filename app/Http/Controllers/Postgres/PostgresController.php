@@ -1,6 +1,8 @@
 <?php
 
 namespace App\Http\Controllers\Postgres;
+
+use App\Helpers\HelpersFunctions;
 use App\Models\Tax;
 use App\Models\Product;
 use App\Models\Category;
@@ -268,6 +270,13 @@ class PostgresController extends Controller
         // সব PgProduct ডেটা নিয়ে আসুন
         $pgProducts = PgProduct::all();
 
+        // $decodedProducts = $pgProducts->map(function($product) {
+        //     $product->productOptions = json_decode($product->productOptions);
+        //     return $product;
+        // });
+
+        // return response()->json($decodedProducts);
+
         $transferredCount = 0;
         $failedCount = 0;
         $errors = [];
@@ -445,6 +454,10 @@ class PostgresController extends Controller
         }
     }
 
+
+
+
+
     /**
      * প্রাইস কনফিগারেশন এবং এর সাথে সম্পর্কিত শিপিং ও টার্নআরাউন্ড তৈরি করে।
      */
@@ -452,22 +465,35 @@ class PostgresController extends Controller
     {
         foreach ($priceConfigsData as $configData) {
             // অপশনগুলো ফ্ল্যাট করুন (store ফাংশনের মতো)
-            $flatOptions = [];
-            foreach ($configData['options'] as $key => $value) {
-                if (isset($value['selected'])) {
-                    $flatOptions[$key] = $value['selected'];
-                } else {
-                    $flatOptions[$key] = $value;
-                }
-            }
 
-            // প্রাইস কনফিগারেশন তৈরি করুন
-            $priceConfig = $product->priceConfigurations()->create([
-                'runsize' => $configData['runsize'],
-                'price' => $configData['price'],
-                'discount' => $configData['discount'] ?? 0,
-                'options' => $flatOptions,
-            ]);
+
+                        $helpers = new HelpersFunctions();
+
+                        $flatOptions = $helpers->flattenSelectedOptions($configData['options']);
+                        Log::info('Flat Options for Price Configuration:', ['options' => $flatOptions]);
+                        $flatOptions = json_encode($flatOptions, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
+                        Log::info('JSON Encoded Flat Options:', ['options' => $flatOptions]);
+
+
+                        // foreach ($configData['options'] as $key => $value) {
+                        //     if (isset($value['selected'])) {
+                        //         $flatOptions[$key] = $value['selected'];
+                        //     } else {
+                        //         $flatOptions[$key] = $value;
+                        //     }
+                        // }
+
+
+
+
+
+                        // প্রাইস কনফিগারেশন তৈরি করুন
+                        $priceConfig = $product->priceConfigurations()->create([
+                            'runsize' => $configData['runsize'],
+                            'price' => $configData['price'],
+                            'discount' => $configData['discount'] ?? 0,
+                            'options' => $flatOptions,
+                        ]);
 
             // এই কনফিগারেশনের জন্য শিপিং তৈরি করুন
             $shippingsToCreate = [];
