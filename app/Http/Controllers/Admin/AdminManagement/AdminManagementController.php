@@ -71,7 +71,7 @@ class AdminManagementController extends Controller
             'email' => 'required|string|email|max:255|unique:admins',
             'username' => 'required|string|max:255|unique:admins',
             'password' => 'required|string|min:8|confirmed',
-            'role' => 'required|string|in:admin,super_admin,moderator',
+            'role' => 'required|string|in:admin,printer,designer',
             'phone_number' => 'nullable|string|max:20',
             'date_of_birth' => 'nullable|date',
             'gender' => 'nullable|string|in:male,female,other',
