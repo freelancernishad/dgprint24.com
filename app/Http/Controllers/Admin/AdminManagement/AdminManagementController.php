@@ -164,7 +164,7 @@ class AdminManagementController extends Controller
             'name' => 'nullable|string|max:255',
             'username' => ['nullable', 'string', 'max:255', Rule::unique('admins')->ignore($admin->id)],
             'password' => 'nullable|string|min:8|confirmed',
-            'role' => 'nullable|string|in:admin,super_admin,moderator',
+            'role' => 'nullable|string|in:admin,printer,designer',
             'phone_number' => 'nullable|string|max:20',
             'date_of_birth' => 'nullable|date',
             'gender' => 'nullable|string|in:male,female,other',
