@@ -107,6 +107,16 @@ class AdminManagementController extends Controller
         $adminData['profile_picture'] = $profileImageUrl ?? null;
         $adminData['email_verified_at'] = now();
 
+
+
+
+        $firstLetter = strtoupper(substr($adminData['role'], 0, 1));
+        $randomNumber = str_pad(rand(100000, 999999), 6, '0', STR_PAD_LEFT);
+        $timestamp = substr(time(), -5);
+
+        $adminData['user_id'] = "DP{$firstLetter}{$randomNumber}{$timestamp}";
+
+
         $admin = Admin::create($adminData);
 
         return response()->json([

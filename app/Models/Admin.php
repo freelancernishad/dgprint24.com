@@ -8,6 +8,7 @@ use Illuminate\Notifications\Notifiable;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Auth\Passwords\CanResetPassword;
+use Exception;
 
 class Admin extends Authenticatable implements JWTSubject, MustVerifyEmail
 {
@@ -49,6 +50,11 @@ class Admin extends Authenticatable implements JWTSubject, MustVerifyEmail
         'date_of_birth' => 'date',
         'last_login_at' => 'datetime',
     ];
+
+
+
+
+
 
     public function getJWTIdentifier()
     {

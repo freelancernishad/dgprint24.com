@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::table('admins', function (Blueprint $table) {
             $table->string('role')->default('admin')->after('username');
-            $table->foreignId('user_id')->nullable()->after('role');
+            $table->string('user_id')->nullable()->after('role');
             $table->string('profile_picture')->nullable()->after('user_id');
             $table->string('phone_number')->nullable()->after('profile_picture');
             $table->enum('status', ['active', 'inactive', 'suspended'])->default('active')->after('phone_number');
