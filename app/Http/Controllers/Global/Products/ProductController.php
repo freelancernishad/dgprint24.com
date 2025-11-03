@@ -74,6 +74,26 @@ class ProductController extends Controller
         return response()->json($product);
     }
 
+
+    public function mostPopular(Request $request)
+    {
+        $per_page = $request->input('per_page', 10);
+        // 10টি সর্বাধিক জনপ্রিয় এবং সক্রিয় প্রোডাক্ট আনা
+        $popularProducts = Product::where('popular_product', true)
+            ->where('active', true)
+            ->orderBy('updated_at', 'desc')
+            ->paginate($per_page);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Most popular products retrieved successfully.',
+            'data' => $popularProducts
+        ]);
+    }
+
+
+
+
     /**
      * নির্দিষ্ট অপশন সিলেক্ট করে প্রাইজ জানার জন্য বিশেষ ফাংশন।
      */
