@@ -69,7 +69,7 @@ class AdminManagementController extends Controller
         $validator = validator()->make($request->all(), [
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:admins',
-            'username' => 'required|string|max:255|unique:admins',
+            'username' => 'nullable|string|max:255|unique:admins',
             'password' => 'required|string|min:8|confirmed',
             'role' => 'required|string|in:admin,printer,designer,deliveryman',
             'phone_number' => 'nullable|string|max:20',
@@ -78,7 +78,7 @@ class AdminManagementController extends Controller
             'driving_license' => 'nullable|string|max:255',
             'work_place' => 'nullable|string|max:255',
             'profile_picture' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-            'status' => 'required|boolean',
+            'status' => 'nullable|boolean',
         ]);
 
         if ($validator->fails()) {
