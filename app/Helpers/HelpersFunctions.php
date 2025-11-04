@@ -5,8 +5,9 @@ use App\Models\Product;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Models\PriceConfiguration;
-use Illuminate\Support\Facades\Log;
 use Tymon\JWTAuth\Facades\JWTAuth;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Database\Eloquent\Builder;
 
 class HelpersFunctions
 {
@@ -77,9 +78,9 @@ class HelpersFunctions
     {
         // ১. প্রথমে প্রোডাক্টটা খুঁজে নিন
         $product = Product::where('product_id', $productId)->where('active', true)->firstOrFail();
-        Log::info('Fetching pricing for Product ID:', ['product_id' => $productId,'product' => $product]);
 
         // প্যারামিটার থেকে ভ্যালুগুলো নিন
+        $product_type = $product->product_type ?? 'banner';
         $quantity = $params['runsize'];
         $hasOptions = !empty($params['options']);
 
@@ -92,38 +93,45 @@ class HelpersFunctions
         $price_per_sq_ft = 0;
         $price_for_sq_ft = 0;
         $total_sq_ft = 0;
+        $quantity_into_total_sq_ft_price = 0;
         $priceConfigList = [];
 
         // --- ধাপ ১: কনফিগারেশন মূল্য খুঁজে বের করুন ---
         // যদি ইউজার কোনো অপশন সিলেক্ট করে থাকে
         if ($hasOptions) {
-            $query = PriceConfiguration::with(['shippings', 'turnarounds'])
-                ->where('product_id', $product->id);
-
-            //     $options = json_encode($params['options']);
-            Log::info('Flat Options for Price Configuration:', ['options' => $params['options']]);
-            Log::info('JSON Encoded Flat Options:', ['options' => json_encode($params['options'], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE)]);
-
-            // $query->where("options", $options);
-
-            // foreach ($params['options'] as $key => $value) {
-
-            //     Log::info('Filtering Price Config with Option:', ['key' => $key, 'value' => $value]);
-
-            //     $query->whereRaw("JSON_EXTRACT(options, '$." . $key . "') = ?", [$value]);
-            // }
-$query->where('options',json_encode($params['options']));
 
 
-            $priceConfigList = $query->get();
+        $query = PriceConfiguration::with(['shippings', 'turnarounds', 'optionsRel'])
+            ->where('product_id', $product->id);
 
-            // SQL কোডটি কি দেখা যাবে
-            Log::info('SQL Query:', ['query' => $query->toSql(), 'bindings' => $query->getBindings()]);
+        $priceConfigList = $query->get();
 
-            Log::info('Price Config List:', ['list' => $priceConfigList]);
+        $filteredConfigList = collect();
 
-            // প্রতিটি প্রাইস কনফিগারেশনের জন্য ডিসকাউন্ট ক্যালকুলেশন করুন
-            $priceConfigList = $priceConfigList->map(function($config) use ($quantity) {
+        foreach ($priceConfigList as $config) {
+
+            $totalOptions = $config->optionsRel->count();
+            $matchedOptions = $config->optionsRel->filter(function($opt) use ($params) {
+                return isset($params['options'][$opt->key]) && $params['options'][$opt->key] == $opt->value;
+            })->count();
+
+            Log::info("PriceConfiguration ID: {$config->id}");
+            Log::info("Total Options: {$totalOptions}");
+            Log::info("Matched Options: {$matchedOptions}");
+
+            if ($matchedOptions === $totalOptions) {
+                Log::info("✅ All options match for this configuration.");
+                $filteredConfigList->push($config);
+            } else {
+                Log::info("❌ Not all options match.");
+            }
+        }
+
+        $priceConfigList = $filteredConfigList;
+
+        // প্রতিটি প্রাইস কনফিগারেশনের জন্য ডিসকাউন্ট ক্যালকুলেশন করুন
+        $priceConfigList = $priceConfigList->map(function($config) use ($quantity) {
+
                 $originalPrice = (float)$config->price;
                 $discountAmount = (float)$config->discount;
                 $discountPercentage = $originalPrice > 0 ? ($discountAmount / $originalPrice) * 100 : 0;
@@ -140,13 +148,22 @@ $query->where('options',json_encode($params['options']));
                 return $config;
             });
 
-            $priceConfig = $query->first();
 
+            if($product_type === 'general') {
+                $query->where('runsize', $quantity);
+
+            }
+            $priceConfig = $filteredConfigList->first();
+
+
+            // jodi kono price configuration paoa na jay tobe akta veiable a meesage rakhte hobe response a breakdown a thakbe
+            $PriceConfigMessage = 'No price configuration found for the selected options.';
             if ($priceConfig) {
                 // ডাটাবেসে যে মূল্য সংরক্ষিত আছে সেটাই নিন
                 $configurationPrice = $priceConfig->price;
                 // ফ্রন্টএন্ডকে শিপিং এবং টার্নআরাউন্ড অপশন দেখানোর জন্য সম্পূর্ণ ডেটা রাখুন
                 $priceConfigData = $priceConfig;
+                $PriceConfigMessage = "Price configuration found.";
             }
         }
 
@@ -155,7 +172,8 @@ $query->where('options',json_encode($params['options']));
             ->where('min_quantity', '<=', $quantity)
             ->where(function ($query) use ($quantity) {
                 $query->whereNull('max_quantity')
-                    ->orWhere('max_quantity', '>=', $quantity);
+                    ->orWhere('max_quantity', '>=', $quantity)
+                    ->orWhere('max_quantity', 0); // 0 মানে unlimited
             })
             ->first();
 
@@ -171,30 +189,144 @@ $query->where('options',json_encode($params['options']));
         }
 
         // --- ধাপ ৩: চূড়ন্ত মূল্য ক্যালকুলেট করুন ---
-        $configuration_price_into_quantity_price = $configurationPrice * $quantity;
+        $configuration_price_into_quantity_price = $configurationPrice;
+        if($product_type === 'banner') {
+            $configuration_price_into_quantity_price = $configurationPrice * $quantity;
+        }
+
+
+
+
         $finalPrice = $configuration_price_into_quantity_price + ($quantity_into_total_sq_ft_price ?? 0);
 
         // --- ধাপ ৪: যদি কোনো ধরনের প্রাইস তথ্য না থাকে, তাহলে এরর দিন ---
-        if ($configurationPrice == 0 && ($quantity_into_total_sq_ft_price ?? 0) == 0) {
-            return [
-                'error' => 'Pricing information is not configured for this product or the selected options.'
-            ];
-        }
+        // if ($configurationPrice == 0 && ($quantity_into_total_sq_ft_price ?? 0) == 0) {
+        //     return [
+        //         'error' => 'Pricing information is not configured for this product or the selected options.'
+        //     ];
+        // }
+
+
+
+// ✅ Detailed Human-Readable Calculation Breakdown
+$breakdownMessage = "------ PRICE BREAKDOWN ------\n";
+$breakdownMessage .= "🧾 Product: {$product->product_name}\n";
+$breakdownMessage .= "📦 Product Type: {$product_type}\n";
+$breakdownMessage .= "🔢 Quantity Ordered: " . number_format($quantity) . "\n";
+$breakdownMessage .= "💰 Base Price: " . number_format($configurationPrice, 2) . "\n";
+
+// Configuration Price × Quantity
+if ($product_type === 'banner') {
+    $breakdownMessage .= "📦 Base Price × Quantity = " . number_format($configuration_price_into_quantity_price, 2) . "\n";
+} else {
+    $breakdownMessage .= "📦 Fixed Base Price (No Quantity Multiplier) = " . number_format($configuration_price_into_quantity_price, 2) . "\n";
+}
+
+// Discounts / special config (if available)
+if(!empty($priceConfigData)) {
+    if(isset($priceConfigData->discount) && $priceConfigData->discount > 0){
+        $breakdownMessage .= "💸 Discount Applied: " . number_format($priceConfigData->discount,2) . "\n";
+        $breakdownMessage .= "💰 Price After Discount: " . number_format($priceConfigData->price_after_discount,2) . "\n";
+    }
+}
+
+// Sq Ft Calculation
+if (!empty($params['sq_ft']) && $total_sq_ft > 0) {
+    $breakdownMessage .= "\n📏 Sq. Ft Pricing Details:\n";
+    $breakdownMessage .= "    Total Sq Ft: " . number_format($total_sq_ft, 2) . "\n";
+    $breakdownMessage .= "    Rate per Sq Ft: " . number_format($price_per_sq_ft, 2) . "\n";
+    $breakdownMessage .= "    Total Sq Ft Price: " . number_format($price_for_sq_ft, 2) . "\n";
+    $breakdownMessage .= "    Quantity × Sq Ft Price: " . number_format($quantity_into_total_sq_ft_price, 2) . "\n";
+} else {
+    $breakdownMessage .= "\n📏 Sq. Ft pricing not applied.\n";
+}
+
+// Final Price Summary
+$breakdownMessage .= "\n------------------------------\n";
+$breakdownMessage .= "✅ FINAL PRICE TO PAY: " . number_format($finalPrice, 2) . "\n";
+$breakdownMessage .= "------------------------------\n";
+
+// Optional: Estimated Shipping & Turnaround (if data available)
+if(isset($filteredShippingRanges) && $filteredShippingRanges->count() > 0){
+    $breakdownMessage .= "\n🚚 Applicable Shipping Options:\n";
+    foreach($filteredShippingRanges as $range){
+        $breakdownMessage .= "    - " . $range->title . ": " . number_format($range->price,2) . "\n";
+    }
+}
+if(isset($filteredTurnaroundRanges) && $filteredTurnaroundRanges->count() > 0){
+    $breakdownMessage .= "\n⏱ Applicable Turnaround Times:\n";
+    foreach($filteredTurnaroundRanges as $range){
+        $breakdownMessage .= "    - " . $range->title . ": " . $range->days . " days\n";
+    }
+}
+
+
+
+$breakdown = [
+    'PriceConfigMessage' => $PriceConfigMessage,
+    'product' => [
+        'name' => $product->product_name,
+        'type' => $product_type,
+    ],
+    'quantity' => $quantity,
+    'base_price' => round($configurationPrice, 2),
+    'configuration_price_times_quantity' => round($configuration_price_into_quantity_price, 2),
+    'discount' => isset($priceConfigData->discount) ? round($priceConfigData->discount, 2) : 0,
+    'price_after_discount' => isset($priceConfigData->price_after_discount) ? round($priceConfigData->price_after_discount, 2) : null,
+    'sq_ft' => [
+        'total_sq_ft' => $total_sq_ft,
+        'rate_per_sq_ft' => round($price_per_sq_ft, 2),
+        'total_sq_ft_price' => round($price_for_sq_ft, 2),
+        'quantity_times_sq_ft_price' => round($quantity_into_total_sq_ft_price ?? 0, 2),
+    ],
+    'final_price' => round($finalPrice, 2),
+    'shipping_options' => [],
+    'turnaround_times' => []
+];
+
+// Shipping
+if(isset($filteredShippingRanges) && $filteredShippingRanges->count() > 0){
+    foreach($filteredShippingRanges as $range){
+        $breakdown['shipping_options'][] = [
+            'title' => $range->title,
+            'price' => round($range->price, 2)
+        ];
+    }
+}
+
+// Turnaround
+if(isset($filteredTurnaroundRanges) && $filteredTurnaroundRanges->count() > 0){
+    foreach($filteredTurnaroundRanges as $range){
+        $breakdown['turnaround_times'][] = [
+            'title' => $range->title,
+            'days' => $range->days
+        ];
+    }
+}
+
+
+
 
         // --- ধাপ ৫: নতুন স্ট্রাকচারে রেসপন্স তৈরি করুন ---
         $response = [
             'data' => [
-                'breakdown' => [
-                    'quantity' => (float)$quantity,
-                    'configuration_price' => (float)number_format($configurationPrice, 2),
-                    'configuration_price_into_quantity_price' => (float)number_format($configuration_price_into_quantity_price, 2),
-                    'per_sq_ft_price' => (float)number_format($price_per_sq_ft, 2),
-                    'total_sq_ft' => (float)$total_sq_ft,
-                    'total_sq_ft_price' => isset($params['sq_ft']) ? (float)$params['sq_ft'] : null,
-                    'total_sq_ft_price' => (float)number_format($price_for_sq_ft, 2),
-                    'quantity_into_total_sq_ft_price' => (float)number_format($quantity_into_total_sq_ft_price ?? 0, 2),
-                    'configuration_price_into_quantity_price_plus_quantity_into_total_sq_ft_price' => (float)number_format($finalPrice, 2),
-                ],
+                'breakdown' => $breakdown,
+
+                // 'breakdown' => [
+                //     'Message' => $PriceConfigMessage,
+                //     'quantity' => (float)$quantity,
+                //     'configuration_price' => (float)$configurationPrice,
+                //     'configuration_price_into_quantity_price' => $configuration_price_into_quantity_price,
+                //     'per_sq_ft_price' => (float)$price_per_sq_ft,
+                //     'total_sq_ft' => (float)$total_sq_ft,
+                //     'total_sq_ft_price' => isset($params['sq_ft']) ? (float)$params['sq_ft'] : null,
+                //     'total_sq_ft_price' => (float)$price_for_sq_ft,
+                //     'quantity_into_total_sq_ft_price' => $quantity_into_total_sq_ft_price ?? 0,
+                //     'configuration_price_into_quantity_price_plus_quantity_into_total_sq_ft_price' => (float)$finalPrice,
+                // ],
+
+
+                'breakdown_message' => $breakdownMessage,
                 'quantity' => $quantity,
                 'price_config_list' => $priceConfigList,
                 'job_sample_price' => number_format($product->job_sample_price, 2),

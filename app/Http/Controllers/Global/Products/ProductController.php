@@ -121,7 +121,7 @@ public function getPrice(Request $request, $productId)
         'options' => 'nullable|array',
         'options.*' => 'required|string',
         'sq_ft' => 'nullable|integer|min:1',
-        'product_type' => 'nullable|integer|min:1',
+        'product_type' => 'nullable|string|min:1',
     ]);
 
     if ($validator->fails()) {

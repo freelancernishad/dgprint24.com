@@ -270,12 +270,12 @@ class PostgresController extends Controller
         // সব PgProduct ডেটা নিয়ে আসুন
         $pgProducts = PgProduct::all();
 
-        // $decodedProducts = $pgProducts->map(function($product) {
-        //     $product->productOptions = json_decode($product->productOptions);
-        //     return $product;
-        // });
+        $decodedProducts = $pgProducts->map(function($product) {
+            $product->productOptions = json_decode($product->productOptions);
+            return $product;
+        });
 
-        // return response()->json($decodedProducts);
+        return response()->json($decodedProducts);
 
         $transferredCount = 0;
         $failedCount = 0;
@@ -466,34 +466,31 @@ class PostgresController extends Controller
         foreach ($priceConfigsData as $configData) {
             // অপশনগুলো ফ্ল্যাট করুন (store ফাংশনের মতো)
 
+            $helpers = new HelpersFunctions();
 
-                        $helpers = new HelpersFunctions();
+            // 1️⃣ Flatten the options array
+            $flatOptions = $helpers->flattenSelectedOptions($configData['options']);
+            Log::info('Flat Options for Price Configuration:', ['options' => $flatOptions]);
 
-                        $flatOptions = $helpers->flattenSelectedOptions($configData['options']);
-                        Log::info('Flat Options for Price Configuration:', ['options' => $flatOptions]);
-                        $flatOptions = json_encode($flatOptions, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
-                        Log::info('JSON Encoded Flat Options:', ['options' => $flatOptions]);
+            // 2️⃣ Create the main price configuration
+            $priceConfig = $product->priceConfigurations()->create([
+                'runsize' => $configData['runsize'],
+                'price' => $configData['price'],
+                'discount' => $configData['discount'] ?? 0,
+            ]);
+
+            // 3️⃣ Save each flattened option relationally
+            foreach ($flatOptions as $key => $value) {
+                $priceConfig->optionsRel()->create([
+                    'key' => $key,
+                    'value' => $value,
+                ]);
+            }
+
+            Log::info('Price configuration options saved relationally.');
 
 
-                        // foreach ($configData['options'] as $key => $value) {
-                        //     if (isset($value['selected'])) {
-                        //         $flatOptions[$key] = $value['selected'];
-                        //     } else {
-                        //         $flatOptions[$key] = $value;
-                        //     }
-                        // }
 
-
-
-
-
-                        // প্রাইস কনফিগারেশন তৈরি করুন
-                        $priceConfig = $product->priceConfigurations()->create([
-                            'runsize' => $configData['runsize'],
-                            'price' => $configData['price'],
-                            'discount' => $configData['discount'] ?? 0,
-                            'options' => $flatOptions,
-                        ]);
 
             // এই কনফিগারেশনের জন্য শিপিং তৈরি করুন
             $shippingsToCreate = [];

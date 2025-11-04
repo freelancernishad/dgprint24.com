@@ -14,7 +14,7 @@ return new class extends Migration
             $table->integer('runsize');
             $table->decimal('price', 10, 2);
             $table->decimal('discount', 5, 2)->default(0);
-            $table->json('options'); // অপশন কম্বিনেশনের জন্য
+            $table->json('options')->nullable(); // অপশন কম্বিনেশনের জন্য
             $table->timestamps();
 
             // দ্রুত খোঁজার জন্য ইনডেক্স

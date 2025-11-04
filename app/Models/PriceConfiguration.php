@@ -23,6 +23,14 @@ class PriceConfiguration extends Model
         'discount' => 'decimal:2'
     ];
 
+    public function optionsRel()
+    {
+        return $this->hasMany(PriceConfigurationOption::class);
+    }
+
+
+
+
     public function product()
     {
         return $this->belongsTo(Product::class);
