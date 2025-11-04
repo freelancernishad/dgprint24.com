@@ -38,7 +38,7 @@ Route::prefix('admin')->middleware(AuthenticateAdmin::class)->group(function () 
     // অ্যাডমিন প্রোডাক্ট রিলেটেড রাউটসমূহ
     Route::apiResource('products', AdminProductController::class);
 
-
+    Route::patch('products/{product}/toggle-popular', [AdminProductController::class, 'togglePopular']);
 
 
 
@@ -82,6 +82,8 @@ Route::prefix('admin')->middleware(AuthenticateAdmin::class)->group(function () 
 
 // --- পাবলিক রাউটসমূহ ---
 Route::get('/categories', [CategoryController::class, 'index']); // সব অ্যাকটিভ ক্যাটাগরির লিস্ট
+Route::get('/categories/navbar', [CategoryController::class, 'getNavbarCategories']);
+
 Route::get('products/category/{category_id}', [ProductController::class, 'getByCategory']);
 Route::get('/products', [ProductController::class, 'index']);
 Route::get('/products/popular', [ProductController::class, 'mostPopular']);

@@ -359,4 +359,30 @@ class AdminProductController extends Controller
         $product->delete();
         return response()->json(null, 204);
     }
+
+
+      /**
+     * Toggle the 'popular_product' status of a specific product.
+     *
+     * @param  \App\Models\Product  $product
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function togglePopular(Product $product)
+    {
+        // বর্তমান ভ্যালুটি নিন এবং তা উল্টে দিন (invert)
+        // true হলে false হবে, false হলে true হবে
+        $product->popular_product = !$product->popular_product;
+
+        // পরিবর্তনগুলো ডাটাবেসে সেভ করুন
+        $product->save();
+
+        // সফলতার JSON রেসপন্স পাঠান
+        return response()->json([
+            'success' => true,
+            'message' => 'Product popularity status updated successfully!',
+            'data' => $product
+        ]);
+    }
+
+
 }

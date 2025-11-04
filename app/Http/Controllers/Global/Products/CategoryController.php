@@ -61,4 +61,25 @@ class CategoryController extends Controller
 
         return response()->json($category);
     }
+
+
+    /**
+     * Get a list of categories that are set to show in the navbar.
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function getNavbarCategories()
+    {
+        // Find all categories where the 'show_in_navbar' column is true
+        $categories = Category::where('show_in_navbar', true)->get();
+
+        // Return the list of categories as a JSON response
+        return response()->json([
+            'success' => true,
+            'message' => 'Navbar categories retrieved successfully!',
+            'data' => $categories
+        ]);
+    }
+
+
 }
