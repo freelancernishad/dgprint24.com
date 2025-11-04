@@ -158,9 +158,11 @@ class HelpersFunctions
 
             // jodi kono price configuration paoa na jay tobe akta veiable a meesage rakhte hobe response a breakdown a thakbe
             $PriceConfigMessage = 'No price configuration found for the selected options.';
+            $configurationId = null;
             if ($priceConfig) {
                 // ডাটাবেসে যে মূল্য সংরক্ষিত আছে সেটাই নিন
                 $configurationPrice = $priceConfig->price;
+                $configurationId = $priceConfig->id;
                 // ফ্রন্টএন্ডকে শিপিং এবং টার্নআরাউন্ড অপশন দেখানোর জন্য সম্পূর্ণ ডেটা রাখুন
                 $priceConfigData = $priceConfig;
                 $PriceConfigMessage = "Price configuration found.";
@@ -264,6 +266,7 @@ if(isset($filteredTurnaroundRanges) && $filteredTurnaroundRanges->count() > 0){
 
 $breakdown = [
     'PriceConfigMessage' => $PriceConfigMessage,
+    'configuration_id' => $configurationId,
     'product' => [
         'name' => $product->product_name,
         'type' => $product_type,

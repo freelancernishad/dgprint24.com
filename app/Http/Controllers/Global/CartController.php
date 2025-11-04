@@ -13,6 +13,7 @@ use App\Http\Controllers\Controller;
 use App\Models\TurnAroundTime;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use Twilio\TwiML\Voice\Sip;
 
@@ -86,12 +87,10 @@ public function store(Request $request)
         'quantity' => 'required|integer|min:1',
         'total_sq_ft' => 'nullable|integer|min:1',
         'options' => 'nullable|array',
-        // 'price_configuration_id' => 'required|integer', // কোন কনফিগারেশন নির্বাচিত হয়েছে (অত্যন্ত গুরুত্বপূর্ণ)
         'shipping_id' => 'nullable|string', // কোন শিপিং নির্বাচিত হয়েছে
         'turnaround_id' => 'nullable|string', // কোন টার্নআরাউন্ড নির্বাচিত হয়েছে
         'job_sample_price' => 'nullable|numeric|min:0',
         'digital_proof_price' => 'nullable|numeric|min:0',
-
     ]);
 
     if ($validator->fails()) {
@@ -103,29 +102,44 @@ public function store(Request $request)
 
     // ৩. ব্যাকএন্ডে মূল্য যাচাই করা
     $pricingData = $this->getPricingData($request->product_id, $request->quantity, $request->options, $request->total_sq_ft);
-    $data = $pricingData;
+    $data = $pricingData; // Updated to access the 'data' key from the new JSON structure
+
+
+    $configuration_id = $data['breakdown']['configuration_id'] ?? null;
+
+
 
     // নির্বাচিত প্রাইস কনফিগারেশন খুঁজে বের করা
-    // $priceConfig = collect($data['price_config_list'])
-    //     ->firstWhere('id', $request->price_configuration_id);
+    $priceConfig = collect($data['price_config_list'])
+        ->firstWhere('id', $configuration_id);
 
-    // if (!$priceConfig) {
-    //     return response()->json(['error' => 'Invalid price configuration selected.'], 422);
-    // }
+
+
+
+    if (!$priceConfig) {
+        return response()->json(['error' => 'Invalid price configuration selected.'], 422);
+    }
 
     // --- মূল্যের উপাদানগুলো বের করা ---
 
     // বেস মূল্য (কনফিগারেশন + পরিমাণ + বর্গফুট)
-    $basePrice = (float) $data['breakdown']['configuration_price_into_quantity_price_plus_quantity_into_total_sq_ft_price'];
+    $basePrice = (float) $data['breakdown']['final_price']; // Updated to use 'final_price' from the new structure
 
     // শিপিং মূল্য বের করা
     $shippingPrice = 0;
     $shippingDetails = null;
 
-
-
     if (!empty($request->shipping_id)) {
-        $shipping = Shipping::where('shipping_id', $request->shipping_id)->first();
+        // First check if shipping is available in the selected price configuration
+        $shipping = collect($priceConfig['shippings'] ?? [])
+            ->firstWhere('id', $request->shipping_id);
+
+        if (!$shipping) {
+            // If not found in price config, check global shipping options
+            $shipping = collect($data['shippings'] ?? [])
+                ->firstWhere('id', $request->shipping_id);
+        }
+
         if ($shipping) {
             $shippingPrice = (float) $shipping['price'];
             $shippingDetails = $shipping; // সম্পূর্ণ ডেটা স্ন্যাপশট হিসেবে রাখা হলো
@@ -136,22 +150,40 @@ public function store(Request $request)
     $turnaroundPrice = 0;
     $turnaroundDetails = null;
     if (!empty($request->turnaround_id)) {
-        $turnaround = TurnAroundTime::where('turnaround_id', $request->turnaround_id)->first();
+        // First check if turnaround is available in the selected price configuration
+        $turnaround = collect($priceConfig['turnarounds'] ?? [])
+            ->firstWhere('id', $request->turnaround_id);
+
+        if (!$turnaround) {
+            // If not found in price config, check global turnaround options
+            $turnaround = collect($data['turnarounds'] ?? [])
+                ->firstWhere('id', $request->turnaround_id);
+        }
+
         if ($turnaround) {
             $turnaroundPrice = (float) $turnaround['price'];
             $turnaroundDetails = $turnaround; // সম্পূর্ণ ডেটা স্ন্যাপশট হিসেবে রাখা হলো
         }
     }
 
-
-
-
     // অতিরিক্ত মূল্য
-    $jobSamplePrice = (float) ($request->job_sample_price ?? $data['job_sample_price']);
-    $digitalProofPrice = (float) ($request->digital_proof_price ?? $data['digital_proof_price']);
+     $jobSamplePrice = 0;
+     $digitalProofPrice = 0;
+    if($request->job_sample_price){
+        $jobSamplePrice = (float) ($data['job_sample_price']);
+    }
+
+    if($request->digital_proof_price){
+        $digitalProofPrice = (float) ($data['digital_proof_price']);
+    }
+
+
+
 
     // ব্যাকএন্ডে সর্বমোট মূল্য ক্যালকুলেট করা
     $backendCalculatedPrice = $basePrice + $shippingPrice + $turnaroundPrice + $jobSamplePrice + $digitalProofPrice;
+
+
 
     // ফ্রন্টএন্ডের প্রাইস এবং ব্যাকএন্ডের প্রাইস মেলানো (নিরাপত্তা যাচাই)
     // if (abs($backendCalculatedPrice - $request->price) > 0.01) {
@@ -161,6 +193,8 @@ public function store(Request $request)
     //         'sent_price' => $request->price
     //     ], 422);
     // }
+
+
     $verifiedPrice = $backendCalculatedPrice;
 
     // --- বিস্তারিত মূল্য বিভাজন (price_breakdown) তৈরি করা ---
