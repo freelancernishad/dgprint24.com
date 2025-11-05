@@ -115,14 +115,12 @@ public function register(Request $request)
             $admin = Auth::guard('admin')->user();
 
             // Custom payload data
-            $payload = [
-                'email' => $admin->email,
-                'name' => $admin->name,
-                'role' => $admin->role,
-                'email_verified' => !is_null($admin->email_verified_at),
-                // Add additional fields as necessary
-            ];
 
+            $payload = $admin;
+
+
+            $payload['email_verified'] = !is_null($admin->email_verified_at);
+            // Add additional fields as necessary
             try {
                 // Generate a JWT token with custom claims
                 $token = JWTAuth::fromUser($admin, ['guard' => 'admin']);
