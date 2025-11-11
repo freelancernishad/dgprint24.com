@@ -81,5 +81,28 @@ class CategoryController extends Controller
         ]);
     }
 
+    /**
+     * Get a list of categories that are set to show in the navbar.
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function getNavbarCategoriesWithProducts()
+    {
+        // Find all categories where the 'show_in_navbar' column is true
+        $categories = Category::with(['products' => function($query) {
+            $query->select('id', 'product_id', 'product_name','category_id');
+        }])
+        ->where('show_in_navbar', true)
+        ->select('id', 'category_id', 'name', 'category_image')
+        ->get();
+
+        // Return the list of categories as a JSON response
+        return response()->json([
+            'success' => true,
+            'message' => 'Navbar categories retrieved successfully!',
+            'data' => $categories
+        ]);
+    }
+
 
 }

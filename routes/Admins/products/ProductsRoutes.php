@@ -84,6 +84,8 @@ Route::prefix('admin')->middleware(AuthenticateAdmin::class)->group(function () 
 Route::get('/categories', [CategoryController::class, 'index']); // সব অ্যাকটিভ ক্যাটাগরির লিস্ট
 Route::get('/categories/navbar', [CategoryController::class, 'getNavbarCategories']);
 
+Route::get('/categories/navbar/with/products', [CategoryController::class, 'getNavbarCategoriesWithProducts']);
+
 Route::get('products/category/{category_id}', [ProductController::class, 'getByCategory']);
 Route::get('/products', [ProductController::class, 'index']);
 Route::get('/products/popular', [ProductController::class, 'mostPopular']);
