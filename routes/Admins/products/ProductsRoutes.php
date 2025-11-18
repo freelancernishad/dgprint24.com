@@ -61,12 +61,23 @@ Route::prefix('admin')->middleware(AuthenticateAdmin::class)->group(function () 
 
 
         // কাস্টম রাউট মডেল বাইন্ডিং: shipping_id দিয়ে মডেল খুঁজুন
-        Route::bind('shipping', function ($value) {
-            return Shipping::where('shipping_id', $value)->firstOrFail();
-        });
+        // Route::bind('shipping', function ($value) {
+        //     return Shipping::where('shipping_id', $value)->firstOrFail();
+        // });
 
         // শিপিং সংক্রান্ত CRUD রাউট
-        Route::apiResource('shippings', ShippingController::class);
+        // Route::apiResource('shippings', ShippingController::class);
+    Route::get('shippings', [ShippingController::class, 'index'])->name('shippings.index');
+
+    Route::post('shippings', [ShippingController::class, 'store'])->name('shippings.store');
+
+    Route::get('shipping/{shipping}', [ShippingController::class, 'show'])->name('shippings.show');
+
+    Route::post('shippings/{shipping}', [ShippingController::class, 'update'])->name('shippings.update');
+    Route::put('shippings/{shipping}', [ShippingController::class, 'update'])->name('shippings.update');
+    Route::patch('shippings/{shipping}', [ShippingController::class, 'update'])->name('shippings.update');
+
+    Route::delete('shipping/{shipping}', [ShippingController::class, 'destroy'])->name('shippings.destroy');
 
 
 
