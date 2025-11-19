@@ -11,8 +11,8 @@ class CreatePriceConfigurationOptionsTable extends Migration
         Schema::create('price_configuration_options', function (Blueprint $table) {
             $table->id();
             $table->foreignId('price_configuration_id')->constrained()->onDelete('cascade');
-            $table->string('key', 190);
-            $table->string('value', 190)->nullable();
+            $table->string('key', 100);
+            $table->string('value', 100)->nullable();
             $table->timestamps();
 
             $table->index(['key', 'value']); // fast filtering
