@@ -29,77 +29,76 @@ class AdminCategoryController extends Controller
      * Store a newly created resource in storage.
      * নতুন ক্যাটাগরি তৈরি করা।
      */
-    public function store(Request $request)
-    {
-        $validator = validator($request->all(), [
-            'name' => 'required|string|max:255|unique:categories,name',
-            'categoryDescription' => 'nullable|string',
-            'catagoryImage' => 'nullable|file|mimes:jpeg,jpg,png,gif,bmp,webp,svg,tiff,ico',
-            'varients' => 'nullable', // string or array
-            'tags' => 'nullable|array',
-            'active' => 'nullable',
-            'parent_id' => 'nullable|exists:categories,id',
-        ]);
+public function store(Request $request)
+{
+    $validator = validator($request->all(), [
+        'name' => 'required|string|max:255|unique:categories,name',
+        'categoryDescription' => 'nullable|string',
+        'catagoryImage' => 'nullable|file|mimes:jpeg,jpg,png,gif,bmp,webp,svg,tiff,ico',
+        'varients' => 'nullable',
+        'tags' => 'nullable|array',
+        'active' => 'nullable',
+        'parent_id' => 'nullable|exists:categories,id',
+    ]);
 
-        if ($validator->fails()) {
-            return response()->json(['errors' => $validator->errors()], 422);
-        }
-
-        $validatedData = $validator->validated();
-
-        $categoryImageUrl = null;
-
-        // Upload category image to S3
-        if ($request->hasFile('catagoryImage')) {
-            $file = $request->file('catagoryImage');
-            $filename = time() . '_' . $file->getClientOriginalName();
-            $label = 'category';
-
-            $categoryImageUrl = (new FileUploadService())->uploadFileToS3(
-                $file,
-                'dgprint24/uploads/images/category/' . $label . '_' . $filename
-            );
-        }
-
-        // Active status
-        $activeStatus = !empty($validatedData['active']);
-
-        // Handle variants (string or array)
-        $variants = $validatedData['varients'] ?? [];
-
-        // If incoming value is a JSON string, decode it
-        if (is_string($variants)) {
-            $decoded = json_decode($variants, true);
-
-            if (json_last_error() === JSON_ERROR_NONE && is_array($decoded)) {
-
-                // Sanitize all inner strings
-                array_walk_recursive($decoded, function (&$item) {
-                    if (is_string($item)) {
-                        // Make JSON safe
-                        $item = htmlspecialchars($item, ENT_QUOTES);
-                    }
-                });
-
-                $variants = $decoded;
-            } else {
-                $variants = []; // invalid JSON fallback
-            }
-        }
-
-        // Create Category
-        $category = Category::create([
-            'name' => $validatedData['name'],
-            'category_description' => $validatedData['categoryDescription'] ?? null,
-            'category_image' => $categoryImageUrl,
-            'variants' => $variants,
-            'tags' => $validatedData['tags'] ?? [],
-            'active' => $activeStatus,
-            'parent_id' => $validatedData['parent_id'] ?? null,
-        ]);
-
-        return response()->json($category, 201);
+    if ($validator->fails()) {
+        return response()->json(['errors' => $validator->errors()], 422);
     }
+
+    $validatedData = $validator->validated();
+
+    $categoryImageUrl = null;
+
+    // Upload category image to S3
+    if ($request->hasFile('catagoryImage')) {
+        $file = $request->file('catagoryImage');
+        $filename = time() . '_' . $file->getClientOriginalName();
+        $label = 'category';
+
+        $categoryImageUrl = (new FileUploadService())->uploadFileToS3(
+            $file,
+            'dgprint24/uploads/images/category/' . $label . '_' . $filename
+        );
+    }
+
+    // Active status
+    $activeStatus = !empty($validatedData['active']);
+
+    // Handle variants (string or array)
+    $variants = $validatedData['varients'] ?? [];
+
+    if (is_string($variants)) {
+        $decoded = json_decode($variants, true);
+
+        if (json_last_error() === JSON_ERROR_NONE && is_array($decoded)) {
+
+            // Replace " with inch symbol ″ everywhere
+            array_walk_recursive($decoded, function (&$item) {
+                if (is_string($item)) {
+                    // convert " → ″
+                    $item = str_replace('"', '″', $item);
+                }
+            });
+
+            $variants = $decoded;
+        } else {
+            $variants = [];
+        }
+    }
+
+    // Create category
+    $category = Category::create([
+        'name' => $validatedData['name'],
+        'category_description' => $validatedData['categoryDescription'] ?? null,
+        'category_image' => $categoryImageUrl,
+        'variants' => $variants,
+        'tags' => $validatedData['tags'] ?? [],
+        'active' => $activeStatus,
+        'parent_id' => $validatedData['parent_id'] ?? null,
+    ]);
+
+    return response()->json($category, 201);
+}
 
 
 
