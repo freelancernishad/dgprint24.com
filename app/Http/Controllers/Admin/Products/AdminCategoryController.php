@@ -29,14 +29,14 @@ class AdminCategoryController extends Controller
      * Store a newly created resource in storage.
      * নতুন ক্যাটাগরি তৈরি করা।
      */
-    public function store(Request $request)
+   public function store(Request $request)
     {
         $validator = validator($request->all(), [
             'name' => 'required|string|max:255|unique:categories,name',
             'categoryDescription' => 'nullable|string',
             'catagoryImage' => 'nullable|file|mimes:jpeg,jpg,png,gif,bmp,webp,svg,tiff,ico',
-            'varients' => 'nullable', // পরিবর্তন: string থেকে array
-            'tags' => 'nullable|array',    // পরিবর্তন: string থেকে array
+            'varients' => 'nullable', // string বা array উভয়ই গ্রহণযোগ্য
+            'tags' => 'nullable|array',
             'active' => 'nullable',
             'parent_id' => 'nullable|exists:categories,id',
         ]);
@@ -46,7 +46,6 @@ class AdminCategoryController extends Controller
         }
 
         $validatedData = $validator->validated();
-
 
         $categoryImageUrl = null;
 
@@ -62,16 +61,25 @@ class AdminCategoryController extends Controller
             );
         }
 
-        $activeStatus = false; // ডিফল্টভাবে false সেট করুন
-        if ($validatedData['active'] == true) {
-            $activeStatus = true;
+        // Active status
+        $activeStatus = !empty($validatedData['active']);
+
+        // Variants যদি JSON string হয়, decode কর
+        $variants = $validatedData['varients'] ?? [];
+        if (is_string($variants)) {
+            $decoded = json_decode($variants, true);
+            if (json_last_error() === JSON_ERROR_NONE && is_array($decoded)) {
+                $variants = $decoded;
+            } else {
+                $variants = []; // JSON invalid হলে খালি array
+            }
         }
-        // আর json_decode করার দরকার নেই, কারণ Laravel স্বয়ংক্রিয়ভাবে অ্যারে নিবে
+
         $category = Category::create([
             'name' => $validatedData['name'] ?? null,
             'category_description' => $validatedData['categoryDescription'] ?? null,
             'category_image' => $categoryImageUrl,
-            'variants' => $validatedData['varients'] ?? [],
+            'variants' => $variants,
             'tags' => $validatedData['tags'] ?? [],
             'active' => $activeStatus,
             'parent_id' => $validatedData['parent_id'] ?? null,
@@ -79,6 +87,7 @@ class AdminCategoryController extends Controller
 
         return response()->json($category, 201);
     }
+
 
     /**
      * Update the specified resource in storage.
