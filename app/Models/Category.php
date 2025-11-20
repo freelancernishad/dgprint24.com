@@ -37,9 +37,9 @@ class Category extends Model
         parent::boot();
 
 
-        // static::creating(function ($category) {
-        //     $category->category_id = $category->generateCategoryId($category->name);
-        // });
+        static::creating(function ($category) {
+            $category->category_id = $category->generateCategoryId($category->name);
+        });
 
 
 
