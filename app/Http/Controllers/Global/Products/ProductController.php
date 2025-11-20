@@ -115,6 +115,7 @@ class ProductController extends Controller
  */
 public function getPrice(Request $request, $productId)
 {
+    Log::info($request->all() );
     // ১. ইনকামিং ডেটা ভ্যালিডেট করুন
     $validator = \Illuminate\Support\Facades\Validator::make($request->all(), [
         'runsize' => 'required|integer|min:1',
