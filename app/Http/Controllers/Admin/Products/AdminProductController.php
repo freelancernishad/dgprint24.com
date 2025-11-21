@@ -189,6 +189,8 @@ class AdminProductController extends Controller
             $helpers = new HelpersFunctions();
             $flatOptions = $helpers->flattenSelectedOptions($configData['options']);
 
+            Log::info('Flattened Options: ', $flatOptions);
+
 
             // $flatOptions = [];
             // foreach ($configData['options'] as $key => $value) {
@@ -214,6 +216,14 @@ class AdminProductController extends Controller
                 'options' => $flatOptions, // <--- ফ্ল্যাট অ্যারেটি সেভ করুন
             ]);
 
+
+            // 3️⃣ Save each flattened option relationally
+            foreach ($flatOptions as $key => $value) {
+                $priceConfig->optionsRel()->create([
+                    'key' => $key,
+                    'value' => $value,
+                ]);
+            }
 
 
                 foreach ($configData['shippings'] as $shippingData) {
