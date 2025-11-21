@@ -115,8 +115,18 @@ class HelpersFunctions
                 ->pluck('value', 'key')
                 ->toArray();
 
+
+                    // Decode incoming param keys
+    $rawParams = $params['options'] ?? [];
+    $paramOptions = [];
+
+    foreach ($rawParams as $key => $value) {
+        $paramOptions[ urldecode($key) ] = $value;
+    }
+
+
             // Params options array
-            $paramOptions = $params['options'] ?? [];
+            // $paramOptions = $params['options'] ?? [];
 
             Log::info("Config ID: {$config->id}");
             Log::info("Config Options: " . json_encode($configOptions));
