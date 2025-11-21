@@ -110,22 +110,49 @@ class HelpersFunctions
 
         foreach ($priceConfigList as $config) {
 
-            $totalOptions = $config->optionsRel->count();
-            $matchedOptions = $config->optionsRel->filter(function($opt) use ($params) {
-                return isset($params['options'][$opt->key]) && $params['options'][$opt->key] == $opt->value;
-            })->count();
+            // Config options array বানানো (key => value)
+            $configOptions = $config->optionsRel
+                ->pluck('value', 'key')
+                ->toArray();
 
-            Log::info("PriceConfiguration ID: {$config->id}");
-            Log::info("Total Options: {$totalOptions}");
-            Log::info("Matched Options: {$matchedOptions}");
+            // Params options array
+            $paramOptions = $params['options'] ?? [];
 
-            if ($matchedOptions === $totalOptions) {
-                Log::info("✅ All options match for this configuration.");
+            Log::info("Config ID: {$config->id}");
+            Log::info("Config Options: " . json_encode($configOptions));
+            Log::info("Param Options: " . json_encode($paramOptions));
+
+            // 100% match check → দুই array সম্পূর্ণ সমান কি না
+            if ($configOptions == $paramOptions) {
+                Log::info("✅ 100% MATCH FOUND");
                 $filteredConfigList->push($config);
             } else {
-                Log::info("❌ Not all options match.");
+                Log::info("❌ Not 100% match");
             }
         }
+
+        // foreach ($priceConfigList as $config) {
+
+        //     $totalOptions = $config->optionsRel->count();
+        //     $matchedOptions = $config->optionsRel->filter(function($opt) use ($params) {
+        //         return isset($params['options'][$opt->key]) && $params['options'][$opt->key] == $opt->value;
+        //     })->count();
+
+        //     Log::info("PriceConfiguration ID: {$config->id}");
+        //     Log::info("Total Options: {$totalOptions}");
+        //     Log::info("Matched Options: {$matchedOptions}");
+
+        //     if ($matchedOptions === $totalOptions) {
+        //         Log::info("✅ All options match for this configuration.");
+        //         $filteredConfigList->push($config);
+        //     } else {
+        //         Log::info("❌ Not all options match.");
+        //     }
+        // }
+
+
+
+
 
         $priceConfigList = $filteredConfigList;
 
