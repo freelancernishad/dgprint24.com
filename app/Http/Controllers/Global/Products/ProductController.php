@@ -121,7 +121,7 @@ public function getPrice(Request $request, $productId)
         'runsize' => 'required|integer|min:1',
         'options' => 'nullable|array',
         'options.*' => 'required|string',
-        'sq_ft' => 'nullable|integer|min:1',
+        'sq_ft' => 'nullable|numeric',
         'product_type' => 'nullable|string|min:1',
     ]);
 
