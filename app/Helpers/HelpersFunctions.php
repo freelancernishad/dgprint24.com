@@ -200,7 +200,7 @@ class HelpersFunctions
                 // ডাটাবেসে যে মূল্য সংরক্ষিত আছে সেটাই নিন
                 $configurationPrice = $priceConfig->price;
                 $base_price = $priceConfig->price;
-            
+
 
                 if (!empty($priceConfig->discount) && $priceConfig->discount > 0) {
                     // Discount percentage হিসেবে হিসাব
@@ -224,6 +224,8 @@ class HelpersFunctions
             })
             ->first();
 
+            Log::info("Price Range for quantity {$quantity}: " . ($priceRange ? $priceRange : 'None'));
+
         if ($priceRange) {
             if (isset($params['sq_ft'])) {
                 $total_sq_ft = $params['sq_ft'];
@@ -238,7 +240,7 @@ class HelpersFunctions
 
         // --- ধাপ ৩: চূড়ন্ত মূল্য ক্যালকুলেট করুন ---
         $configuration_price_into_quantity_price = $configurationPrice;
- 
+
 
         if($product_type === 'banner') {
             $configuration_price_into_quantity_price = $configurationPrice * $quantity;
