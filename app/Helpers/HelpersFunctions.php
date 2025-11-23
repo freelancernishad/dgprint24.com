@@ -196,6 +196,7 @@ class HelpersFunctions
             // jodi kono price configuration paoa na jay tobe akta veiable a meesage rakhte hobe response a breakdown a thakbe
             $PriceConfigMessage = 'No price configuration found for the selected options.';
             $configurationId = null;
+            $base_price = 0;
             if ($priceConfig) {
                 // ডাটাবেসে যে মূল্য সংরক্ষিত আছে সেটাই নিন
                 $configurationPrice = $priceConfig->price;
@@ -224,7 +225,7 @@ class HelpersFunctions
             })
             ->first();
 
-            Log::info("Price Range for quantity {$quantity}: " . ($priceRange ? $priceRange : 'None'));
+            // Log::info("Price Range for quantity {$quantity}: " . ($priceRange ? $priceRange : 'None'));
 
         if ($priceRange) {
             if (isset($params['sq_ft'])) {
