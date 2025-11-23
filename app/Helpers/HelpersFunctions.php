@@ -199,6 +199,12 @@ class HelpersFunctions
             if ($priceConfig) {
                 // ডাটাবেসে যে মূল্য সংরক্ষিত আছে সেটাই নিন
                 $configurationPrice = $priceConfig->price;
+
+                if (!empty($priceConfig->discount) && $priceConfig->discount > 0) {
+                    // Discount percentage হিসেবে হিসাব
+                    $configurationPrice = $configurationPrice * (1 - $priceConfig->discount / 100);
+                }
+
                 $configurationId = $priceConfig->id;
                 // ফ্রন্টএন্ডকে শিপিং এবং টার্নআরাউন্ড অপশন দেখানোর জন্য সম্পূর্ণ ডেটা রাখুন
                 $priceConfigData = $priceConfig;
@@ -229,14 +235,20 @@ class HelpersFunctions
 
         // --- ধাপ ৩: চূড়ন্ত মূল্য ক্যালকুলেট করুন ---
         $configuration_price_into_quantity_price = $configurationPrice;
+
+
         if($product_type === 'banner') {
             $configuration_price_into_quantity_price = $configurationPrice * $quantity;
         }
 
-
-
-
         $finalPrice = $configuration_price_into_quantity_price + ($quantity_into_total_sq_ft_price ?? 0);
+
+
+
+
+
+
+
 
         // --- ধাপ ৪: যদি কোনো ধরনের প্রাইস তথ্য না থাকে, তাহলে এরর দিন ---
         // if ($configurationPrice == 0 && ($quantity_into_total_sq_ft_price ?? 0) == 0) {
