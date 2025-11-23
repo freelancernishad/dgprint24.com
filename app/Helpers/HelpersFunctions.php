@@ -199,11 +199,12 @@ class HelpersFunctions
             if ($priceConfig) {
                 // ডাটাবেসে যে মূল্য সংরক্ষিত আছে সেটাই নিন
                 $configurationPrice = $priceConfig->price;
-                $configurationPricediscount = 0;
+                $base_price = $priceConfig->price;
+            
 
                 if (!empty($priceConfig->discount) && $priceConfig->discount > 0) {
                     // Discount percentage হিসেবে হিসাব
-                    $configurationPricediscount = $configurationPrice * (1 - $priceConfig->discount / 100);
+                    $configurationPrice = $configurationPrice * (1 - $priceConfig->discount / 100);
                 }
 
                 $configurationId = $priceConfig->id;
@@ -237,12 +238,7 @@ class HelpersFunctions
 
         // --- ধাপ ৩: চূড়ন্ত মূল্য ক্যালকুলেট করুন ---
         $configuration_price_into_quantity_price = $configurationPrice;
-        if (!empty($priceConfig->discount) && $priceConfig->discount > 0) {
-            $configuration_price_into_quantity_price = $configurationPricediscount;
-        }
-
-
-
+ 
 
         if($product_type === 'banner') {
             $configuration_price_into_quantity_price = $configurationPrice * $quantity;
@@ -328,11 +324,10 @@ $breakdown = [
         'type' => $product_type,
     ],
     'quantity' => $quantity,
-    'base_price' => round($configurationPrice, 2),
-    'base_price_after_discount' => round($configurationPricediscount, 2),
-    'configuration_price_times_quantity' => round($configuration_price_into_quantity_price, 2),
+    'base_price' => round($base_price, 2),
     'discount' => isset($priceConfigData->discount) ? round($priceConfigData->discount, 2) : 0,
     'price_after_discount' => isset($priceConfigData->price_after_discount) ? round($priceConfigData->price_after_discount, 2) : null,
+    'configuration_price_times_quantity' => round($configuration_price_into_quantity_price, 2),
     'sq_ft' => [
         'total_sq_ft' => $total_sq_ft,
         'rate_per_sq_ft' => round($price_per_sq_ft, 2),
