@@ -199,10 +199,11 @@ class HelpersFunctions
             if ($priceConfig) {
                 // ডাটাবেসে যে মূল্য সংরক্ষিত আছে সেটাই নিন
                 $configurationPrice = $priceConfig->price;
+                $configurationPricediscount = 0;
 
                 if (!empty($priceConfig->discount) && $priceConfig->discount > 0) {
                     // Discount percentage হিসেবে হিসাব
-                    $configurationPrice = $configurationPrice * (1 - $priceConfig->discount / 100);
+                    $configurationPricediscount = $configurationPrice * (1 - $priceConfig->discount / 100);
                 }
 
                 $configurationId = $priceConfig->id;
@@ -233,8 +234,14 @@ class HelpersFunctions
             $quantity_into_total_sq_ft_price = $quantity * $price_for_sq_ft;
         }
 
+
         // --- ধাপ ৩: চূড়ন্ত মূল্য ক্যালকুলেট করুন ---
         $configuration_price_into_quantity_price = $configurationPrice;
+        if (!empty($priceConfig->discount) && $priceConfig->discount > 0) {
+            $configuration_price_into_quantity_price = $configurationPricediscount;
+        }
+
+
 
 
         if($product_type === 'banner') {
@@ -322,6 +329,7 @@ $breakdown = [
     ],
     'quantity' => $quantity,
     'base_price' => round($configurationPrice, 2),
+    'base_price_after_discount' => round($configurationPricediscount, 2),
     'configuration_price_times_quantity' => round($configuration_price_into_quantity_price, 2),
     'discount' => isset($priceConfigData->discount) ? round($priceConfigData->discount, 2) : 0,
     'price_after_discount' => isset($priceConfigData->price_after_discount) ? round($priceConfigData->price_after_discount, 2) : null,
