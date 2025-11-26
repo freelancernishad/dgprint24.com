@@ -82,8 +82,8 @@ class AdminProductController extends Controller
                 'dynamicOptions' => $validatedData['productOptions']['dynamicOptions'] ?? null,
                 'extraDynamicOptions' => $validatedData['productOptions']['extraDynamicOptions'] ?? null,
                 'active' => true,
-                'job_sample_price' => $validatedData['jobSamplePrice'] ?? 0,
-                'digital_proof_price' => $validatedData['digitalProofPrice'] ?? 0,
+                'job_sample_price' => $validatedData['productOptions']['advanceOptions']['jobSamplePrice'] ?? 0,
+                'digital_proof_price' => $validatedData['productOptions']['advanceOptions']['digitalProofPrice'] ?? 0,
             ]);
 
 
