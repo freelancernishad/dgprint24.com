@@ -25,7 +25,7 @@ class AdminProductController extends Controller
     public function index()
     {
         $products = Product::with('category:id,name','faqs','images')
-            ->select('id', 'product_id', 'product_name', 'category_id', 'active', 'popular_product','dynamicOptions', 'created_at')
+            ->select('id', 'product_id', 'product_name', 'category_id', 'active', 'popular_product','dynamicOptions','extraDynamicOptions', 'created_at')
             ->latest()
             ->paginate(20);
 
@@ -80,6 +80,7 @@ class AdminProductController extends Controller
                 'product_description' => $validatedData['productDescription'],
                 // পরিবর্তন ২: ডাটাবেসে সেভ করার সময় অ্যারেকে JSON স্ট্রিং-এ কনভার্ট করুন
                 'dynamicOptions' => $validatedData['productOptions']['dynamicOptions'] ?? null,
+                'extraDynamicOptions' => $validatedData['productOptions']['extraDynamicOptions'] ?? null,
                 'active' => true,
                 'job_sample_price' => $validatedData['jobSamplePrice'] ?? 0,
                 'digital_proof_price' => $validatedData['digitalProofPrice'] ?? 0,

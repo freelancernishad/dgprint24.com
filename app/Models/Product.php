@@ -20,12 +20,14 @@ class Product extends Model
         'active',
         'popular_product',
         'dynamicOptions',
+        'extraDynamicOptions',
         'job_sample_price',
         'digital_proof_price',
     ];
 
     protected $casts = [
         'dynamicOptions' => 'array',
+        'extraDynamicOptions' => 'array',
         'active' => 'boolean',
         'popular_product' => 'boolean',
         'base_price' => 'decimal:2',
