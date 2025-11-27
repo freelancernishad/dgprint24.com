@@ -66,6 +66,7 @@ class ProductController extends Controller
             'category:id,name',
             'faqs',
             'images',
+            'dimensionPricing'
         ])
         ->where('active', true)
         ->where('product_id', $productId)
