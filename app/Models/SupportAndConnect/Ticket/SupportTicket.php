@@ -18,8 +18,25 @@ class SupportTicket extends Model
         'status',
         'priority', // Add this line
         'attachment', // Add this line
+
+
+
+          // New fields for Trade Job Trouble Ticket
+        'job_id',
+        'login_email',
+        'company_name',
+        'contact_name',
+        'contact_telephone',
+        'contact_email',
+        'problem_category',
+        'request_reprint',
+        'problem_description',
     ];
 
+    protected $hidden = [
+        'subject',
+        'message',
+    ];
 
 
     protected $with = [
