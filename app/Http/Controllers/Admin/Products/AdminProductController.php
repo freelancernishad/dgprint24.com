@@ -13,6 +13,7 @@ use App\Models\PriceConfiguration;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
+use App\Http\Resources\ProductResource;
 use App\Models\PriceConfigurationShipping;
 use App\Models\PriceConfigurationTurnaround;
 
@@ -271,9 +272,33 @@ class AdminProductController extends Controller
             'faqs',
             'images',
             'priceConfigurations.shippings',
-            'priceConfigurations.turnarounds'
+            'priceConfigurations.turnarounds',
+            'dimensionPricing',
+            'priceRanges',
+            'turnaroundRanges',
+            'shippingRanges'
         ])->findOrFail($id);
+
+        // return new ProductResource($product);
         return response()->json($product);
+    }
+
+    public function showForEdit($id)
+    {
+        $product = Product::with([
+            'category:id,name,category_id',
+            'faqs',
+            'images',
+            'priceConfigurations.shippings',
+            'priceConfigurations.turnarounds',
+            'dimensionPricing',
+            'priceRanges',
+            'turnaroundRanges',
+            'shippingRanges'
+        ])->findOrFail($id);
+
+        return new ProductResource($product);
+        // return response()->json($product);
     }
 
     /**

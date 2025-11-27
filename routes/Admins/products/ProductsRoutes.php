@@ -39,6 +39,7 @@ Route::prefix('admin')->middleware(AuthenticateAdmin::class)->group(function () 
     Route::apiResource('products', AdminProductController::class);
 
     Route::patch('products/{product}/toggle-popular', [AdminProductController::class, 'togglePopular']);
+    Route::get('single/product/{id}/for/edit', [AdminProductController::class, 'showForEdit']);
 
 
 
