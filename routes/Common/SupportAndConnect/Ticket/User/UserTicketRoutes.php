@@ -2,14 +2,14 @@
 
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Middleware\AuthenticateUser;
+use App\Http\Middleware\ExanalAuthenticateUser;
 use App\Http\Controllers\Common\SupportAndConnect\User\SupportTicketApiController;
 use App\Http\Controllers\Common\SupportAndConnect\Admin\AdminSupportTicketApiController;
 
 
 
 Route::prefix('user')->group(function () {
-    Route::middleware(AuthenticateUser::class)->group(function () {
+    Route::middleware(ExanalAuthenticateUser::class)->group(function () {
 
         Route::get('/support', [SupportTicketApiController::class, 'index']);
         Route::post('/support', [SupportTicketApiController::class, 'store']);

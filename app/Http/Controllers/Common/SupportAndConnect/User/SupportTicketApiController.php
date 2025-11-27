@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers\Common\SupportAndConnect\User;
 
-use App\Http\Controllers\Controller;
-use App\Models\SupportTicket;
 use Illuminate\Http\Request;
+
+use App\Models\SupportAndConnect\Ticket\SupportTicket;
+use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 
 class SupportTicketApiController extends Controller
@@ -42,6 +44,7 @@ class SupportTicketApiController extends Controller
             return response()->json(['errors' => $validator->errors()], 422);
         }
 
+    
         // Create the ticket
         $ticket = SupportTicket::create([
             'user_id' => Auth::id(),
