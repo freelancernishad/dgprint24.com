@@ -83,6 +83,7 @@ class HelpersFunctions
         $product_type = $product->product_type ?? 'banner';
         $quantity = $params['runsize'];
         $turn_around_times_id = $params['turn_around_times_id'] ?? null;
+        $shipping_id = $params['shipping_id'] ?? null;
         $hasOptions = !empty($params['options']);
 
         // ভেরিয়েবল মূল্য রাখার জন্য ভেরিয়েবল
@@ -247,6 +248,34 @@ class HelpersFunctions
 
 
 
+
+        // কোয়ান্টিটি অনুযায়ী শিপিং রেঞ্জ ফিল্টার করুন এবং keys রিসেট করুন
+        $filteredShippingRanges = $product->shippingRanges->filter(function ($range) use ($quantity) {
+            return $quantity >= $range->min_quantity &&
+                ($range->max_quantity === null || $quantity <= $range->max_quantity);
+        })->values(); // <-- এখানে values() যোগ করুন
+
+
+        $selected_shipping = [];
+        $shippingRangesPrice = 0;
+        if($shipping_id){
+            $selected_shipping = $filteredShippingRanges
+            ->pluck('shippings')
+            ->flatten(1)
+            ->firstWhere('id', $shipping_id);
+
+            $shippingRangesPrice = $selected_shipping['price'] ?? 0;
+
+        }
+
+
+
+
+
+
+
+
+
         // কোয়ান্টিটি অনুযায়ী টার্নআরাউন্ড রেঞ্জ ফিল্টার করুন এবং keys রিসেট করুন
         $filteredTurnaroundRanges = $product->turnaroundRanges->filter(function ($range) use ($quantity) {
             return $quantity >= $range->min_quantity &&
@@ -254,12 +283,17 @@ class HelpersFunctions
         })->values(); // <-- এখানেও values() যোগ করুন
 
 
+
+        $selected_turnaround = [];
         $TurnaroundRangesPrice = 0;
         if($turn_around_times_id){
-            $TurnaroundRangesPrice = $filteredTurnaroundRanges
+            $selected_turnaround = $filteredTurnaroundRanges
             ->pluck('turnarounds')
             ->flatten(1)
-            ->firstWhere('id', $turn_around_times_id)['price'] ?? 0;
+            ->firstWhere('id', $turn_around_times_id);
+
+            $TurnaroundRangesPrice = $selected_turnaround['price'] ?? 0;
+
         }
 
 
@@ -368,7 +402,10 @@ $breakdown = [
         'quantity_times_sq_ft_price' => round($quantity_into_total_sq_ft_price ?? 0, 2),
     ],
     'turnaround_price' => round($TurnaroundRangesPriceIntoQuantity, 2),
+    'shipping_price' => round($shippingRangesPrice, 2),
     'final_price' => round($finalPrice, 2),
+    'selected_turnaround' => $selected_turnaround,
+    'selected_shipping' => $selected_shipping,
     'shipping_options' => [],
     'turnaround_times' => []
 ];
@@ -424,12 +461,6 @@ if(isset($filteredTurnaroundRanges) && $filteredTurnaroundRanges->count() > 0){
         ];
 
 
-
-              // কোয়ান্টিটি অনুযায়ী শিপিং রেঞ্জ ফিল্টার করুন এবং keys রিসেট করুন
-        $filteredShippingRanges = $product->shippingRanges->filter(function ($range) use ($quantity) {
-            return $quantity >= $range->min_quantity &&
-                ($range->max_quantity === null || $quantity <= $range->max_quantity);
-        })->values(); // <-- এখানে values() যোগ করুন
 
 
 

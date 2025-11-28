@@ -125,6 +125,7 @@ public function getPrice(Request $request, $productId)
         'sq_ft' => 'nullable|numeric',
         'product_type' => 'nullable|string|min:1',
         'turn_around_times_id' => 'nullable|string',
+        'shipping_id' => 'nullable|string',
     ]);
 
     if ($validator->fails()) {
@@ -134,7 +135,7 @@ public function getPrice(Request $request, $productId)
     // ২. ভ্যালিডেটেড ডেটা একটি অ্যারেতে নিন
     // $request->only() শুধুমাত্র প্রয়োজনীয় কীগুলো সহ একটি অ্যারে তৈরি করে।
     // এটি আপনার হেলপার ফাংশনকে সরাসরি Request অবজেক্টের পরিবর্তে একটি পরিষ্কার অ্যারে দেয়।
-    $pricingParams = $request->only(['runsize', 'options', 'sq_ft', 'product_type','turn_around_times_id']);
+    $pricingParams = $request->only(['runsize', 'options', 'sq_ft', 'product_type','turn_around_times_id','shipping_id']);
 
     // ৩. হেলপার ফাংশনকে অ্যারে এবং productId পাস করুন
     // এখন আপনার HelpersFunctions ক্লাসের getPricingData মেথডটিকে এমনভাবে ডিজাইন করতে হবে

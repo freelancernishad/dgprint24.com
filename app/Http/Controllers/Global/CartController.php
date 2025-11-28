@@ -91,6 +91,7 @@ public function store(Request $request)
         'turnaround_id' => 'nullable', // কোন টার্নআরাউন্ড নির্বাচিত হয়েছে
         'job_sample_price' => 'nullable|numeric|min:0',
         'digital_proof_price' => 'nullable|numeric|min:0',
+        'delivery_address' => 'nullable|array',
     ]);
 
 
@@ -105,7 +106,7 @@ public function store(Request $request)
     $product = Product::where('product_id', $request->product_id)->where('active', true)->firstOrFail();
 
     // ৩. ব্যাকএন্ডে মূল্য যাচাই করা
-    $pricingData = $this->getPricingData($request->product_id, $request->quantity, $request->options, $request->total_sq_ft);
+    $pricingData = $this->getPricingData($request->product_id, $request->quantity, $request->options, $request->total_sq_ft, $request->turnaround_id,$request->shipping_id);
     $data = $pricingData; // Updated to access the 'data' key from the new JSON structure
 
 
@@ -132,52 +133,35 @@ public function store(Request $request)
 
     // শিপিং মূল্য বের করা
     $shippingPrice = 0;
-    $shippingDetails = null;
 
-    if (!empty($request->shipping_id)) {
-        // First check if shipping is available in the selected price configuration
-        $shipping = collect($priceConfig['shippings'] ?? [])
-            ->firstWhere('id', $request->shipping_id);
 
-        if (!$shipping) {
-            // If not found in price config, check global shipping options
-            $shipping = collect($data['shippings'] ?? [])
-                ->firstWhere('id', $request->shipping_id);
-        }
 
-        if ($shipping) {
-            $shippingPrice = (float) $shipping['price'];
-            $shippingDetails = $shipping; // সম্পূর্ণ ডেটা স্ন্যাপশট হিসেবে রাখা হলো
-        }
-    }
+
+
+      $selected_turnaround = $data['breakdown']['selected_turnaround'] ?? null;
+      $selected_shipping = $data['breakdown']['selected_shipping'] ?? null;
 
     // টার্নআরাউন্ড মূল্য বের করা
     $turnaroundPrice = 0;
-    $turnaroundDetails = null;
+    $turnaroundDetails = $selected_turnaround;
     if (!empty($request->turnaround_id)) {
-        // First check if turnaround is available in the selected price configuration
-        $turnaround = collect($priceConfig['turnarounds'] ?? [])
-            ->firstWhere('id', $request->turnaround_id);
-
-        if (!$turnaround) {
-            // If not found in price config, check global turnaround options
-            $turnaround = collect($data['turnarounds'] ?? [])
-                ->firstWhere('id', $request->turnaround_id);
-        }
-
-        if ($turnaround) {
-            $turnaroundPrice = (float) $turnaround['price'];
-            $turnaroundDetails = $turnaround; // সম্পূর্ণ ডেটা স্ন্যাপশট হিসেবে রাখা হলো
+        if ($turnaroundDetails) {
+            $turnaroundPrice = (float) $turnaroundDetails['price'];
         }
     }
 
-    return response()->json([
-        'basePrice' => $basePrice,
-        'shippingPrice' => $shippingPrice,
-        'shippingDetails' => $shippingDetails,
-        'turnaroundPrice' => $turnaroundPrice,
-        'turnaroundDetails' => $turnaroundDetails,
-    ]);
+    $shippingPrice = 0;
+    $shippingDetails = $selected_shipping;
+    if (!empty($request->shipping_id)) {
+        if ($shippingDetails) {
+            $shippingPrice = (float) $shippingDetails['price'];
+        }
+    }
+
+
+
+
+
 
     // অতিরিক্ত মূল্য
      $jobSamplePrice = 0;
@@ -273,6 +257,9 @@ public function store(Request $request)
             'price_at_time' => $verifiedPrice, // যাচাইকৃত সর্বমোট মূল্য
             'options' => $request->options ?? null,
             'price_breakdown' => $priceBreakdown, // বিস্তারিত ব্রেকডাউন সংরক্ষণ
+            'turnarounds' => $turnaroundDetails,
+            'shippings' => $shippingDetails,
+            'delivery_address' => $request->delivery_address ?? null,
             'status' => 'pending',
         ]);
     }
@@ -470,14 +457,18 @@ public function store(Request $request)
    /**
  * Get pricing data from the helper function.
  */
-private function getPricingData($productId, $quantity, $options, $total_sq_ft = null)
+private function getPricingData($productId, $quantity, $options, $total_sq_ft = null, $turnaround_id = null, $shipping_id = null)
 {
     // প্যারামিটারগুলো একটি অ্যারেতে রূপান্তর করুন
     $params = [
         'runsize' => $quantity,
         'options' => $options,
         'sq_ft' => $total_sq_ft,
+        'turn_around_times_id' => $turnaround_id ?? null,
+        'shipping_id' => $shipping_id ?? null,
     ];
+
+    Log::info('Fetching pricing data for product ID: ' . $productId . ' with params: ' . json_encode($params));
 
     // আপনার হেলপার ফাংশনকে কল করুন
     // এখন আমরা অ্যারে এবং productId পাস করছি
