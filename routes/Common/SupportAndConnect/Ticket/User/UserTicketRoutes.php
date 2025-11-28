@@ -9,7 +9,7 @@ use App\Http\Controllers\Common\SupportAndConnect\Admin\AdminSupportTicketApiCon
 
 
 Route::prefix('user')->group(function () {
-    Route::middleware(ExanalAuthenticateUser::class)->group(function () {
+    // Route::middleware(ExanalAuthenticateUser::class)->group(function () {
 
         Route::get('/support', [SupportTicketApiController::class, 'index']);
         Route::post('/support', [SupportTicketApiController::class, 'store']);
@@ -17,6 +17,6 @@ Route::prefix('user')->group(function () {
         Route::post('/support/{ticket}/reply', [AdminSupportTicketApiController::class, 'reply']);
 
 
-    });
+    // });
 
 });

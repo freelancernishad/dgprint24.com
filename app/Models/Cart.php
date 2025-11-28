@@ -19,11 +19,25 @@ class Cart extends Model
         'options',                 // প্রোডাক্ট অপশন (JSON), যেমন: ['color' => 'red', 'size' => 'M']
         'price_breakdown',         // মূল্য বিভাজন (JSON), যেমন: ['subtotal' => 500, 'shipping' => 50]
         'status',                  // pending, ordered, abandoned
+
+
+
+        // Newly added JSON fields
+        'shippings',
+        'turnarounds',
+        'delivery_address',
+
     ];
 
     protected $casts = [
         'options' => 'array',
         'price_breakdown' => 'array',
+
+
+        // New Casts
+        'shippings' => 'array',
+        'turnarounds' => 'array',
+        'delivery_address' => 'array',
     ];
 
     public function user()

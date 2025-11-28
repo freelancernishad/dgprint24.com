@@ -87,15 +87,19 @@ public function store(Request $request)
         'quantity' => 'required|integer|min:1',
         'total_sq_ft' => 'nullable|integer|min:1',
         'options' => 'nullable|array',
-        'shipping_id' => 'nullable|string', // কোন শিপিং নির্বাচিত হয়েছে
-        'turnaround_id' => 'nullable|string', // কোন টার্নআরাউন্ড নির্বাচিত হয়েছে
+        'shipping_id' => 'nullable', // কোন শিপিং নির্বাচিত হয়েছে
+        'turnaround_id' => 'nullable', // কোন টার্নআরাউন্ড নির্বাচিত হয়েছে
         'job_sample_price' => 'nullable|numeric|min:0',
         'digital_proof_price' => 'nullable|numeric|min:0',
     ]);
 
+
     if ($validator->fails()) {
         return response()->json(['errors' => $validator->errors()], 422);
     }
+
+
+
 
     // ২. প্রোডাক্ট খুঁজে বের করা
     $product = Product::where('product_id', $request->product_id)->where('active', true)->firstOrFail();
@@ -119,6 +123,7 @@ public function store(Request $request)
     if (!$priceConfig) {
         return response()->json(['error' => 'Invalid price configuration selected.'], 422);
     }
+
 
     // --- মূল্যের উপাদানগুলো বের করা ---
 
@@ -165,6 +170,14 @@ public function store(Request $request)
             $turnaroundDetails = $turnaround; // সম্পূর্ণ ডেটা স্ন্যাপশট হিসেবে রাখা হলো
         }
     }
+
+    return response()->json([
+        'basePrice' => $basePrice,
+        'shippingPrice' => $shippingPrice,
+        'shippingDetails' => $shippingDetails,
+        'turnaroundPrice' => $turnaroundPrice,
+        'turnaroundDetails' => $turnaroundDetails,
+    ]);
 
     // অতিরিক্ত মূল্য
      $jobSamplePrice = 0;
