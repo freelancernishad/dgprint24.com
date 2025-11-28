@@ -95,6 +95,7 @@ class HelpersFunctions
         $total_sq_ft = 0;
         $quantity_into_total_sq_ft_price = 0;
         $priceConfigList = [];
+        $PriceConfigMessage = 'No price configuration found for the selected options.';
 
         // --- ধাপ ১: কনফিগারেশন মূল্য খুঁজে বের করুন ---
         // যদি ইউজার কোনো অপশন সিলেক্ট করে থাকে
