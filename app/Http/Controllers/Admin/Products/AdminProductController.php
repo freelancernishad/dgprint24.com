@@ -406,7 +406,7 @@ class AdminProductController extends Controller
         // ডাটাবেসে foreign key এ 'onDelete("cascade")' থাকায়,
         // প্রোডাক্ট ডিলিট করলে এর সাথে সম্পর্কিত সব ডেটা অটোমেটিক ডিলিট হয়ে যাবে।
         $product->delete();
-        return response()->json(null, 204);
+        return response()->json(['message' => 'Product deleted successfully.'], 200);
     }
 
 
