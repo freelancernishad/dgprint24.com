@@ -23,12 +23,25 @@ class AdminProductController extends Controller
      * Display a listing of the resource.
      * অ্যাডমিন প্যানেলে সব প্রোডাক্টের লিস্ট দেখানোর জন্য।
      */
-    public function index()
+    public function index(Request $request)
     {
-        $products = Product::with('category:id,name','faqs','images')
-            ->select('id', 'product_id', 'product_name', 'category_id', 'active', 'popular_product','dynamicOptions','extraDynamicOptions', 'created_at')
-            ->latest()
-            ->paginate(20);
+        $perPage = (int) $request->input('per_page', 20);
+
+        $query = Product::with(['category:id,name', 'faqs', 'images'])
+            ->select('id', 'product_id', 'product_name', 'category_id', 'active', 'popular_product', 'dynamicOptions', 'extraDynamicOptions', 'created_at')
+            ->latest();
+
+        if ($search = trim((string) $request->input('search', ''))) {
+            $query->where(function ($q) use ($search) {
+                $q->where('product_name', 'like', "%{$search}%")
+                  ->orWhere('product_id', 'like', "%{$search}%")
+                  ->orWhereHas('category', function ($qc) use ($search) {
+                      $qc->where('name', 'like', "%{$search}%");
+                  });
+            });
+        }
+
+        $products = $query->paginate($perPage);
 
         return response()->json($products);
     }
