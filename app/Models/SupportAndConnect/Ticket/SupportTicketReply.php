@@ -1,10 +1,15 @@
 <?php
 
-namespace App\Models;
+namespace App\Models\SupportAndConnect\Ticket;
 
-use App\Services\FileUploadService;
+use App\Models\User;
+use App\Models\Admin;
+
 use Illuminate\Database\Eloquent\Model;
+use App\Services\FileSystem\FileUploadService;
+use App\Models\SupportAndConnect\Ticket\SupportTicket;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+
 
 class SupportTicketReply extends Model
 {
