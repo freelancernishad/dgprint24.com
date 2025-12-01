@@ -36,7 +36,14 @@ Route::prefix('admin')->middleware(AuthenticateAdmin::class)->group(function () 
     // DELETE /api/admin/categories/{category} (ক্যাটাগরি ডিলিট)
 
     // অ্যাডমিন প্রোডাক্ট রিলেটেড রাউটসমূহ
-    Route::apiResource('products', AdminProductController::class);
+    // Admin product routes (separate routes instead of apiResource)
+    Route::get('products', [AdminProductController::class, 'index']);
+    Route::get('products/{product}', [AdminProductController::class, 'show']);
+    Route::post('products', [AdminProductController::class, 'store']);
+    Route::put('products/{product}', [AdminProductController::class, 'update']);
+    Route::post('products/{product}', [AdminProductController::class, 'update']);
+    Route::patch('products/{product}', [AdminProductController::class, 'update']);
+    Route::delete('product/{product}', [AdminProductController::class, 'destroy']);
 
     Route::patch('products/{product}/toggle-popular', [AdminProductController::class, 'togglePopular']);
     Route::get('single/product/{id}/for/edit', [AdminProductController::class, 'showForEdit']);
