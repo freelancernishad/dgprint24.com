@@ -2,12 +2,14 @@
 
 namespace App\Http\Resources;
 
+use Illuminate\Support\Facades\Log;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class ProductResource extends JsonResource
 {
     public function toArray($request)
     {
+        Log::info($this->resource->priceConfigurations);
         return [
             'id' => $this->id,
             'product_id' => $this->product_id,
@@ -60,28 +62,11 @@ class ProductResource extends JsonResource
                                     'minQuantity' => $range->min_quantity,
                                     'maxQuantity' => $range->max_quantity,
                                     'discount' => $range->discount,
-                                    'turnarounds' => $this->whenLoaded('turnaroundRanges.turnarounds', function () use ($range) {
-                                        return collect($range->turnarounds)->map(function ($turnaround) {
-                                            return [
-                                                'id' => $turnaround->id,
-                                                'turnaround_id' => $turnaround->turnaround_id,
-                                                'name' => $turnaround->name,
-                                                'categoryName' => $turnaround->category_name,
-                                                'categoryId' => $turnaround->category_id,
-                                                'turnaroundLabel' => $turnaround->turnaround_label,
-                                                'turnaroundValue' => $turnaround->turnaround_value,
-                                                'price' => $turnaround->price,
-                                                'discount' => $turnaround->discount,
-                                                'note' => $turnaround->note,
-                                                'runsize' => $turnaround->runsize,
-                                                'createdAt' => $turnaround->created_at,
-                                                'updatedAt' => $turnaround->updated_at,
-                                            ];
-                                        });
-                                    }, []),
+                                    'turnarounds' => $range->turnarounds,
                                 ];
                             });
                         }, []),
+
                         'shippingRange' => $this->whenLoaded('shippingRanges', function () {
                             return collect($this->shippingRanges)->map(function ($range) {
                                 return [
@@ -89,23 +74,7 @@ class ProductResource extends JsonResource
                                     'minQuantity' => $range->min_quantity,
                                     'maxQuantity' => $range->max_quantity,
                                     'discount' => $range->discount,
-                                    'shippings' => $this->whenLoaded('shippingRanges.shippings', function () use ($range) {
-                                        return collect($range->shippings)->map(function ($shipping) {
-                                            return [
-                                                'id' => $shipping->id,
-                                                'shipping_id' => $shipping->shipping_id,
-                                                'categoryName' => $shipping->category_name,
-                                                'categoryId' => $shipping->category_id,
-                                                'shippingLabel' => $shipping->shipping_label,
-                                                'shippingValue' => $shipping->shipping_value,
-                                                'price' => $shipping->price,
-                                                'note' => $shipping->note,
-                                                'runsize' => $shipping->runsize,
-                                                'createdAt' => $shipping->created_at,
-                                                'updatedAt' => $shipping->updated_at,
-                                            ];
-                                        });
-                                    }, []),
+                                    'shippings' => $range->shippings,
                                 ];
                             });
                         }, []),
@@ -127,8 +96,7 @@ class ProductResource extends JsonResource
                         'runsize' => $config->runsize,
                         'price' => $config->price,
                         'discount' => $config->discount,
-                        'shippings' => $this->whenLoaded('priceConfigurations.shippings', function () use ($config) {
-                            return collect($config->shippings)->map(function ($shipping) {
+                        'shippings' =>  collect($config->shippings)->map(function ($shipping) {
                                 return [
                                     'id' => $shipping->id,
                                     'shipping_id' => $shipping->shipping_id,
@@ -142,10 +110,8 @@ class ProductResource extends JsonResource
                                     'createdAt' => $shipping->created_at,
                                     'updatedAt' => $shipping->updated_at,
                                 ];
-                            });
-                        }, []),
-                        'turnarounds' => $this->whenLoaded('priceConfigurations.turnarounds', function () use ($config) {
-                            return collect($config->turnarounds)->map(function ($turnaround) {
+                            }),
+                        'turnarounds' => collect($config->turnarounds)->map(function ($turnaround) {
                                 return [
                                     'id' => $turnaround->id,
                                     'turnaround_id' => $turnaround->turnaround_id,
@@ -160,8 +126,8 @@ class ProductResource extends JsonResource
                                     'createdAt' => $turnaround->created_at,
                                     'updatedAt' => $turnaround->updated_at,
                                 ];
-                            });
-                        }, []),
+                            }),
+
                     ];
                 });
             }, []),
