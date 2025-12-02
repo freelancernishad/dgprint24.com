@@ -60,13 +60,15 @@ class AdminProductController extends Controller
             'productOptions' => 'required|array', // <--- এখানে পরিবর্তন করুন
             'productImages' => 'nullable|array',
             'productImages.*' => 'url',
-            'priceConfig' => 'required|array|min:1',
-            'priceConfig.*.runsize' => 'required|integer|min:1',
-            'priceConfig.*.price' => 'required|numeric|min:0',
+
+
+            'priceConfig' => 'nullable|array|min:1',
+            'priceConfig.*.runsize' => '|integer|min:1',
+            'priceConfig.*.price' => 'nullable|numeric|min:0',
             'priceConfig.*.discount' => 'nullable|numeric|min:0|max:100',
-            'priceConfig.*.options' => 'required|array',
-            'priceConfig.*.shippings' => 'required|array',
-            'priceConfig.*.turnarounds' => 'required|array',
+            'priceConfig.*.options' => 'nullable|array',
+            'priceConfig.*.shippings' => 'nullable|array',
+            'priceConfig.*.turnarounds' => 'nullable|array',
 
 
             'jobSamplePrice' => 'nullable|numeric|min:0',
@@ -193,74 +195,76 @@ class AdminProductController extends Controller
                 }
             }
 
+
+
+
+
             // প্রাইজ কনফিগারেশন, শিপিং এবং টার্নআরাউন্ড সেভ
-            foreach ($validatedData['priceConfig'] as $configData) {
+            // if (isset($validatedData['priceConfig']) && is_array($validatedData['priceConfig'])) {
 
+            if(isset($validatedData['priceConfig']) && is_array($validatedData['priceConfig'])) {
 
+                foreach ($validatedData['priceConfig'] as $configData) {
+                    $helpers = new HelpersFunctions();
+                    $flatOptions = $helpers->flattenSelectedOptions($configData['options']);
 
+                    Log::info('Flattened Options: ', $flatOptions);
 
+                    // $flatOptions = [];
+                    // foreach ($configData['options'] as $key => $value) {
+                    //     // ধরুন, $key = 'SIDE', $value = ['selected' => '4/0 ONE SIDE']
+                    //     // আমরা শুধু 'selected' এর ভ্যালু নিব
+                    //     if (isset($value['selected'])) {
+                    //         $flatOptions[$key] = $value['selected'];
+                    //     }else {
+                    //         $flatOptions[$key] = $value; // অথবা অন্য কোনো ডিফল্ট ভ্যালু
+                    //     }
+                    // }
 
+                    // --- নতুন লজিক শেষ ---
 
-            $helpers = new HelpersFunctions();
-            $flatOptions = $helpers->flattenSelectedOptions($configData['options']);
-
-            Log::info('Flattened Options: ', $flatOptions);
-
-
-            // $flatOptions = [];
-            // foreach ($configData['options'] as $key => $value) {
-            //     // ধরুন, $key = 'SIDE', $value = ['selected' => '4/0 ONE SIDE']
-            //     // আমরা শুধু 'selected' এর ভ্যালু নিব
-            //     if (isset($value['selected'])) {
-            //         $flatOptions[$key] = $value['selected'];
-            //     }else {
-            //         $flatOptions[$key] = $value; // অথবা অন্য কোনো ডিফল্ট ভ্যালু
-            //     }
-            // }
-
-
-
-
-
-            // --- নতুন লজিক শেষ ---
-
-            $priceConfig = $product->priceConfigurations()->create([
-                'runsize' => $configData['runsize'],
-                'price' => $configData['price'],
-                'discount' => $configData['discount'] ?? 0,
-                'options' => $flatOptions, // <--- ফ্ল্যাট অ্যারেটি সেভ করুন
-            ]);
-
-
-            // 3️⃣ Save each flattened option relationally
-            foreach ($flatOptions as $key => $value) {
-                $priceConfig->optionsRel()->create([
-                    'key' => $key,
-                    'value' => $value,
-                ]);
-            }
-
-
-                foreach ($configData['shippings'] as $shippingData) {
-                    $priceConfig->shippings()->create([
-                        'shipping_id' => $shippingData['shipping_id'] ?? null,
-                        'shippingLabel' => $shippingData['shippingLabel'],
-                        'shippingValue' => $shippingData['shippingValue'],
-                        'price' => $shippingData['price'],
-                        'note' => $shippingData['note'] ?? null,
+                    $priceConfig = $product->priceConfigurations()->create([
+                        'runsize' => $configData['runsize'],
+                        'price' => $configData['price'],
+                        'discount' => $configData['discount'] ?? 0,
+                        'options' => $flatOptions, // <--- ফ্ল্যাট অ্যারেটি সেভ করুন
                     ]);
-                }
 
-                foreach ($configData['turnarounds'] as $turnaroundData) {
-                    $priceConfig->turnarounds()->create([
-                        'turnaround_id' => $turnaroundData['turnaround_id'] ?? null,
-                        'turnaroundLabel' => $turnaroundData['turnaroundLabel'],
-                        'turnaroundValue' => $turnaroundData['turnaroundValue'],
-                        'price' => $turnaroundData['price'] ?? 0,
-                        'note' => $turnaroundData['note'] ?? null,
-                    ]);
+
+                    // 3️⃣ Save each flattened option relationally
+                    foreach ($flatOptions as $key => $value) {
+                        $priceConfig->optionsRel()->create([
+                            'key' => $key,
+                            'value' => $value,
+                        ]);
+                    }
+
+
+                    foreach ($configData['shippings'] as $shippingData) {
+                        $priceConfig->shippings()->create([
+                            'shipping_id' => $shippingData['shipping_id'] ?? null,
+                            'shippingLabel' => $shippingData['shippingLabel'],
+                            'shippingValue' => $shippingData['shippingValue'],
+                            'price' => $shippingData['price'],
+                            'note' => $shippingData['note'] ?? null,
+                        ]);
+                    }
+
+                    foreach ($configData['turnarounds'] as $turnaroundData) {
+                        $priceConfig->turnarounds()->create([
+                            'turnaround_id' => $turnaroundData['turnaround_id'] ?? null,
+                            'turnaroundLabel' => $turnaroundData['turnaroundLabel'],
+                            'turnaroundValue' => $turnaroundData['turnaroundValue'],
+                            'price' => $turnaroundData['price'] ?? 0,
+                            'note' => $turnaroundData['note'] ?? null,
+                        ]);
+                    }
                 }
             }
+
+
+
+
 
             DB::commit();
             // সফলভাবে তৈরি হওয়া প্রোডাক্টটি রিলেশনসহ লোড করে রিটার্ন করুন
