@@ -23,8 +23,8 @@ class TurnaroundRangeController extends Controller
     public function addTurnaroundRange(Request $request, Product $product)
     {
         $v = Validator::make($request->all(), [
-            'min_quantity' => 'required|integer|min:0',
-            'max_quantity' => 'nullable|integer|min:0',
+            'minQuantity' => 'required|integer|min:0',
+            'maxQuantity' => 'nullable|integer|min:0',
             'discount' => 'nullable|numeric|min:0',
             'turnarounds' => 'nullable|array',
         ]);
@@ -33,8 +33,8 @@ class TurnaroundRangeController extends Controller
 
         $data = $v->validated();
         $range = $product->turnaroundRanges()->create([
-            'min_quantity' => $data['min_quantity'],
-            'max_quantity' => $data['max_quantity'] ?? null,
+            'min_quantity' => $data['minQuantity'],
+            'max_quantity' => $data['maxQuantity'] ?? null,
             'discount' => $data['discount'] ?? 0,
             'turnarounds' => $data['turnarounds'] ?? [],
         ]);
