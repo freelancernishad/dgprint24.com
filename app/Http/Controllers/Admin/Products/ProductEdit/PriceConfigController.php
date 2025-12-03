@@ -183,7 +183,7 @@ class PriceConfigController extends Controller
 public function updatePriceConfig(Request $request, Product $product, PriceConfiguration $config)
 {
     // ensure config belongs to product
-    if ($config->product_id !== $product->id) {
+    if ($config->product_id != $product->id) {
         return response()->json(['message' => 'Config does not belong to product'], Response::HTTP_FORBIDDEN);
     }
 
