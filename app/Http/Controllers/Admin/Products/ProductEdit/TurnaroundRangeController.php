@@ -91,7 +91,7 @@ class TurnaroundRangeController extends Controller
 
     public function deleteTurnaroundRange(Product $product, ProductTurnaroundRange $range)
     {
-        if ($range->product_id !== $product->id) {
+        if ($range->product_id != $product->id) {
             return response()->json(['message'=>'Range does not belong to product'], Response::HTTP_FORBIDDEN);
         }
         $range->delete();

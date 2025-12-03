@@ -91,7 +91,7 @@ class ShippingRangeController extends Controller
 
     public function deleteShippingRange(Product $product, ProductShippingRange $range)
     {
-        if ($range->product_id !== $product->id) {
+        if ($range->product_id != $product->id) {
             return response()->json(['message'=>'Range does not belong to product'], Response::HTTP_FORBIDDEN);
         }
         $range->delete();
