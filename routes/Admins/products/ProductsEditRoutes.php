@@ -39,6 +39,7 @@ Route::prefix('admin')->middleware(AuthenticateAdmin::class)->group(function () 
      */
     Route::get('products/{product}/faqs', [ProductFaqController::class, 'getFaqs']);
     Route::post('products/{product}/faqs', [ProductFaqController::class, 'addFaq']);
+    Route::patch('products/{product}/faqs/{faq}', [ProductFaqController::class, 'updateFaq']);
     Route::put('products/{product}/faqs/sync', [ProductFaqController::class, 'syncFaqs']);
     Route::delete('products/{product}/faqs/{faq}', [ProductFaqController::class, 'deleteFaq']);
 

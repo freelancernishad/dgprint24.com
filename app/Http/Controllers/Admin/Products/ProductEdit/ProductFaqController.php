@@ -39,6 +39,63 @@ class ProductFaqController extends Controller
         return response()->json(['message' => 'FAQ added', 'faq' => $faq], Response::HTTP_CREATED);
     }
 
+
+    /**
+     * PATCH /admin/products/{product}/faqs/{faq}
+     * Update a single FAQ for the product.
+     *
+     * Body:
+     * {
+     *   "question": "New question",     // optional
+     *   "answer": "New answer",         // optional
+     *   "sort_order": 1                 // optional
+     * }
+     */
+    public function updateFaq(Request $request, Product $product, Faq $faq)
+    {
+        // ensure faq belongs to product
+        if ($faq->product_id != $product->id) {
+            return response()->json(['message' => 'FAQ does not belong to product'], Response::HTTP_FORBIDDEN);
+        }
+
+        // Validate only incoming fields (partial update)
+        $validator = Validator::make($request->all(), [
+            'question' => 'nullable|string|max:1000',
+            'answer' => 'nullable|string|max:4000',
+            'sort_order' => 'nullable|integer|min:0',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
+
+        $data = $validator->validated();
+
+        if (empty($data)) {
+            return response()->json(['message' => 'No fields provided to update.'], Response::HTTP_BAD_REQUEST);
+        }
+
+        DB::beginTransaction();
+        try {
+            $faq->update($data);
+            DB::commit();
+
+            return response()->json([
+                'message' => 'FAQ updated successfully',
+                'faq' => $faq->fresh()
+            ], Response::HTTP_OK);
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+            Log::error('updateFaq: '.$e->getMessage());
+            return response()->json(['message' => 'Internal server error'], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
+
+
+
+
+
     // PUT /admin/products/{product}/faqs/sync
     public function syncFaqs(Request $request, Product $product)
     {
