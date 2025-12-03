@@ -47,8 +47,8 @@ class TurnaroundRangeController extends Controller
         $v = Validator::make($request->all(), [
             'ranges' => 'required|array',
             'ranges.*.id' => 'nullable|integer|exists:product_turnaround_ranges,id',
-            'ranges.*.min_quantity' => 'required|integer|min:0',
-            'ranges.*.max_quantity' => 'nullable|integer|min:0',
+            'ranges.*.minQuantity' => 'required|integer|min:0',
+            'ranges.*.maxQuantity' => 'nullable|integer|min:0',
             'ranges.*.discount' => 'nullable|numeric|min:0',
             'ranges.*.turnarounds' => 'nullable|array',
         ]);
@@ -65,15 +65,15 @@ class TurnaroundRangeController extends Controller
             foreach ($ranges as $r) {
                 if (!empty($r['id'])) {
                     $product->turnaroundRanges()->where('id', $r['id'])->update([
-                        'min_quantity' => $r['min_quantity'],
-                        'max_quantity' => $r['max_quantity'] ?? null,
+                        'min_quantity' => $r['minQuantity'],
+                        'max_quantity' => $r['maxQuantity'] ?? null,
                         'discount' => $r['discount'] ?? 0,
                         'turnarounds' => $r['turnarounds'] ?? [],
                     ]);
                 } else {
                     $product->turnaroundRanges()->create([
-                        'min_quantity' => $r['min_quantity'],
-                        'max_quantity' => $r['max_quantity'] ?? null,
+                        'min_quantity' => $r['minQuantity'],
+                        'max_quantity' => $r['maxQuantity'] ?? null,
                         'discount' => $r['discount'] ?? 0,
                         'turnarounds' => $r['turnarounds'] ?? [],
                     ]);

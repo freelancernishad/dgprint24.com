@@ -23,8 +23,8 @@ class ShippingRangeController extends Controller
     public function addShippingRange(Request $request, Product $product)
     {
         $v = Validator::make($request->all(), [
-            'min_quantity' => 'required|integer|min:0',
-            'max_quantity' => 'nullable|integer|min:0',
+            'minQuantity' => 'required|integer|min:0',
+            'maxQuantity' => 'nullable|integer|min:0',
             'discount' => 'nullable|numeric|min:0',
             'shippings' => 'nullable|array',
         ]);
@@ -33,8 +33,8 @@ class ShippingRangeController extends Controller
 
         $data = $v->validated();
         $range = $product->shippingRanges()->create([
-            'min_quantity' => $data['min_quantity'],
-            'max_quantity' => $data['max_quantity'] ?? null,
+            'min_quantity' => $data['minQuantity'],
+            'max_quantity' => $data['maxQuantity'] ?? null,
             'discount' => $data['discount'] ?? 0,
             'shippings' => $data['shippings'] ?? [],
         ]);
@@ -47,8 +47,8 @@ class ShippingRangeController extends Controller
         $v = Validator::make($request->all(), [
             'ranges' => 'required|array',
             'ranges.*.id' => 'nullable|integer|exists:product_shipping_ranges,id',
-            'ranges.*.min_quantity' => 'required|integer|min:0',
-            'ranges.*.max_quantity' => 'nullable|integer|min:0',
+            'ranges.*.minQuantity' => 'required|integer|min:0',
+            'ranges.*.maxQuantity' => 'nullable|integer|min:0',
             'ranges.*.discount' => 'nullable|numeric|min:0',
             'ranges.*.shippings' => 'nullable|array',
         ]);
@@ -65,15 +65,15 @@ class ShippingRangeController extends Controller
             foreach ($ranges as $r) {
                 if (!empty($r['id'])) {
                     $product->shippingRanges()->where('id', $r['id'])->update([
-                        'min_quantity' => $r['min_quantity'],
-                        'max_quantity' => $r['max_quantity'] ?? null,
+                        'min_quantity' => $r['minQuantity'],
+                        'max_quantity' => $r['maxQuantity'] ?? null,
                         'discount' => $r['discount'] ?? 0,
                         'shippings' => $r['shippings'] ?? [],
                     ]);
                 } else {
                     $product->shippingRanges()->create([
-                        'min_quantity' => $r['min_quantity'],
-                        'max_quantity' => $r['max_quantity'] ?? null,
+                        'min_quantity' => $r['minQuantity'],
+                        'max_quantity' => $r['maxQuantity'] ?? null,
                         'discount' => $r['discount'] ?? 0,
                         'shippings' => $r['shippings'] ?? [],
                     ]);
