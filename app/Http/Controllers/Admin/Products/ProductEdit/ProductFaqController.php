@@ -148,7 +148,7 @@ class ProductFaqController extends Controller
     // DELETE /admin/products/{product}/faqs/{faq}
     public function deleteFaq(Product $product, Faq $faq)
     {
-        if ($faq->product_id !== $product->id) {
+        if ($faq->product_id != $product->id) {
             return response()->json(['message' => 'FAQ does not belong to product'], Response::HTTP_FORBIDDEN);
         }
 
