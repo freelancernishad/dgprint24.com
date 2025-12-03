@@ -314,7 +314,7 @@ public function updatePriceConfig(Request $request, Product $product, PriceConfi
     // DELETE /admin/products/{product}/price-configs/{config}
     public function deletePriceConfig(Product $product, PriceConfiguration $config)
     {
-        if ($config->product_id !== $product->id) {
+        if ($config->product_id != $product->id) {
             return response()->json(['message'=>'Config not belong to product'], Response::HTTP_FORBIDDEN);
         }
         $config->delete();
