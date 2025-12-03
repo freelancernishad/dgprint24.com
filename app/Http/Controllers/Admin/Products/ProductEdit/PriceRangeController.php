@@ -32,7 +32,14 @@ class PriceRangeController extends Controller
 
         if ($v->fails()) return response()->json(['errors'=>$v->errors()], Response::HTTP_UNPROCESSABLE_ENTITY);
 
-        $range = $product->priceRanges()->create($v->validated());
+
+        $data = [
+            'min_quantity' => $v->validated()['minQuantity'],
+            'max_quantity' => $v->validated()['maxQuantity'] ?? null,
+            'price_per_sq_ft' => $v->validated()['pricePerSqFt'],
+        ];
+
+        $range = $product->priceRanges()->create($data);
         return response()->json(['message'=>'Price range added','range'=>$range], Response::HTTP_CREATED);
     }
 
