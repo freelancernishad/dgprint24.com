@@ -188,11 +188,11 @@ public function updatePriceConfig(Request $request, Product $product, PriceConfi
     }
 
     // If client tries to update 'options' here, block it.
-    if ($request->has('options')) {
-        return response()->json([
-            'message' => 'Updating "options" is not allowed via this endpoint. Use the dedicated options endpoint.'
-        ], Response::HTTP_FORBIDDEN);
-    }
+    // if ($request->has('options')) {
+    //     return response()->json([
+    //         'message' => 'Updating "options" is not allowed via this endpoint. Use the dedicated options endpoint.'
+    //     ], Response::HTTP_FORBIDDEN);
+    // }
 
     $rules = [
         'runsize' => 'nullable|integer|min:1',
