@@ -4,10 +4,11 @@ namespace App\Http\Controllers\Admin\Products\ProductEdit;
 
 use App\Models\Product;
 use Illuminate\Http\Request;
+use App\Helpers\HelpersFunctions;
 use App\Models\PriceConfiguration;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
 
+use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 use App\Models\PriceConfigurationOption;
 use Illuminate\Support\Facades\Validator;
@@ -40,21 +41,46 @@ class PriceConfigController extends Controller
 
         DB::beginTransaction();
         try {
+
+
+             $helpers = new HelpersFunctions();
+            $flatOptions = $helpers->flattenSelectedOptions($request->input('options'));
+
+
             $cfg = $product->priceConfigurations()->create([
                 'runsize' => $request->input('runsize'),
                 'price' => $request->input('price', 0),
                 'discount' => $request->input('discount', 0),
-                'options' => $request->input('options', []),
+                'options' => $flatOptions,
             ]);
 
-            // options relational
-            if ($request->filled('options') && is_array($request->input('options'))) {
-                $pairs = [];
-                foreach ($request->input('options') as $k => $v) {
-                    $pairs[] = ['key' => $k, 'value' => is_array($v) ? json_encode($v) : (string)$v];
-                }
-                $cfg->optionsRel()->createMany($pairs);
+
+
+
+
+
+            // 3️⃣ Save each flattened option relationally
+            foreach ($flatOptions as $key => $value) {
+                $cfg->optionsRel()->create([
+                    'key' => $key,
+                    'value' => $value,
+                ]);
             }
+
+
+            // // options relational
+            // if ($request->filled('options') && is_array($request->input('options'))) {
+            //     $pairs = [];
+            //     foreach ($request->input('options') as $k => $v) {
+            //         $pairs[] = ['key' => $k, 'value' => is_array($v) ? json_encode($v) : (string)$v];
+            //     }
+            //     $cfg->optionsRel()->createMany($pairs);
+            // }
+
+
+
+
+
 
             // shippings
             if ($request->filled('shippings') && is_array($request->input('shippings'))) {
