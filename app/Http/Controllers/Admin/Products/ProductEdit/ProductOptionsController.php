@@ -82,7 +82,7 @@ class ProductOptionsController extends Controller
             return response()->json(['message' => 'No option payload provided.'], Response::HTTP_BAD_REQUEST);
         }
 
-        $mode = $data['mode'] ?? 'merge';
+        $mode = $data['mode'] ?? 'replace';
 
         DB::beginTransaction();
         try {
