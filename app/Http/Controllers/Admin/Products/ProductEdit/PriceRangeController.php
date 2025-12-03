@@ -25,9 +25,9 @@ class PriceRangeController extends Controller
     public function addPriceRange(Request $request, Product $product)
     {
         $v = Validator::make($request->all(), [
-            'min_quantity' => 'required|integer|min:0',
-            'max_quantity' => 'nullable|integer|min:0',
-            'price_per_sq_ft' => 'required|numeric|min:0',
+            'minQuantity' => 'required|integer|min:0',
+            'maxQuantity' => 'nullable|integer|min:0',
+            'pricePerSqFt' => 'required|numeric|min:0',
         ]);
 
         if ($v->fails()) return response()->json(['errors'=>$v->errors()], Response::HTTP_UNPROCESSABLE_ENTITY);
@@ -42,9 +42,9 @@ class PriceRangeController extends Controller
         $v = Validator::make($request->all(), [
             'ranges' => 'required|array',
             'ranges.*.id' => 'nullable|integer|exists:product_price_ranges,id',
-            'ranges.*.min_quantity' => 'required|integer|min:0',
-            'ranges.*.max_quantity' => 'nullable|integer|min:0',
-            'ranges.*.price_per_sq_ft' => 'required|numeric|min:0',
+            'ranges.*.minQuantity' => 'required|integer|min:0',
+            'ranges.*.maxQuantity' => 'nullable|integer|min:0',
+            'ranges.*.pricePerSqFt' => 'required|numeric|min:0',
         ]);
 
         if ($v->fails()) return response()->json(['errors'=>$v->errors()], Response::HTTP_UNPROCESSABLE_ENTITY);
@@ -59,15 +59,15 @@ class PriceRangeController extends Controller
             foreach ($ranges as $r) {
                 if (!empty($r['id'])) {
                     $product->priceRanges()->where('id', $r['id'])->update([
-                        'min_quantity' => $r['min_quantity'],
-                        'max_quantity' => $r['max_quantity'] ?? null,
-                        'price_per_sq_ft' => $r['price_per_sq_ft'],
+                        'min_quantity' => $r['minQuantity'],
+                        'max_quantity' => $r['maxQuantity'] ?? null,
+                        'price_per_sq_ft' => $r['pricePerSqFt'],
                     ]);
                 } else {
                     $product->priceRanges()->create([
-                        'min_quantity' => $r['min_quantity'],
-                        'max_quantity' => $r['max_quantity'] ?? null,
-                        'price_per_sq_ft' => $r['price_per_sq_ft'],
+                        'min_quantity' => $r['minQuantity'],
+                        'max_quantity' => $r['maxQuantity'] ?? null,
+                        'price_per_sq_ft' => $r['pricePerSqFt'],
                     ]);
                 }
             }
