@@ -23,6 +23,17 @@ class PriceConfiguration extends Model
         'discount' => 'decimal:2'
     ];
 
+
+    protected static function booted()
+    {
+        static::deleting(function ($config) {
+            $config->shippings()->delete();
+            $config->turnarounds()->delete();
+            $config->optionsRel()->delete();
+        });
+    }
+
+
     public function optionsRel()
     {
         return $this->hasMany(PriceConfigurationOption::class);
