@@ -6,6 +6,7 @@ use App\Http\Controllers\Admin\ProductEditController;
 use App\Http\Controllers\Admin\Products\ProductEdit\PriceRangeController;
 use App\Http\Controllers\Admin\Products\ProductEdit\ProductFaqController;
 use App\Http\Controllers\Admin\Products\ProductEdit\PriceConfigController;
+use App\Http\Controllers\Admin\Products\ProductEdit\ProductBasicController;
 use App\Http\Controllers\Admin\Products\ProductEdit\ProductImageController;
 use App\Http\Controllers\Admin\Products\ProductEdit\ShippingRangeController;
 use App\Http\Controllers\Admin\Products\ProductEdit\ProductOptionsController;
@@ -15,6 +16,8 @@ use App\Http\Controllers\Admin\Products\ProductEdit\PriceConfigChildController;
 
 Route::prefix('admin')->middleware(AuthenticateAdmin::class)->group(function () {
 
+
+    Route::patch('products/{product}/basic', [ProductBasicController::class, 'updateBasic']);
 
 
     /**
@@ -59,7 +62,7 @@ Route::prefix('admin')->middleware(AuthenticateAdmin::class)->group(function () 
     Route::post('products/{product}/price-configs', [PriceConfigController::class, 'addPriceConfig']);
     Route::put('products/{product}/price-configs/sync', [PriceConfigController::class, 'syncPriceConfigs']);
     Route::delete('products/{product}/price-configs/{config}', [PriceConfigController::class, 'deletePriceConfig']);
-    
+
     Route::patch('products/{product}/price-configs/{config}',[PriceConfigController::class, 'updatePriceConfig']);
     Route::put('products/{product}/price-configs/{config}',[PriceConfigController::class, 'updatePriceConfig']);
     Route::post('products/{product}/price-configs/{config}',[PriceConfigController::class, 'updatePriceConfig']);
