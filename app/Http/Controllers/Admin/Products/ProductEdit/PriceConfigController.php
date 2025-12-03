@@ -59,14 +59,26 @@ class PriceConfigController extends Controller
             // shippings
             if ($request->filled('shippings') && is_array($request->input('shippings'))) {
                 foreach ($request->input('shippings') as $s) {
-                    $cfg->shippings()->create($s);
+                    $data = [
+                        'shippingLabel' => $s['shippingLabel'],
+                        'shippingValue' => $s['shippingValue'],
+                        'price' => $s['price'] ?? 0,
+                        'note' => $s['note'] ?? null,
+                    ];
+                    $cfg->shippings()->create($data);
                 }
             }
 
             // turnarounds
             if ($request->filled('turnarounds') && is_array($request->input('turnarounds'))) {
                 foreach ($request->input('turnarounds') as $t) {
-                    $cfg->turnarounds()->create($t);
+                    $data = [
+                        'turnaroundLabel' => $t['turnaroundLabel'],
+                        'turnaroundValue' => $t['turnaroundValue'],
+                        'price' => $t['price'] ?? 0,
+                        'note' => $t['note'] ?? null,
+                    ];
+                    $cfg->turnarounds()->create($data);
                 }
             }
 
