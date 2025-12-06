@@ -127,3 +127,7 @@ Route::get('/product/{productId}', [ProductController::class, 'show']);         
 // Price routes
 Route::get('/product/{productId}/price', [ProductController::class, 'getPrice']);           // Get price
 Route::post('/product/{productId}/price', [ProductController::class, 'getPrice']);          // Price via POST
+
+// tax price route
+Route::get('/taxes/price', [TaxController::class, 'getTaxByLocation']);
+Route::post('/taxes/price', [TaxController::class, 'getTaxByLocation']);

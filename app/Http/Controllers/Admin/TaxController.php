@@ -105,4 +105,44 @@ class TaxController extends Controller
 
         return response()->json(null, 204);
     }
+
+
+
+    /**
+     * Get tax price by country and state.
+     * নির্দিষ্ট country এবং state অনুযায়ী ট্যাক্স বের করার জন্য।
+     */
+    public function getTaxByLocation(Request $request)
+    {
+        $request->validate([
+            'country' => 'required|string',
+            'state'   => 'nullable|string',
+        ]);
+
+        // প্রথমে country + state match খুঁজব
+        $tax = Tax::where('country', $request->country)
+            ->where('state', $request->state)
+            ->first();
+
+        // যদি state অনুযায়ী না পাওয়া যায়, তাহলে শুধু country অনুযায়ী খুঁজব
+        if (!$tax) {
+            $tax = Tax::where('country', $request->country)
+                ->whereNull('state')
+                ->first();
+        }
+
+        if (!$tax) {
+            return response()->json([
+                'message' => 'Tax not found for the provided country/state',
+            ], 404);
+        }
+
+        return response()->json([
+            'country' => $tax->country,
+            'state'   => $tax->state,
+            'price'   => $tax->price,
+        ]);
+    }
+
+
 }
