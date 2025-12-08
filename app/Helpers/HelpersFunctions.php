@@ -323,7 +323,7 @@ class HelpersFunctions
             $TurnaroundRangesPriceIntoQuantity = round($TurnaroundRangesPrice * $quantity, 2);
         }
 
-        $finalPrice = $configuration_price_into_quantity_price + ($quantity_into_total_sq_ft_price ?? 0) + $TurnaroundRangesPriceIntoQuantity;
+        $finalPrice = $configuration_price_into_quantity_price + ($quantity_into_total_sq_ft_price ?? 0) + $TurnaroundRangesPriceIntoQuantity + $shippingRangesPrice;
 
 
 

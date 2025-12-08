@@ -138,6 +138,7 @@ class TaxController extends Controller
         }
 
         return response()->json([
+            'id' => $tax->id,
             'country' => $tax->country,
             'state'   => $tax->state,
             'price'   => $tax->price,

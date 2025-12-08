@@ -27,6 +27,10 @@ class Cart extends Model
         'turnarounds',
         'delivery_address',
 
+        'sets',
+        'tax_id',
+        'tax_price',
+
     ];
 
     protected $casts = [
@@ -38,12 +42,19 @@ class Cart extends Model
         'shippings' => 'array',
         'turnarounds' => 'array',
         'delivery_address' => 'array',
+        'tax_price' => 'decimal:2',
     ];
 
     public function user()
     {
         return $this->belongsTo(User::class);
     }
+
+    public function tax()
+    {
+        return $this->belongsTo(Tax::class);
+    }
+
 
     public function product()
     {

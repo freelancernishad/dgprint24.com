@@ -28,7 +28,8 @@ class CartController extends Controller
 
     public function __construct(Request $request)
     {
-        $this->sessionId = $request->header('X-Session-ID') ?? $request->session()->getId();
+        $this->sessionId =
+            $request->header("X-Session-ID") ?? $request->session()->getId();
     }
 
     /**
@@ -42,14 +43,24 @@ class CartController extends Controller
             // Merge guest cart if exists
             $this->mergeGuestCart($userId, $this->sessionId);
 
-            $cartItems = Cart::with(['product', 'priceConfiguration', 'shipping', 'turnaround'])
-                ->where('user_id', $userId)
-                ->where('status', 'pending')
+            $cartItems = Cart::with([
+                "product",
+                "priceConfiguration",
+                "shipping",
+                "turnaround",
+            ])
+                ->where("user_id", $userId)
+                ->where("status", "pending")
                 ->get();
         } else {
-            $cartItems = Cart::with(['product', 'priceConfiguration', 'shipping', 'turnaround'])
-                ->where('session_id', $this->sessionId)
-                ->where('status', 'pending')
+            $cartItems = Cart::with([
+                "product",
+                "priceConfiguration",
+                "shipping",
+                "turnaround",
+            ])
+                ->where("session_id", $this->sessionId)
+                ->where("status", "pending")
                 ->get();
         }
 
@@ -59,16 +70,17 @@ class CartController extends Controller
 
             // Use snapshot data if relations are null
             if (!$item->priceConfiguration && $item->price_snapshot) {
-                $itemArray['price_configuration'] = $item->price_snapshot;
+                $itemArray["price_configuration"] = $item->price_snapshot;
             }
 
             if (!$item->shipping && $item->shipping_snapshot) {
-                $itemArray['shipping'] = $item->shipping_snapshot;
+                $itemArray["shipping"] = $item->shipping_snapshot;
             }
 
             if (!$item->turnaround && $item->turnaround_snapshot) {
-                $itemArray['turnaround'] = $item->turnaround_snapshot;
+                $itemArray["turnaround"] = $item->turnaround_snapshot;
             }
+
 
             return $itemArray;
         });
@@ -81,145 +93,134 @@ class CartController extends Controller
      */
 public function store(Request $request)
 {
-    // ১. ভ্যালিডেশন - নিরাপত্তা এবং নির্ভুলতার জন্য সব প্রয়োজনীয় ফিল্ড
+    // ১. ভ্যালিডেশন
     $validator = Validator::make($request->all(), [
-        'product_id' => 'required|exists:products,product_id',
-        'quantity' => 'required|integer|min:1',
-        'total_sq_ft' => 'nullable|integer|min:1',
-        'options' => 'nullable|array',
-        'shipping_id' => 'nullable', // কোন শিপিং নির্বাচিত হয়েছে
-        'turnaround_id' => 'nullable', // কোন টার্নআরাউন্ড নির্বাচিত হয়েছে
-        'job_sample_price' => 'nullable|numeric|min:0',
-        'digital_proof_price' => 'nullable|numeric|min:0',
-        'delivery_address' => 'nullable|array',
+        "product_id" => "required|exists:products,product_id",
+        "quantity" => "required|integer|min:1",
+        "total_sq_ft" => "nullable|integer|min:1",
+        "options" => "nullable|array",
+        "shipping_id" => "nullable",
+        "turnaround_id" => "nullable",
+        "job_sample_price" => "nullable|numeric|min:0",
+        "digital_proof_price" => "nullable|numeric|min:0",
+        "delivery_address" => "nullable|array",
+        "tax_id" => "nullable|exists:taxes,id", // নতুন
     ]);
 
-
     if ($validator->fails()) {
-        return response()->json(['errors' => $validator->errors()], 422);
+        return response()->json(["errors" => $validator->errors()], 422);
     }
-
-
-
 
     // ২. প্রোডাক্ট খুঁজে বের করা
-    $product = Product::where('product_id', $request->product_id)->where('active', true)->firstOrFail();
+    $product = Product::where("product_id", $request->product_id)
+        ->where("active", true)
+        ->firstOrFail();
 
-    // ৩. ব্যাকএন্ডে মূল্য যাচাই করা
-    $pricingData = $this->getPricingData($request->product_id, $request->quantity, $request->options, $request->total_sq_ft, $request->turnaround_id,$request->shipping_id);
-    $data = $pricingData; // Updated to access the 'data' key from the new JSON structure
+    // ৩. ব্যাকএন্ডে মূল্য যাচাই (getPricingData assumed)
+    $pricingData = $this->getPricingData(
+        $request->product_id,
+        $request->quantity,
+        $request->options,
+        $request->total_sq_ft,
+        $request->turnaround_id,
+        $request->shipping_id
+    );
 
+    $data = $pricingData; // ধরে নিচ্ছি structure ঠিকই দেয়া হচ্ছে
 
-    $configuration_id = $data['breakdown']['configuration_id'] ?? null;
+    $configuration_id = $data["breakdown"]["configuration_id"] ?? null;
 
-
-
-    // নির্বাচিত প্রাইস কনফিগারেশন খুঁজে বের করা
-    $priceConfig = collect($data['price_config_list'])
-        ->firstWhere('id', $configuration_id);
-
-
-
+    $priceConfig = collect($data["price_config_list"] ?? [])->firstWhere(
+        "id",
+        $configuration_id
+    );
 
     if (!$priceConfig) {
-        return response()->json(['error' => 'Invalid price configuration selected.'], 422);
+        return response()->json(
+            ["error" => "Invalid price configuration selected."],
+            422
+        );
     }
-
 
     // --- মূল্যের উপাদানগুলো বের করা ---
+    $basePrice = (float) ($data["breakdown"]["final_price"] ?? 0);
 
-    // বেস মূল্য (কনফিগারেশন + পরিমাণ + বর্গফুট)
-    $basePrice = (float) $data['breakdown']['final_price']; // Updated to use 'final_price' from the new structure
+    $selected_turnaround = $data["breakdown"]["selected_turnaround"] ?? null;
+    $selected_shipping = $data["breakdown"]["selected_shipping"] ?? null;
 
-    // শিপিং মূল্য বের করা
-    $shippingPrice = 0;
-
-
-
-
-
-      $selected_turnaround = $data['breakdown']['selected_turnaround'] ?? null;
-      $selected_shipping = $data['breakdown']['selected_shipping'] ?? null;
-
-    // টার্নআরাউন্ড মূল্য বের করা
     $turnaroundPrice = 0;
-    $turnaroundDetails = $selected_turnaround;
-    if (!empty($request->turnaround_id)) {
-        if ($turnaroundDetails) {
-            $turnaroundPrice = (float) $turnaroundDetails['price'];
-        }
+    if (!empty($request->turnaround_id) && $selected_turnaround) {
+        $turnaroundPrice = (float) ($selected_turnaround["price"] ?? 0);
     }
 
     $shippingPrice = 0;
-    $shippingDetails = $selected_shipping;
-    if (!empty($request->shipping_id)) {
-        if ($shippingDetails) {
-            $shippingPrice = (float) $shippingDetails['price'];
+    if (!empty($request->shipping_id) && $selected_shipping) {
+        $shippingPrice = (float) ($selected_shipping["price"] ?? 0);
+    }
+
+    $jobSamplePrice = 0;
+    if ($request->job_sample_price) {
+        // তুমি পূর্বে $data থেকে নিয়েছো; কিন্তু request-এ আছেতো—এখানে request-ই নিলে ভাল
+        $jobSamplePrice = (float) $request->job_sample_price;
+    }
+
+    $digitalProofPrice = 0;
+    if ($request->digital_proof_price) {
+        $digitalProofPrice = (float) $request->digital_proof_price;
+    }
+
+    // ব্যাকএন্ডে ট্যাক্স ব্যতিরেকে মোট
+    $subtotalBeforeTax = $basePrice + $jobSamplePrice + $digitalProofPrice;
+
+    // ৪. ট্যাক্স লোড করা ও ট্যাক্স মূল্য হিসাব করা (percent)
+    $taxPrice = 0.0;
+    $taxModel = null;
+    if (!empty($request->tax_id)) {
+        $taxModel = \App\Models\Tax::find($request->tax_id);
+        if ($taxModel) {
+            // Tax::price ধরে নিচ্ছি এটা percentage (e.g. 5 => 5%)
+            $taxPercentage = (float) $taxModel->price;
+            $taxPrice = round(($subtotalBeforeTax * $taxPercentage) / 100, 2);
         }
     }
 
-
-
-
-
-
-    // অতিরিক্ত মূল্য
-     $jobSamplePrice = 0;
-     $digitalProofPrice = 0;
-    if($request->job_sample_price){
-        $jobSamplePrice = (float) ($data['job_sample_price']);
-    }
-
-    if($request->digital_proof_price){
-        $digitalProofPrice = (float) ($data['digital_proof_price']);
-    }
-
-
-
-
-    // ব্যাকএন্ডে সর্বমোট মূল্য ক্যালকুলেট করা
-    $backendCalculatedPrice = $basePrice + $shippingPrice + $turnaroundPrice + $jobSamplePrice + $digitalProofPrice;
-
-
-
-    // ফ্রন্টএন্ডের প্রাইস এবং ব্যাকএন্ডের প্রাইস মেলানো (নিরাপত্তা যাচাই)
-    // if (abs($backendCalculatedPrice - $request->price) > 0.01) {
-    //     return response()->json([
-    //         'error' => 'Price validation failed. The price has been updated. Please refresh and try again.',
-    //         'calculated_price' => $backendCalculatedPrice,
-    //         'sent_price' => $request->price
-    //     ], 422);
-    // }
-
+    // ফাইনাল ব্যাকএন্ড ক্যালকুলেটেড প্রাইস (tax সহ)
+    $backendCalculatedPrice = $subtotalBeforeTax + $taxPrice;
 
     $verifiedPrice = $backendCalculatedPrice;
 
-    // --- বিস্তারিত মূল্য বিভাজন (price_breakdown) তৈরি করা ---
+    // price_breakdown-এ ট্যাক্সের তথ্য যোগ করা
     $priceBreakdown = [
-        'base_price' => [
-            'label' => 'Product Price',
-            'details' => $data['breakdown'], // বেস প্রাইসের সম্পূর্ণ ব্রেকডাউন
-            'amount' => $basePrice,
+        "base_price" => [
+            "label" => "Product Price",
+            "details" => $data["breakdown"] ?? null,
+            "amount" => $basePrice,
         ],
-        'shipping' => [
-            'label' => 'Shipping',
-            'details' => $shippingDetails, // নির্বাচিত শিপিংয়ের সম্পূর্ণ ডেটা
-            'amount' => $shippingPrice,
+        "shipping" => [
+            "label" => "Shipping",
+            "details" => $selected_shipping,
+            "amount" => $shippingPrice,
         ],
-        'turnaround' => [
-            'label' => 'Turnaround Time',
-            'details' => $turnaroundDetails, // নির্বাচিত টার্নআরাউন্ডের সম্পূর্ণ ডেটা
-            'amount' => $turnaroundPrice,
+        "turnaround" => [
+            "label" => "Turnaround Time",
+            "details" => $selected_turnaround,
+            "amount" => $turnaroundPrice,
         ],
-        'extras' => [
-            'job_sample_price' => $jobSamplePrice,
-            'digital_proof_price' => $digitalProofPrice,
-            'total_extras' => $jobSamplePrice + $digitalProofPrice,
+        "extras" => [
+            "job_sample_price" => $jobSamplePrice,
+            "digital_proof_price" => $digitalProofPrice,
+            "total_extras" => $jobSamplePrice + $digitalProofPrice,
         ],
-        'total_price' => $verifiedPrice,
+        "subtotal_before_tax" => $subtotalBeforeTax,
+        "tax" => [
+            "tax_id" => $taxModel ? $taxModel->id : null,
+            "tax_percentage" => $taxModel ? (float) $taxModel->price : 0,
+            "tax_amount" => $taxPrice,
+        ],
+        "total_price" => $verifiedPrice,
     ];
 
-    // ৪. ইউজার বা সেশন আইডি নির্ধারণ
+    // ৫. ইউজার বা সেশন আইডি নির্ধারণ
     if (Auth::check()) {
         $userId = Auth::id();
         $sessionId = null;
@@ -228,47 +229,59 @@ public function store(Request $request)
         $sessionId = $this->sessionId;
     }
 
-    // ৫. কার্টে একই পণ্য আছে কিনা চেক করা
-    $cartItem = Cart::where(function ($query) use ($userId, $sessionId) {
-            if ($userId) {
-                $query->where('user_id', $userId);
-            } else {
-                $query->where('session_id', $sessionId);
-            }
-        })
-        ->where('product_id', $request->product_id)
-        ->where('options', json_encode($request->options ?? []))
-        ->where('status', 'pending')
-        ->first();
+    // ৬. কার্টে একই পণ্য আছে কিনা চেক করা
+    $cartQuery = Cart::where(function ($query) use ($userId, $sessionId) {
+        if ($userId) {
+            $query->where("user_id", $userId);
+        } else {
+            $query->where("session_id", $sessionId);
+        }
+    })
+        ->where("product_id", $product->id)
+        ->where("options", json_encode($request->options ?? []))
+        ->where("status", "pending");
+
+    $cartItem = $cartQuery->first();
 
     if ($cartItem) {
-        // ৬. যদি আইটেম আগে থেকেই থাকে, তবে পরিমাণ এবং মূল্য আপডেট করবে
+        // ৭. যদি আইটেম আগে থেকেই থাকে, পরিমাণ ও মূল্য আপডেট করা
         $cartItem->quantity += $request->quantity;
-        $cartItem->price_at_time = $verifiedPrice; // যাচাইকৃত সর্বমোট মূল্য
-        $cartItem->price_breakdown = $priceBreakdown; // বিস্তারিত ব্রেকডাউন আপডেট
+        $cartItem->price_at_time = $verifiedPrice;
+        $cartItem->price_breakdown = $priceBreakdown;
+        $cartItem->turnarounds = $selected_turnaround;
+        $cartItem->shippings = $selected_shipping;
+        $cartItem->delivery_address = $request->delivery_address ?? null;
+        $cartItem->tax_id = $taxModel ? $taxModel->id : null;
+        $cartItem->tax_price = $taxPrice;
         $cartItem->save();
     } else {
-        // ৭. নতুন আইটেম হলে কার্টে যোগ করা
+        // ৮. নতুন কার্ট আইটেম তৈরি
         $cartItem = Cart::create([
-            'user_id' => $userId,
-            'session_id' => $sessionId,
-            'product_id' => $product->id,
-            'quantity' => $request->quantity,
-            'price_at_time' => $verifiedPrice, // যাচাইকৃত সর্বমোট মূল্য
-            'options' => $request->options ?? null,
-            'price_breakdown' => $priceBreakdown, // বিস্তারিত ব্রেকডাউন সংরক্ষণ
-            'turnarounds' => $turnaroundDetails,
-            'shippings' => $shippingDetails,
-            'delivery_address' => $request->delivery_address ?? null,
-            'status' => 'pending',
+            "user_id" => $userId,
+            "session_id" => $sessionId,
+            "product_id" => $product->id,
+            "quantity" => $request->quantity,
+            "price_at_time" => $verifiedPrice,
+            "options" => $request->options ?? null,
+            "price_breakdown" => $priceBreakdown,
+            "turnarounds" => $selected_turnaround,
+            "shippings" => $selected_shipping,
+            "delivery_address" => $request->delivery_address ?? null,
+            "status" => "pending",
+            "tax_id" => $taxModel ? $taxModel->id : null,
+            "tax_price" => $taxPrice,
         ]);
     }
 
+    // রিফ্রেশ করে নতুন ডেটা পাঠানো ভাল
+    $cartItem->refresh();
+
     return response()->json([
-        'message' => 'Item added to cart successfully',
-        'cart_item' => $cartItem
+        "message" => "Item added to cart successfully",
+        "cart_item" => $cartItem,
     ]);
 }
+
 
     /**
      * Update cart item
@@ -276,12 +289,13 @@ public function store(Request $request)
     public function update(Request $request, $id)
     {
         $request->validate([
-            'quantity' => 'required|integer|min:1',
-            'options' => 'nullable|array',
-            'price_configuration_id' => 'nullable|exists:price_configurations,id',
-            'shipping_id' => 'nullable|exists:shippings,id',
-            'turnaround_id' => 'nullable|exists:turnarounds,id',
-            'expected_price' => 'nullable|numeric|min:0',
+            "quantity" => "required|integer|min:1",
+            "options" => "nullable|array",
+            "price_configuration_id" =>
+                "nullable|exists:price_configurations,id",
+            "shipping_id" => "nullable|exists:shippings,id",
+            "turnaround_id" => "nullable|exists:turnarounds,id",
+            "expected_price" => "nullable|numeric|min:0",
         ]);
 
         $cartItem = Cart::findOrFail($id);
@@ -289,33 +303,41 @@ public function store(Request $request)
 
         // Update quantity and options
         $cartItem->quantity = $request->quantity;
-        if ($request->has('options')) {
+        if ($request->has("options")) {
             $cartItem->options = $request->options;
         }
 
         // If price configuration is updated, recalculate price
-        if ($request->has('price_configuration_id')) {
+        if ($request->has("price_configuration_id")) {
             // Get pricing data
-            $pricingData = $this->getPricingData($cartItem->product_id, $request->quantity, $cartItem->options ?? []);
-
-
+            $pricingData = $this->getPricingData(
+                $cartItem->product_id,
+                $request->quantity,
+                $cartItem->options ?? []
+            );
 
             // Find the matching price configuration
-            $priceConfig = collect($pricingData['price_config_list'])
-                ->firstWhere('id', $request->price_configuration_id);
+            $priceConfig = collect(
+                $pricingData["price_config_list"]
+            )->firstWhere("id", $request->price_configuration_id);
 
             if (!$priceConfig) {
-                return response()->json(['error' => 'Invalid price configuration'], 422);
+                return response()->json(
+                    ["error" => "Invalid price configuration"],
+                    422
+                );
             }
 
             // Get shipping price if selected
             $shippingPrice = 0;
             $shippingSnapshot = null;
             if (!empty($request->shipping_id)) {
-                $shipping = collect($priceConfig['shippings'])
-                    ->firstWhere('id', $request->shipping_id);
+                $shipping = collect($priceConfig["shippings"])->firstWhere(
+                    "id",
+                    $request->shipping_id
+                );
                 if ($shipping) {
-                    $shippingPrice = (float) $shipping['price'];
+                    $shippingPrice = (float) $shipping["price"];
                     $shippingSnapshot = $shipping;
                 }
             }
@@ -324,31 +346,42 @@ public function store(Request $request)
             $turnaroundPrice = 0;
             $turnaroundSnapshot = null;
             if (!empty($request->turnaround_id)) {
-                $turnaround = collect($priceConfig['turnarounds'])
-                    ->firstWhere('id', $request->turnaround_id);
+                $turnaround = collect($priceConfig["turnarounds"])->firstWhere(
+                    "id",
+                    $request->turnaround_id
+                );
                 if ($turnaround) {
-                    $turnaroundPrice = (float) $turnaround['price'];
+                    $turnaroundPrice = (float) $turnaround["price"];
                     $turnaroundSnapshot = $turnaround;
                 }
             }
 
             // Calculate total price
-            $calculatedPrice = (float) $priceConfig['price_after_discount']
-                + $shippingPrice
-                + $turnaroundPrice;
+            $calculatedPrice =
+                (float) $priceConfig["price_after_discount"] +
+                $shippingPrice +
+                $turnaroundPrice;
 
             // Validate price if provided
-            if ($request->has('expected_price') && abs($calculatedPrice - $request->expected_price) > 0.01) {
-                return response()->json([
-                    'error' => 'Price validation failed. The price has been updated.',
-                    'calculated_price' => $calculatedPrice,
-                    'expected_price' => $request->expected_price
-                ], 422);
+            if (
+                $request->has("expected_price") &&
+                abs($calculatedPrice - $request->expected_price) > 0.01
+            ) {
+                return response()->json(
+                    [
+                        "error" =>
+                            "Price validation failed. The price has been updated.",
+                        "calculated_price" => $calculatedPrice,
+                        "expected_price" => $request->expected_price,
+                    ],
+                    422
+                );
             }
 
             // Update cart item with new pricing
             $cartItem->price_at_time = $calculatedPrice;
-            $cartItem->price_configuration_id = $request->price_configuration_id;
+            $cartItem->price_configuration_id =
+                $request->price_configuration_id;
             $cartItem->shipping_id = $request->shipping_id;
             $cartItem->turnaround_id = $request->turnaround_id;
             $cartItem->price_snapshot = $priceConfig;
@@ -357,24 +390,34 @@ public function store(Request $request)
 
             // Update price breakdown
             $priceBreakdown = $cartItem->price_breakdown;
-            $priceBreakdown['base_price'] = (float) $priceConfig['price_after_discount'];
-            $priceBreakdown['original_price'] = (float) $priceConfig['original_price'];
-            $priceBreakdown['discount_amount'] = (float) $priceConfig['discount_amount'];
-            $priceBreakdown['discount_percentage'] = (float) $priceConfig['discount_percentage'];
-            $priceBreakdown['shipping']['id'] = $request->shipping_id ?? null;
-            $priceBreakdown['shipping']['price'] = $shippingPrice;
-            $priceBreakdown['shipping']['label'] = $shippingSnapshot['shippingLabel'] ?? null;
-            $priceBreakdown['turnaround']['id'] = $request->turnaround_id ?? null;
-            $priceBreakdown['turnaround']['price'] = $turnaroundPrice;
-            $priceBreakdown['turnaround']['label'] = $turnaroundSnapshot['turnaroundLabel'] ?? null;
-            $priceBreakdown['total'] = $calculatedPrice;
+            $priceBreakdown["base_price"] =
+                (float) $priceConfig["price_after_discount"];
+            $priceBreakdown["original_price"] =
+                (float) $priceConfig["original_price"];
+            $priceBreakdown["discount_amount"] =
+                (float) $priceConfig["discount_amount"];
+            $priceBreakdown["discount_percentage"] =
+                (float) $priceConfig["discount_percentage"];
+            $priceBreakdown["shipping"]["id"] = $request->shipping_id ?? null;
+            $priceBreakdown["shipping"]["price"] = $shippingPrice;
+            $priceBreakdown["shipping"]["label"] =
+                $shippingSnapshot["shippingLabel"] ?? null;
+            $priceBreakdown["turnaround"]["id"] =
+                $request->turnaround_id ?? null;
+            $priceBreakdown["turnaround"]["price"] = $turnaroundPrice;
+            $priceBreakdown["turnaround"]["label"] =
+                $turnaroundSnapshot["turnaroundLabel"] ?? null;
+            $priceBreakdown["total"] = $calculatedPrice;
 
             $cartItem->price_breakdown = $priceBreakdown;
         }
 
         $cartItem->save();
 
-        return response()->json(['message' => 'Cart updated', 'cart' => $cartItem]);
+        return response()->json([
+            "message" => "Cart updated",
+            "cart" => $cartItem,
+        ]);
     }
 
     /**
@@ -387,7 +430,7 @@ public function store(Request $request)
 
         $cartItem->delete();
 
-        return response()->json(['message' => 'Item removed from cart']);
+        return response()->json(["message" => "Item removed from cart"]);
     }
 
     /**
@@ -396,12 +439,16 @@ public function store(Request $request)
     public function clear(Request $request)
     {
         if (Auth::check()) {
-            Cart::where('user_id', Auth::id())->where('status', 'pending')->delete();
+            Cart::where("user_id", Auth::id())
+                ->where("status", "pending")
+                ->delete();
         } else {
-            Cart::where('session_id', $this->sessionId)->where('status', 'pending')->delete();
+            Cart::where("session_id", $this->sessionId)
+                ->where("status", "pending")
+                ->delete();
         }
 
-        return response()->json(['message' => 'Cart cleared']);
+        return response()->json(["message" => "Cart cleared"]);
     }
 
     /**
@@ -409,13 +456,15 @@ public function store(Request $request)
      */
     private function mergeGuestCart($userId, $sessionId)
     {
-        $guestItems = Cart::where('session_id', $sessionId)->where('status', 'pending')->get();
+        $guestItems = Cart::where("session_id", $sessionId)
+            ->where("status", "pending")
+            ->get();
 
         foreach ($guestItems as $item) {
-            $existingItem = Cart::where('user_id', $userId)
-                ->where('product_id', $item->product_id)
-                ->where('options', json_encode($item->options))
-                ->where('status', 'pending')
+            $existingItem = Cart::where("user_id", $userId)
+                ->where("product_id", $item->product_id)
+                ->where("options", json_encode($item->options))
+                ->where("status", "pending")
                 ->first();
 
             if ($existingItem) {
@@ -439,11 +488,11 @@ public function store(Request $request)
     {
         if (Auth::check()) {
             if ($cartItem->user_id !== Auth::id()) {
-                abort(403, 'Unauthorized');
+                abort(403, "Unauthorized");
             }
         } else {
             if ($cartItem->session_id !== $this->sessionId) {
-                abort(403, 'Unauthorized');
+                abort(403, "Unauthorized");
             }
         }
     }
@@ -451,37 +500,48 @@ public function store(Request $request)
     /**
      * Get pricing data from API
      */
-   /**
+    /**
      * Get pricing data from the helper function.
      */
-   /**
- * Get pricing data from the helper function.
- */
-private function getPricingData($productId, $quantity, $options, $total_sq_ft = null, $turnaround_id = null, $shipping_id = null)
-{
-    // প্যারামিটারগুলো একটি অ্যারেতে রূপান্তর করুন
-    $params = [
-        'runsize' => $quantity,
-        'options' => $options,
-        'sq_ft' => $total_sq_ft,
-        'turn_around_times_id' => $turnaround_id ?? null,
-        'shipping_id' => $shipping_id ?? null,
-    ];
+    /**
+     * Get pricing data from the helper function.
+     */
+    private function getPricingData(
+        $productId,
+        $quantity,
+        $options,
+        $total_sq_ft = null,
+        $turnaround_id = null,
+        $shipping_id = null
+    ) {
+        // প্যারামিটারগুলো একটি অ্যারেতে রূপান্তর করুন
+        $params = [
+            "runsize" => $quantity,
+            "options" => $options,
+            "sq_ft" => $total_sq_ft,
+            "turn_around_times_id" => $turnaround_id ?? null,
+            "shipping_id" => $shipping_id ?? null,
+        ];
 
-    Log::info('Fetching pricing data for product ID: ' . $productId . ' with params: ' . json_encode($params));
+        Log::info(
+            "Fetching pricing data for product ID: " .
+                $productId .
+                " with params: " .
+                json_encode($params)
+        );
 
-    // আপনার হেলপার ফাংশনকে কল করুন
-    // এখন আমরা অ্যারে এবং productId পাস করছি
-    $pricingData = HelpersFunctions::getPricingData($params, $productId);
+        // আপনার হেলপার ফাংশনকে কল করুন
+        // এখন আমরা অ্যারে এবং productId পাস করছি
+        $pricingData = HelpersFunctions::getPricingData($params, $productId);
 
-    // --- ত্রুটি পরিচালনা (Error Handling) ---
-    // হেলপার ফাংশনটি সঠিক ডাটা রিটার্ন করেছে কিনা তা পরীক্ষা করুন
-    if (empty($pricingData) || !isset($pricingData['data'])) {
-        // আপনি একটি এক্সেপশন থ্রো করতে পারেন বা একটি এরর মেসেজ দিয়ে স্টপ করতে পারেন
-        abort(500, 'Failed to retrieve pricing data from the service.');
+        // --- ত্রুটি পরিচালনা (Error Handling) ---
+        // হেলপার ফাংশনটি সঠিক ডাটা রিটার্ন করেছে কিনা তা পরীক্ষা করুন
+        if (empty($pricingData) || !isset($pricingData["data"])) {
+            // আপনি একটি এক্সেপশন থ্রো করতে পারেন বা একটি এরর মেসেজ দিয়ে স্টপ করতে পারেন
+            abort(500, "Failed to retrieve pricing data from the service.");
+        }
+
+        // কন্ট্রোলারের লজিক যেমনটা আশা করে, সেই 'data' অংশটি রিটার্ন করুন
+        return $pricingData["data"];
     }
-
-    // কন্ট্রোলারের লজিক যেমনটা আশা করে, সেই 'data' অংশটি রিটার্ন করুন
-    return $pricingData['data'];
-}
 }
