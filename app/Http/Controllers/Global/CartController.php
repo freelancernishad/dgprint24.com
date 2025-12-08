@@ -135,12 +135,13 @@ public function store(Request $request)
         $configuration_id
     );
 
-    if (!$priceConfig) {
+    if (!$priceConfig && $product->type == "general") {
         return response()->json(
             ["error" => "Invalid price configuration selected."],
             422
         );
     }
+
 
     // --- মূল্যের উপাদানগুলো বের করা ---
     $basePrice = (float) ($data["breakdown"]["final_price"] ?? 0);
