@@ -97,7 +97,7 @@ public function store(Request $request)
     $validator = Validator::make($request->all(), [
         "product_id" => "required|exists:products,product_id",
         "quantity" => "required|integer|min:1",
-        "total_sq_ft" => "nullable|integer|min:1",
+        "total_sq_ft" => "nullable",
         "options" => "nullable|array",
         "shipping_id" => "nullable",
         "turnaround_id" => "nullable",
