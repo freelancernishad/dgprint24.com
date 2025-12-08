@@ -61,6 +61,20 @@ class Cart extends Model
         return $this->belongsTo(Product::class);
     }
 
+    public function priceConfiguration()
+    {
+        return $this->belongsTo(PriceConfiguration::class);
+    }
+    public function shipping()
+    {
+        return $this->belongsTo(Shipping::class);
+    }
+    public function turnaround()
+    {
+        return $this->belongsTo(TurnAroundTime::class);
+    }   
+
+
     /**
      * কার্ট আইটেমের মোট মূল্য ক্যালকুলেট করে
      * যদি price_breakdown থাকে সেখান থেকে, নাহলে price_at_time * quantity
