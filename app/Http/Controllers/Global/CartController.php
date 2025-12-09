@@ -545,7 +545,7 @@ protected function decodeJwtPayloadUnsafe(?string $token)
                 $item->delete();
             } else {
                 // Transfer ownership to user
-                $item->user_id = $userId;
+                $item->session_id = $userId;
                 $item->session_id = null;
                 $item->save();
             }
