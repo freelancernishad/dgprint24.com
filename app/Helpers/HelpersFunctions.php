@@ -233,7 +233,8 @@ class HelpersFunctions
         if ($priceRange) {
             if (isset($params['sq_ft'])) {
                 $total_sq_ft = $params['sq_ft'];
-                $price_for_sq_ft = $total_sq_ft * $priceRange->price_per_sq_ft;
+                $price_per_sq_ft = $priceRange->price_per_sq_ft+$priceConfig->price;
+                $price_for_sq_ft = $total_sq_ft * $price_per_sq_ft;
                 $price_per_sq_ft = $priceRange->price_per_sq_ft;
             }
 
@@ -318,7 +319,8 @@ class HelpersFunctions
 
         $TurnaroundRangesPriceIntoQuantity = round($TurnaroundRangesPrice, 2);
         if($product_type === 'banner') {
-            $configuration_price_into_quantity_price = $configurationPrice * $quantity;
+            // $configuration_price_into_quantity_price = $configurationPrice * $quantity;
+            $configuration_price_into_quantity_price = 0;
 
             $TurnaroundRangesPriceIntoQuantity = round($TurnaroundRangesPrice * $quantity, 2);
         }
