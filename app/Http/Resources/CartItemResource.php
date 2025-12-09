@@ -42,6 +42,20 @@ class CartItemResource extends JsonResource
         $product = $get('product', []);
         $options = $get('options', []);
 
+        // Convert dynamic options to label/value list
+        $formattedOptions = [];
+
+        if (!empty($options) && is_array($options)) {
+            foreach ($options as $label => $value) {
+                $formattedOptions[] = [
+                    'label' => (string) $label,
+                    'value' => (string) $value
+                ];
+            }
+        }
+
+
+
         // shipment(s)
         $rawShip = $get('shippings', null); // single object
         $shipmentsArr = $get('shipments', null); // maybe array
@@ -107,9 +121,9 @@ class CartItemResource extends JsonResource
                 'id' => $product['category_id'] ?? $get('product.category_id') ?? ($product['category']['id'] ?? $product->category->id ?? null),
                 'name' => $product['category']['name'] ?? $product->category->name ?? null
             ],
-            // map options - keep keys as in example (stock/colorspec) but preserve others if exist
-            'stock' => $options['Stock'] ?? $get('product.stock') ?? $options['stock'] ?? null,
-            'colorspec' => $options['Colorspec'] ?? $options['colorspec'] ?? null,
+
+            'options' => $formattedOptions,
+
             'runSize' => (int) ($this->resource['quantity'] ?? $this->resource->quantity ?? $product['runSize'] ?? $product->selectedRunSize ?? 0),
             'turnaroundTime' => $get('price_breakdown.base_price.details.selected_turnaround.turnaround_label') ?? $get('turnarounds.turnaround_label') ?? $get('turnaround.turnaround_label') ?? null,
             'projectName' => $product['product_name'] ?? $product->product_name ?? ($this->resource['projectName'] ?? $this->resource->projectName ?? ($product['projectName'] ?? null)),
