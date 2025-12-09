@@ -19,6 +19,7 @@ use App\Helpers\ExternalTokenVerify;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Http;
+use App\Http\Resources\CartCollection;
 use Illuminate\Support\Facades\Validator;
 use Tymon\JWTAuth\Exceptions\JWTException;
 use Firebase\JWT\SignatureInvalidException;
@@ -41,6 +42,65 @@ class CartController extends Controller
     }
 
     /**
+     * View all cart items (for user or guest)
+     */
+    public function getFormatedCartItems(Request $request)
+    {
+        $token = $request->bearerToken();
+       $authUser =  ExternalTokenVerify::verifyExternalToken($token);
+
+        if ($authUser) {
+            $userId = $authUser->id;
+
+            // Merge guest cart if exists
+            $this->mergeGuestCart($userId, $this->sessionId);
+
+            $cartItems = Cart::with([
+                "product",
+                "priceConfiguration",
+                "shipping",
+                "turnaround",
+            ])
+                ->where("session_id", $userId)
+                ->where("status", "pending")
+                ->get();
+        } else {
+            $cartItems = Cart::with([
+                "product",
+                "priceConfiguration",
+                "shipping",
+                "turnaround",
+            ])
+                ->where("session_id", $this->sessionId)
+                ->where("status", "pending")
+                ->get();
+        }
+
+        // Format the response with price data from snapshots if relations are null
+        $formattedItems = $cartItems->map(function ($item) {
+            $itemArray = $item->toArray();
+
+            // Use snapshot data if relations are null
+            if (!$item->priceConfiguration && $item->price_snapshot) {
+                $itemArray["price_configuration"] = $item->price_snapshot;
+            }
+
+            if (!$item->shipping && $item->shipping_snapshot) {
+                $itemArray["shipping"] = $item->shipping_snapshot;
+            }
+
+            if (!$item->turnaround && $item->turnaround_snapshot) {
+                $itemArray["turnaround"] = $item->turnaround_snapshot;
+            }
+
+
+            return $itemArray;
+        });
+
+
+        return new CartCollection($cartItems);
+        return response()->json($formattedItems);
+    }  /**
      * View all cart items (for user or guest)
      */
     public function index(Request $request)
@@ -101,6 +161,8 @@ class CartController extends Controller
 
             return $itemArray;
         });
+
+
 
         return response()->json($formattedItems);
     }
