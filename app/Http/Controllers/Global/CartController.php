@@ -3,19 +3,27 @@
 namespace App\Http\Controllers\Global;
 
 use App\Models\Cart;
+use Firebase\JWT\JWT;
+use Firebase\JWT\Key;
 use App\Models\Product;
 use App\Models\Shipping;
 use App\Models\Turnaround;
+use Twilio\TwiML\Voice\Sip;
 use Illuminate\Http\Request;
+use App\Models\TurnAroundTime;
 use App\Helpers\HelpersFunctions;
 use App\Models\PriceConfiguration;
+use Tymon\JWTAuth\Facades\JWTAuth;
+use Illuminate\Support\Facades\Log;
+use App\Helpers\ExternalTokenVerify;
 use App\Http\Controllers\Controller;
-use App\Models\TurnAroundTime;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Http;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
-use Twilio\TwiML\Voice\Sip;
+use Tymon\JWTAuth\Exceptions\JWTException;
+use Firebase\JWT\SignatureInvalidException;
+use Tymon\JWTAuth\Exceptions\TokenExpiredException;
+use Tymon\JWTAuth\Exceptions\TokenInvalidException;
 
 class CartController extends Controller
 {
@@ -37,8 +45,17 @@ class CartController extends Controller
      */
     public function index(Request $request)
     {
-        if (Auth::check()) {
-            $userId = Auth::id();
+
+
+        
+        $token = $request->bearerToken();
+       $authUser =  ExternalTokenVerify::verifyExternalToken($token);
+
+
+
+        
+        if ($authUser) {
+            $userId = $authUser->id;
 
             // Merge guest cart if exists
             $this->mergeGuestCart($userId, $this->sessionId);
@@ -49,7 +66,7 @@ class CartController extends Controller
                 "shipping",
                 "turnaround",
             ])
-                ->where("user_id", $userId)
+                ->where("session_id", $userId)
                 ->where("status", "pending")
                 ->get();
         } else {
@@ -219,10 +236,17 @@ class CartController extends Controller
             "total_price" => $verifiedPrice,
         ];
 
+
+
+        $token = $request->bearerToken();
+       $authUser =  ExternalTokenVerify::verifyExternalToken($token);
+
+
         // ৫. ইউজার বা সেশন আইডি নির্ধারণ
-        if (Auth::check()) {
-            $userId = Auth::id();
-            $sessionId = null;
+        if ($authUser) {
+            $userId = null;
+            $sessionId = $authUser->id;
+            Log::info("Authenticated user ID from token: " . $sessionId);
         } else {
             $userId = null;
             $sessionId = $this->sessionId;
@@ -314,6 +338,20 @@ class CartController extends Controller
         ]);
     }
 
+protected function decodeJwtPayloadUnsafe(?string $token)
+{
+    if (!$token) return null;
+    // token parts: header.payload.signature
+    $parts = explode('.', $token);
+    if (count($parts) < 2) return null;
+    $payload = $parts[1];
+    // base64url decode
+    $payload = str_replace(['-', '_'], ['+', '/'], $payload);
+    $padding = 4 - (strlen($payload) % 4);
+    if ($padding !== 4) $payload .= str_repeat('=', $padding);
+    $json = base64_decode($payload);
+    return json_decode($json, true);
+}
 
 
     /**
@@ -494,7 +532,7 @@ class CartController extends Controller
             ->get();
 
         foreach ($guestItems as $item) {
-            $existingItem = Cart::where("user_id", $userId)
+            $existingItem = Cart::where("session_id", $userId)
                 ->where("product_id", $item->product_id)
                 ->where("options", json_encode($item->options))
                 ->where("status", "pending")
