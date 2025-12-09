@@ -44,7 +44,7 @@ class Cart extends Model
         'turnarounds' => 'array',
         'delivery_address' => 'array',
         'tax_price' => 'decimal:2',
-            'sets' => 'integer',
+            'sets' => 'array',
     'set_count' => 'integer',
     ];
 

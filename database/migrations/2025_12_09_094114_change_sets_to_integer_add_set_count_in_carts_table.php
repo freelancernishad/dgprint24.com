@@ -10,7 +10,7 @@ return new class extends Migration
     public function up()
     {
         // Change sets column to INT (nullable)
-        DB::statement("ALTER TABLE `carts` MODIFY COLUMN `sets` INT NULL");
+        DB::statement("ALTER TABLE `carts` MODIFY COLUMN `sets` JSON NULL");
 
         // Add new set_count column
         Schema::table('carts', function (Blueprint $table) {
