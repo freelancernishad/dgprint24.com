@@ -91,197 +91,229 @@ class CartController extends Controller
     /**
      * Add item to cart (guest or user)
      */
-public function store(Request $request)
-{
-    // ১. ভ্যালিডেশন
-    $validator = Validator::make($request->all(), [
-        "product_id" => "required|exists:products,product_id",
-        "quantity" => "required|integer|min:1",
-        "total_sq_ft" => "nullable",
-        "options" => "nullable|array",
-        "shipping_id" => "nullable",
-        "turnaround_id" => "nullable",
-        "job_sample_price" => "nullable|numeric|min:0",
-        "digital_proof_price" => "nullable|numeric|min:0",
-        "delivery_address" => "nullable|array",
-        "tax_id" => "nullable|exists:taxes,id", // নতুন
-    ]);
+    public function store(Request $request)
+    {
+        // ১. ভ্যালিডেশন
+        $validator = Validator::make($request->all(), [
+            "product_id" => "required|exists:products,product_id",
+            "quantity" => "required|integer|min:1",
+            "total_sq_ft" => "nullable",
+            "options" => "nullable|array",
+            "shipping_id" => "nullable",
+            "turnaround_id" => "nullable",
+            "job_sample_price" => "nullable|numeric|min:0",
+            "digital_proof_price" => "nullable|numeric|min:0",
+            "delivery_address" => "nullable|array",
+            "tax_id" => "nullable|exists:taxes,id",
+            "sets" => "nullable|array",        // accept array of strings
+            "sets.*" => "string",             // each item should be string
+        ]);
 
-    if ($validator->fails()) {
-        return response()->json(["errors" => $validator->errors()], 422);
-    }
+        if ($validator->fails()) {
+            return response()->json(["errors" => $validator->errors()], 422);
+        }
 
-    // ২. প্রোডাক্ট খুঁজে বের করা
-    $product = Product::where("product_id", $request->product_id)
-        ->where("active", true)
-        ->firstOrFail();
+        // ২. প্রোডাক্ট খুঁজে বের করা
+        $product = Product::where("product_id", $request->product_id)
+            ->where("active", true)
+            ->firstOrFail();
 
-    // ৩. ব্যাকএন্ডে মূল্য যাচাই (getPricingData assumed)
-    $pricingData = $this->getPricingData(
-        $request->product_id,
-        $request->quantity,
-        $request->options,
-        $request->total_sq_ft,
-        $request->turnaround_id,
-        $request->shipping_id
-    );
-
-    $data = $pricingData; // ধরে নিচ্ছি structure ঠিকই দেয়া হচ্ছে
-
-    $configuration_id = $data["breakdown"]["configuration_id"] ?? null;
-
-    $priceConfig = collect($data["price_config_list"] ?? [])->firstWhere(
-        "id",
-        $configuration_id
-    );
-
-    if (!$priceConfig && $product->type == "general") {
-        return response()->json(
-            ["error" => "Invalid price configuration selected."],
-            422
+        // ৩. ব্যাকএন্ডে মূল্য যাচাই (getPricingData assumed)
+        $pricingData = $this->getPricingData(
+            $request->product_id,
+            $request->quantity,
+            $request->options,
+            $request->total_sq_ft,
+            $request->turnaround_id,
+            $request->shipping_id
         );
-    }
 
+        $data = $pricingData; // ধরে নিচ্ছি structure ঠিকই দেয়া হচ্ছে
 
-    // --- মূল্যের উপাদানগুলো বের করা ---
-    $basePrice = (float) ($data["breakdown"]["final_price"] ?? 0);
+        $configuration_id = $data["breakdown"]["configuration_id"] ?? null;
 
-    $selected_turnaround = $data["breakdown"]["selected_turnaround"] ?? null;
-    $selected_shipping = $data["breakdown"]["selected_shipping"] ?? null;
+        $priceConfig = collect($data["price_config_list"] ?? [])->firstWhere(
+            "id",
+            $configuration_id
+        );
 
-    $turnaroundPrice = 0;
-    if (!empty($request->turnaround_id) && $selected_turnaround) {
-        $turnaroundPrice = (float) ($selected_turnaround["price"] ?? 0);
-    }
-
-    $shippingPrice = 0;
-    if (!empty($request->shipping_id) && $selected_shipping) {
-        $shippingPrice = (float) ($selected_shipping["price"] ?? 0);
-    }
-
-    $jobSamplePrice = 0;
-    if ($request->job_sample_price) {
-        // তুমি পূর্বে $data থেকে নিয়েছো; কিন্তু request-এ আছেতো—এখানে request-ই নিলে ভাল
-        $jobSamplePrice = (float) $request->job_sample_price;
-    }
-
-    $digitalProofPrice = 0;
-    if ($request->digital_proof_price) {
-        $digitalProofPrice = (float) $request->digital_proof_price;
-    }
-
-    // ব্যাকএন্ডে ট্যাক্স ব্যতিরেকে মোট
-    $subtotalBeforeTax = $basePrice + $jobSamplePrice + $digitalProofPrice;
-
-    // ৪. ট্যাক্স লোড করা ও ট্যাক্স মূল্য হিসাব করা (percent)
-    $taxPrice = 0.0;
-    $taxModel = null;
-    if (!empty($request->tax_id)) {
-        $taxModel = \App\Models\Tax::find($request->tax_id);
-        if ($taxModel) {
-            // Tax::price ধরে নিচ্ছি এটা percentage (e.g. 5 => 5%)
-            $taxPercentage = (float) $taxModel->price;
-            $taxPrice = round(($subtotalBeforeTax * $taxPercentage) / 100, 2);
+        if (!$priceConfig && $product->type == "general") {
+            return response()->json(
+                ["error" => "Invalid price configuration selected."],
+                422
+            );
         }
-    }
 
-    // ফাইনাল ব্যাকএন্ড ক্যালকুলেটেড প্রাইস (tax সহ)
-    $backendCalculatedPrice = $subtotalBeforeTax + $taxPrice;
+        // --- মূল্যের উপাদানগুলো বের করা ---
+        $basePrice = (float) ($data["breakdown"]["final_price"] ?? 0);
 
-    $verifiedPrice = $backendCalculatedPrice;
+        $selected_turnaround = $data["breakdown"]["selected_turnaround"] ?? null;
+        $selected_shipping = $data["breakdown"]["selected_shipping"] ?? null;
 
-    // price_breakdown-এ ট্যাক্সের তথ্য যোগ করা
-    $priceBreakdown = [
-        "base_price" => [
-            "label" => "Product Price",
-            "details" => $data["breakdown"] ?? null,
-            "amount" => $basePrice,
-        ],
-        "shipping" => [
-            "label" => "Shipping",
-            "details" => $selected_shipping,
-            "amount" => $shippingPrice,
-        ],
-        "turnaround" => [
-            "label" => "Turnaround Time",
-            "details" => $selected_turnaround,
-            "amount" => $turnaroundPrice,
-        ],
-        "extras" => [
-            "job_sample_price" => $jobSamplePrice,
-            "digital_proof_price" => $digitalProofPrice,
-            "total_extras" => $jobSamplePrice + $digitalProofPrice,
-        ],
-        "subtotal_before_tax" => $subtotalBeforeTax,
-        "tax" => [
-            "tax_id" => $taxModel ? $taxModel->id : null,
-            "tax_percentage" => $taxModel ? (float) $taxModel->price : 0,
-            "tax_amount" => $taxPrice,
-        ],
-        "total_price" => $verifiedPrice,
-    ];
+        $turnaroundPrice = 0;
+        if (!empty($request->turnaround_id) && $selected_turnaround) {
+            $turnaroundPrice = (float) ($selected_turnaround["price"] ?? 0);
+        }
 
-    // ৫. ইউজার বা সেশন আইডি নির্ধারণ
-    if (Auth::check()) {
-        $userId = Auth::id();
-        $sessionId = null;
-    } else {
-        $userId = null;
-        $sessionId = $this->sessionId;
-    }
+        $shippingPrice = 0;
+        if (!empty($request->shipping_id) && $selected_shipping) {
+            $shippingPrice = (float) ($selected_shipping["price"] ?? 0);
+        }
 
-    // ৬. কার্টে একই পণ্য আছে কিনা চেক করা
-    $cartQuery = Cart::where(function ($query) use ($userId, $sessionId) {
-        if ($userId) {
-            $query->where("user_id", $userId);
+        $jobSamplePrice = 0;
+        if ($request->job_sample_price) {
+            $jobSamplePrice = (float) $request->job_sample_price;
+        }
+
+        $digitalProofPrice = 0;
+        if ($request->digital_proof_price) {
+            $digitalProofPrice = (float) $request->digital_proof_price;
+        }
+
+        // ব্যাকএন্ডে ট্যাক্স ব্যতিরেকে মোট
+        $subtotalBeforeTax = $basePrice + $jobSamplePrice + $digitalProofPrice;
+
+        // ৪. ট্যাক্স লোড করা ও ট্যাক্স মূল্য হিসাব করা (percent)
+        $taxPrice = 0.0;
+        $taxModel = null;
+        if (!empty($request->tax_id)) {
+            $taxModel = \App\Models\Tax::find($request->tax_id);
+            if ($taxModel) {
+                $taxPercentage = (float) $taxModel->price;
+                $taxPrice = round(($subtotalBeforeTax * $taxPercentage) / 100, 2);
+            }
+        }
+
+        // ফাইনাল ব্যাকএন্ড ক্যালকুলেটেড প্রাইস (tax সহ)
+        $backendCalculatedPrice = $subtotalBeforeTax + $taxPrice;
+        $verifiedPrice = $backendCalculatedPrice;
+
+        // price_breakdown-এ ট্যাক্সের তথ্য যোগ করা
+        $priceBreakdown = [
+            "base_price" => [
+                "label" => "Product Price",
+                "details" => $data["breakdown"] ?? null,
+                "amount" => $basePrice,
+            ],
+            "shipping" => [
+                "label" => "Shipping",
+                "details" => $selected_shipping,
+                "amount" => $shippingPrice,
+            ],
+            "turnaround" => [
+                "label" => "Turnaround Time",
+                "details" => $selected_turnaround,
+                "amount" => $turnaroundPrice,
+            ],
+            "extras" => [
+                "job_sample_price" => $jobSamplePrice,
+                "digital_proof_price" => $digitalProofPrice,
+                "total_extras" => $jobSamplePrice + $digitalProofPrice,
+            ],
+            "subtotal_before_tax" => $subtotalBeforeTax,
+            "tax" => [
+                "tax_id" => $taxModel ? $taxModel->id : null,
+                "tax_percentage" => $taxModel ? (float) $taxModel->price : 0,
+                "tax_amount" => $taxPrice,
+            ],
+            "total_price" => $verifiedPrice,
+        ];
+
+        // ৫. ইউজার বা সেশন আইডি নির্ধারণ
+        if (Auth::check()) {
+            $userId = Auth::id();
+            $sessionId = null;
         } else {
-            $query->where("session_id", $sessionId);
+            $userId = null;
+            $sessionId = $this->sessionId;
         }
-    })
+
+        // ================================
+        // sets handling (store as JSON array, normalized)
+        // ================================
+        $setsRaw = $request->input('sets', []); // expect e.g. ["set one", "set two "]
+
+        // Normalize: trim each string and remove empty items
+        $normalizedSets = array_values(array_filter(array_map(function($s) {
+            if (!is_string($s)) return null;
+            return trim($s);
+        }, $setsRaw)));
+
+        // set_count
+        $setCount = count($normalizedSets);
+
+        // ================================
+        // find existing cart item (compare options + sets)
+        // ================================
+        $cartQuery = Cart::where(function ($query) use ($userId, $sessionId) {
+            if ($userId) {
+                $query->where("user_id", $userId);
+            } else {
+                $query->where("session_id", $sessionId);
+            }
+        })
         ->where("product_id", $product->id)
-        ->where("options", json_encode($request->options ?? []))
         ->where("status", "pending");
 
-    $cartItem = $cartQuery->first();
+        // compare options
+        if (!empty($request->options)) {
+            $cartQuery->where('options', json_encode($request->options));
+        } else {
+            $cartQuery->where(function($q){
+                $q->whereNull('options')->orWhere('options', json_encode([]));
+            });
+        }
 
-    if ($cartItem) {
-        // ৭. যদি আইটেম আগে থেকেই থাকে, পরিমাণ ও মূল্য আপডেট করা
-        $cartItem->quantity += $request->quantity;
-        $cartItem->price_at_time = $verifiedPrice;
-        $cartItem->price_breakdown = $priceBreakdown;
-        $cartItem->turnarounds = $selected_turnaround;
-        $cartItem->shippings = $selected_shipping;
-        $cartItem->delivery_address = $request->delivery_address ?? null;
-        $cartItem->tax_id = $taxModel ? $taxModel->id : null;
-        $cartItem->tax_price = $taxPrice;
-        $cartItem->save();
-    } else {
-        // ৮. নতুন কার্ট আইটেম তৈরি
-        $cartItem = Cart::create([
-            "user_id" => $userId,
-            "session_id" => $sessionId,
-            "product_id" => $product->id,
-            "quantity" => $request->quantity,
-            "price_at_time" => $verifiedPrice,
-            "options" => $request->options ?? null,
-            "price_breakdown" => $priceBreakdown,
-            "turnarounds" => $selected_turnaround,
-            "shippings" => $selected_shipping,
-            "delivery_address" => $request->delivery_address ?? null,
-            "status" => "pending",
-            "tax_id" => $taxModel ? $taxModel->id : null,
-            "tax_price" => $taxPrice,
+        // compare sets (store & compare JSON exact match)
+        // If you want order-insensitive comparison, sort arrays before encoding on both sides.
+        $setsJson = json_encode($normalizedSets);
+        $cartQuery->where('sets', $setsJson);
+
+        $cartItem = $cartQuery->first();
+
+        if ($cartItem) {
+            // ৭. যদি আইটেম আগে থেকেই থাকে, পরিমাণ ও মূল্য আপডেট করা
+            $cartItem->quantity += $request->quantity;
+            $cartItem->price_at_time = $verifiedPrice;
+            $cartItem->price_breakdown = $priceBreakdown;
+            $cartItem->turnarounds = $selected_turnaround;
+            $cartItem->shippings = $selected_shipping;
+            $cartItem->delivery_address = $request->delivery_address ?? null;
+            $cartItem->tax_id = $taxModel ? $taxModel->id : null;
+            $cartItem->tax_price = $taxPrice;
+            $cartItem->sets = $normalizedSets;   // saved as JSON
+            $cartItem->set_count = $setCount;
+            $cartItem->save();
+        } else {
+            // ৮. নতুন কার্ট আইটেম তৈরি
+            $cartItem = Cart::create([
+                "user_id" => $userId,
+                "session_id" => $sessionId,
+                "product_id" => $product->id,
+                "quantity" => $request->quantity,
+                "price_at_time" => $verifiedPrice,
+                "options" => $request->options ?? null,
+                "price_breakdown" => $priceBreakdown,
+                "turnarounds" => $selected_turnaround,
+                "shippings" => $selected_shipping,
+                "delivery_address" => $request->delivery_address ?? null,
+                "status" => "pending",
+                "tax_id" => $taxModel ? $taxModel->id : null,
+                "tax_price" => $taxPrice,
+                "sets" => $normalizedSets, // JSON array
+                "set_count" => $setCount,
+            ]);
+        }
+
+        // রিফ্রেশ করে নতুন ডেটা পাঠানো ভাল
+        $cartItem->refresh();
+
+        return response()->json([
+            "message" => "Item added to cart successfully",
+            "cart_item" => $cartItem,
         ]);
     }
 
-    // রিফ্রেশ করে নতুন ডেটা পাঠানো ভাল
-    $cartItem->refresh();
-
-    return response()->json([
-        "message" => "Item added to cart successfully",
-        "cart_item" => $cartItem,
-    ]);
-}
 
 
     /**

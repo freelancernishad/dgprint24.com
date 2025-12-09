@@ -27,7 +27,8 @@ class Cart extends Model
         'turnarounds',
         'delivery_address',
 
-        'sets',
+       'sets',        // now integer
+        'set_count',   // new
         'tax_id',
         'tax_price',
 
@@ -43,6 +44,8 @@ class Cart extends Model
         'turnarounds' => 'array',
         'delivery_address' => 'array',
         'tax_price' => 'decimal:2',
+            'sets' => 'integer',
+    'set_count' => 'integer',
     ];
 
     public function user()
@@ -72,7 +75,7 @@ class Cart extends Model
     public function turnaround()
     {
         return $this->belongsTo(TurnAroundTime::class);
-    }   
+    }
 
 
     /**
