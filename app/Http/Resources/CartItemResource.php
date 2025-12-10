@@ -112,6 +112,9 @@ class CartItemResource extends JsonResource
             ]
         ]);
 
+
+
+
         // Build final product object (use options mapping)
         $finalProduct = [
             'product_name' => $product['product_name'] ?? $product->product_name ?? $get('product.product_name') ?? $get('product_name'),

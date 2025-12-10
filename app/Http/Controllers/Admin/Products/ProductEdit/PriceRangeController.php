@@ -92,7 +92,7 @@ class PriceRangeController extends Controller
     // DELETE /admin/products/{product}/price-ranges/{range}
     public function deletePriceRange(Product $product, ProductPriceRange $range)
     {
-        if ($range->product_id !== $product->id) {
+        if ($range->product_id != $product->id) {
             return response()->json(['message'=>'Range does not belong to product'], Response::HTTP_FORBIDDEN);
         }
         $range->delete();
