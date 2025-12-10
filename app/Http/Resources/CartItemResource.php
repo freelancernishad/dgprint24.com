@@ -54,8 +54,6 @@ class CartItemResource extends JsonResource
             }
         }
 
-
-
         // shipment(s)
         $rawShip = $get('shippings', null); // single object
         $shipmentsArr = $get('shipments', null); // maybe array
@@ -112,9 +110,6 @@ class CartItemResource extends JsonResource
             ]
         ]);
 
-
-
-
         // Build final product object (use options mapping)
         $finalProduct = [
             'product_name' => $product['product_name'] ?? $product->product_name ?? $get('product.product_name') ?? $get('product_name'),
@@ -143,12 +138,40 @@ class CartItemResource extends JsonResource
             'total' => (float) ($get('price_breakdown.total_price') ?? $get('price_at_time') ?? $get('totalPrice') ?? 0)
         ];
 
+        // -------------------------
+        // NEW: sum extra_selected_options.amount (if any) and add to pricing
+        // -------------------------
+        $extrasSelected = $get('extra_selected_options', []);
+        $extrasTotal = 0.0;
+        if (!empty($extrasSelected) && is_array($extrasSelected)) {
+            foreach ($extrasSelected as $ex) {
+                // support array or object shapes; be defensive with types
+                $amount = 0;
+                if (is_array($ex)) {
+                    $amount = $ex['amount'] ?? ($ex['selected_amount'] ?? 0);
+                } elseif (is_object($ex)) {
+                    $amount = $ex->amount ?? ($ex->selected_amount ?? 0);
+                }
+                // cast safely to float (strings like "1" or "0.5" will work)
+                $extrasTotal += (float) $amount;
+            }
+        }
+
+        // attach extras detail to pricing and add to total
+        $pricing['extrasTotal'] = (float) $extrasTotal;
+        $pricing['total'] = (float) ($pricing['total'] + $extrasTotal);
+
         return [
             'id' => (string)($this->resource['id'] ?? $this->resource->id ?? ''),
             'totalPrice' => $pricing['total'],
             'product' => $finalProduct,
             'shipments' => $shipments,
             'pricing' => $pricing,
+            // expose raw extras selection so frontend can render labels etc if needed
+            'extras' => [
+                'selectedOptions' => $extrasSelected,
+                'extrasTotal' => (float) $extrasTotal
+            ],
             // 'raw' => [
             //     'original_payload' => $this->resource
             // ]

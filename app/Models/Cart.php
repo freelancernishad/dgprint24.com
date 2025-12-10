@@ -21,6 +21,7 @@ class Cart extends Model
         'status',                  // pending, ordered, abandoned
 
         'project_name',
+        'extra_selected_options',
 
         // Newly added JSON fields
         'shippings',
@@ -46,6 +47,7 @@ class Cart extends Model
         'tax_price' => 'decimal:2',
             'sets' => 'array',
     'set_count' => 'integer',
+    'extra_selected_options' => 'array',
     ];
 
     public function user()

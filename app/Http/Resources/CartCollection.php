@@ -20,9 +20,6 @@ class CartCollection extends ResourceCollection
     public function toArray($request)
     {
          $cartItems = CartItemResource::collection($this->collection)->resolve();
-        // $cartItems = $this->collection->map(function ($item) {
-        //     return (new CartItemResource($item))->toArray($request);
-        // })->values()->all();
 
         // derive cartTotals if your source doesn't provide a top-level summary
         $cartTotals = [
@@ -31,6 +28,7 @@ class CartCollection extends ResourceCollection
             'jobSample' => 0,
             'totalShipping' => 0,
             'totalTax' => 0,
+            'extrasTotal' => 0,     // NEW: sum of extra_selected_options amounts across items
             'grandTotal' => 0,
         ];
 
@@ -40,6 +38,7 @@ class CartCollection extends ResourceCollection
             $cartTotals['jobSample'] += $ci['pricing']['jobSample'] ?? 0;
             $cartTotals['totalShipping'] += $ci['pricing']['totalShipping'] ?? 0;
             $cartTotals['totalTax'] += $ci['pricing']['totalTax'] ?? 0;
+            $cartTotals['extrasTotal'] += $ci['pricing']['extrasTotal'] ?? ($ci['extras']['extrasTotal'] ?? 0);
             $cartTotals['grandTotal'] += $ci['pricing']['total'] ?? 0;
         }
 

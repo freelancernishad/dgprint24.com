@@ -164,7 +164,7 @@ class CartController extends Controller
 
 
 
-        return response()->json($formattedItems);
+        return response()->json(["data" => $formattedItems]);
     }
 
     /**
@@ -184,11 +184,15 @@ class CartController extends Controller
             "digital_proof_price" => "nullable|numeric|min:0",
             "delivery_address" => "nullable|array",
             "tax_id" => "nullable|exists:taxes,id",
-            "sets" => "nullable|array",        // accept array of strings
-            "sets.*" => "string",             // each item should be string
+            "sets" => "nullable|array",
+            "sets.*" => "string",
 
             // নতুন: project_name
             "project_name" => "nullable|string|max:255",
+
+            // নতুন: extra_selected_options (array of objects)
+            "extra_selected_options" => "nullable|array",
+            "extra_selected_options.*" => "nullable|array",
         ]);
 
         if ($validator->fails()) {
@@ -325,6 +329,49 @@ class CartController extends Controller
         }
 
         // ================================
+        // extra_selected_options handling (normalize)
+        // ================================
+        $extrasRaw = $request->input('extra_selected_options', []);
+        $normalizedExtras = [];
+
+        if (is_array($extrasRaw)) {
+            foreach ($extrasRaw as $item) {
+                if (!is_array($item)) {
+                    // যদি API থেকে string/json আসে, চেষ্টা করে decode করা যেতে পারে কিন্তু এখানে safe skip করছি
+                    continue;
+                }
+
+                // প্রত্যেক ফিল্ডকে normalize করা
+                $label = isset($item['label']) ? trim((string)$item['label']) : null;
+                $selectedOption = isset($item['selected_option']) ? trim((string)$item['selected_option']) : null;
+                // amount যদি নেটিভভাবে না আসে তাহলে 0 ধরে নিন
+                $amount = isset($item['amount']) && $item['amount'] !== null && $item['amount'] !== '' ? (float)$item['amount'] : 0;
+                $root = isset($item['__root']) ? trim((string)$item['__root']) : $label;
+                $depth = isset($item['__depth']) ? (int)$item['__depth'] : 0;
+                $randomIndex = isset($item['_randomIndex']) ? (int)$item['_randomIndex'] : null;
+
+                // অন্তত label বা selected_option না থাকলে skip না করলাম — আপনি চাইলে stricter করতে পারেন
+                $normalizedItem = [
+                    'label' => $label,
+                    'selected_option' => $selectedOption,
+                    'amount' => $amount,
+                    '__root' => $root,
+                    '__depth' => $depth,
+                ];
+
+                // randomIndex যোগ করা যদি থাকে
+                if ($randomIndex !== null) {
+                    $normalizedItem['_randomIndex'] = $randomIndex;
+                }
+
+                $normalizedExtras[] = $normalizedItem;
+            }
+        }
+
+        // Optionally: যদি order-insensitive তুলনা চান, sort করে নিতে পারেন এখানে
+        // উদাহরণ: usort($normalizedExtras, fn($a,$b) => strcmp($a['label'] ?? '', $b['label'] ?? ''));
+
+        // ================================
         // sets handling (store as JSON array, normalized)
         // ================================
         $setsRaw = $request->input('sets', []); // expect e.g. ["set one", "set two "]
@@ -339,7 +386,7 @@ class CartController extends Controller
         $setCount = count($normalizedSets);
 
         // ================================
-        // find existing cart item (compare options + sets + project_name)
+        // find existing cart item (compare options + sets + project_name + extra_selected_options)
         // ================================
         $cartQuery = Cart::where(function ($query) use ($userId, $sessionId) {
             if ($userId) {
@@ -361,7 +408,6 @@ class CartController extends Controller
         }
 
         // compare sets (store & compare JSON exact match)
-        // If you want order-insensitive comparison, sort arrays before encoding on both sides.
         $setsJson = json_encode($normalizedSets);
         $cartQuery->where('sets', $setsJson);
 
@@ -371,6 +417,17 @@ class CartController extends Controller
         } else {
             $cartQuery->where(function($q) {
                 $q->whereNull('project_name')->orWhere('project_name', '');
+            });
+        }
+
+        // compare extra_selected_options (exact JSON match)
+        if (!empty($normalizedExtras)) {
+            $extrasJson = json_encode($normalizedExtras);
+            $cartQuery->where('extra_selected_options', $extrasJson);
+        } else {
+            // যদি normalizedExtras খালি হয়, তখন DB-তে null অথবা json([]) থাকা মানিয়ে নিন
+            $cartQuery->where(function($q) {
+                $q->whereNull('extra_selected_options')->orWhere('extra_selected_options', json_encode([]));
             });
         }
 
@@ -389,6 +446,7 @@ class CartController extends Controller
             $cartItem->sets = $normalizedSets;   // saved as JSON
             $cartItem->set_count = $setCount;
             $cartItem->project_name = $projectName; // NEW
+            $cartItem->extra_selected_options = $normalizedExtras; // NEW
             $cartItem->save();
         } else {
             // ৮. নতুন কার্ট আইটেম তৈরি
@@ -409,6 +467,7 @@ class CartController extends Controller
                 "sets" => $normalizedSets, // JSON array
                 "set_count" => $setCount,
                 "project_name" => $projectName, // NEW
+                "extra_selected_options" => $normalizedExtras, // NEW
             ]);
         }
 
