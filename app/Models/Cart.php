@@ -20,7 +20,7 @@ class Cart extends Model
         'price_breakdown',         // মূল্য বিভাজন (JSON), যেমন: ['subtotal' => 500, 'shipping' => 50]
         'status',                  // pending, ordered, abandoned
 
-
+        'project_name',
 
         // Newly added JSON fields
         'shippings',

@@ -107,13 +107,13 @@ class CartController extends Controller
     {
 
 
-        
+
         $token = $request->bearerToken();
        $authUser =  ExternalTokenVerify::verifyExternalToken($token);
 
 
 
-        
+
         if ($authUser) {
             $userId = $authUser->id;
 
@@ -186,6 +186,9 @@ class CartController extends Controller
             "tax_id" => "nullable|exists:taxes,id",
             "sets" => "nullable|array",        // accept array of strings
             "sets.*" => "string",             // each item should be string
+
+            // নতুন: project_name
+            "project_name" => "nullable|string|max:255",
         ]);
 
         if ($validator->fails()) {
@@ -298,11 +301,8 @@ class CartController extends Controller
             "total_price" => $verifiedPrice,
         ];
 
-
-
         $token = $request->bearerToken();
-       $authUser =  ExternalTokenVerify::verifyExternalToken($token);
-
+        $authUser = ExternalTokenVerify::verifyExternalToken($token);
 
         // ৫. ইউজার বা সেশন আইডি নির্ধারণ
         if ($authUser) {
@@ -312,6 +312,16 @@ class CartController extends Controller
         } else {
             $userId = null;
             $sessionId = $this->sessionId;
+        }
+
+        // ================================
+        // project_name handling (normalize)
+        // ================================
+        $projectNameRaw = $request->input('project_name', null);
+        $projectName = null;
+        if (is_string($projectNameRaw)) {
+            $trimmed = trim($projectNameRaw);
+            $projectName = $trimmed === '' ? null : $trimmed;
         }
 
         // ================================
@@ -329,7 +339,7 @@ class CartController extends Controller
         $setCount = count($normalizedSets);
 
         // ================================
-        // find existing cart item (compare options + sets)
+        // find existing cart item (compare options + sets + project_name)
         // ================================
         $cartQuery = Cart::where(function ($query) use ($userId, $sessionId) {
             if ($userId) {
@@ -355,6 +365,15 @@ class CartController extends Controller
         $setsJson = json_encode($normalizedSets);
         $cartQuery->where('sets', $setsJson);
 
+        // compare project_name (exact match or both null)
+        if ($projectName !== null) {
+            $cartQuery->where('project_name', $projectName);
+        } else {
+            $cartQuery->where(function($q) {
+                $q->whereNull('project_name')->orWhere('project_name', '');
+            });
+        }
+
         $cartItem = $cartQuery->first();
 
         if ($cartItem) {
@@ -369,6 +388,7 @@ class CartController extends Controller
             $cartItem->tax_price = $taxPrice;
             $cartItem->sets = $normalizedSets;   // saved as JSON
             $cartItem->set_count = $setCount;
+            $cartItem->project_name = $projectName; // NEW
             $cartItem->save();
         } else {
             // ৮. নতুন কার্ট আইটেম তৈরি
@@ -388,6 +408,7 @@ class CartController extends Controller
                 "tax_price" => $taxPrice,
                 "sets" => $normalizedSets, // JSON array
                 "set_count" => $setCount,
+                "project_name" => $projectName, // NEW
             ]);
         }
 
@@ -399,6 +420,7 @@ class CartController extends Controller
             "cart_item" => $cartItem,
         ]);
     }
+
 
 protected function decodeJwtPayloadUnsafe(?string $token)
 {
