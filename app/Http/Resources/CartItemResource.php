@@ -124,7 +124,7 @@ class CartItemResource extends JsonResource
 
             'runSize' => (int) ($this->resource['quantity'] ?? $this->resource->quantity ?? $product['runSize'] ?? $product->selectedRunSize ?? 0),
             'turnaroundTime' => $get('price_breakdown.base_price.details.selected_turnaround.turnaround_label') ?? $get('turnarounds.turnaround_label') ?? $get('turnaround.turnaround_label') ?? null,
-            'projectName' => $product['product_name'] ?? $product->product_name ?? ($this->resource['projectName'] ?? $this->resource->projectName ?? ($product['projectName'] ?? null)),
+            'projectName' => $product['project_name'] ?? $product->project_name ?? ($this->resource['projectName'] ?? $this->resource->projectName ?? ($product['projectName'] ?? null)),
         ];
 
         // pricing block
