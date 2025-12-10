@@ -127,7 +127,9 @@ class CartItemResource extends JsonResource
             'projectName' => $product['project_name'] ?? $product->project_name ?? ($this->resource['projectName'] ?? $this->resource->projectName ?? ($product['projectName'] ?? null)),
         ];
 
-        // pricing block (more robust: compute total from components)
+        // -------------------------
+        // pricing block (compute total from components; extras counted once)
+        // -------------------------
         $baseSubtotal = (float) ($get('price_breakdown.base_price.amount') ?? $basePriceAmount ?? 0);
         $digitalProofs = (float) ($get('price_breakdown.extras.digital_proof_price') ?? $get('product.digital_proof_price') ?? 0);
         $jobSample = (float) ($get('price_breakdown.extras.job_sample_price') ?? $get('product.job_sample_price') ?? 0);
@@ -137,9 +139,9 @@ class CartItemResource extends JsonResource
         // keep source total if provided by backend (for audit/debug)
         $sourceTotal = (float) ($get('price_breakdown.total_price') ?? $get('price_at_time') ?? $get('totalPrice') ?? 0);
 
-        // compute extras (same as before)
+        // compute extras (once) and multiply by quantity
         $extrasSelected = $get('extra_selected_options', []);
-        $extrasTotal = 0.0;
+        $extrasPerUnit = 0.0;
         if (!empty($extrasSelected) && is_array($extrasSelected)) {
             foreach ($extrasSelected as $ex) {
                 $amount = 0;
@@ -148,15 +150,17 @@ class CartItemResource extends JsonResource
                 } elseif (is_object($ex)) {
                     $amount = $ex->amount ?? ($ex->selected_amount ?? 0);
                 }
-                $extrasTotal += (float) $amount;
+                $extrasPerUnit += (float) $amount;
             }
         }
 
-        $extrasTotal = (float) $extrasTotal*($this->resource['quantity'] ?? $this->resource->quantity ?? 1);
-        // NOTE: if your backend already includes taxes inside baseSubtotal (i.e. subtotal already tax-included),
-        // then DO NOT add $totalTax here — modify logic accordingly.
-        // Example defensive check (optional): if sourceTotal > 0 and close to computed sum, trust sourceTotal.
-        // For now we'll compute strictly from components to avoid surprises.
+        // determine quantity (fallback to 1)
+        $quantity = (int) ($this->resource['quantity'] ?? $this->resource->quantity ?? 1);
+
+        // total extras = per-unit extras * quantity
+        $extrasTotal = (float) $extrasPerUnit * $quantity;
+
+        // NOTE: if your backend already includes taxes/shipping inside baseSubtotal, adjust logic accordingly.
 
         $computedTotal = $baseSubtotal + $digitalProofs + $jobSample + $totalShipping + $totalTax + $extrasTotal;
 
@@ -174,39 +178,16 @@ class CartItemResource extends JsonResource
             'total' => (float) $computedTotal,
         ];
 
-
-        // -------------------------
-        // NEW: sum extra_selected_options.amount (if any) and add to pricing
-        // -------------------------
-        $extrasSelected = $get('extra_selected_options', []);
-        $extrasTotal = 0.0;
-        if (!empty($extrasSelected) && is_array($extrasSelected)) {
-            foreach ($extrasSelected as $ex) {
-                // support array or object shapes; be defensive with types
-                $amount = 0;
-                if (is_array($ex)) {
-                    $amount = $ex['amount'] ?? ($ex['selected_amount'] ?? 0);
-                } elseif (is_object($ex)) {
-                    $amount = $ex->amount ?? ($ex->selected_amount ?? 0);
-                }
-                // cast safely to float (strings like "1" or "0.5" will work)
-                $extrasTotal += (float) $amount;
-            }
-        }
-
-        // attach extras detail to pricing and add to total
-        $pricing['extrasTotal'] = (float) $extrasTotal;
-        $pricing['total'] = (float) ($pricing['total'] + $extrasTotal);
-
         return [
             'id' => (string)($this->resource['id'] ?? $this->resource->id ?? ''),
             'totalPrice' => $pricing['total'],
             'product' => $finalProduct,
             'shipments' => $shipments,
             'pricing' => $pricing,
-            // expose raw extras selection so frontend can render labels etc if needed
+            // expose extras info for frontend
             'extras' => [
                 'selectedOptions' => $extrasSelected,
+                'extrasPerUnit' => (float) $extrasPerUnit,
                 'extrasTotal' => (float) $extrasTotal
             ],
             // 'raw' => [
