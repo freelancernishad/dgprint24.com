@@ -130,7 +130,10 @@ class CartItemResource extends JsonResource
         // -------------------------
         // pricing block (compute total from components; extras counted once)
         // -------------------------
+        // $baseSubtotal = (float) ($get('price_breakdown.base_price.amount') ?? $basePriceAmount ?? 0);
         $baseSubtotal = (float) ($get('price_breakdown.base_price.amount') ?? $basePriceAmount ?? 0);
+
+
         $digitalProofs = (float) ($get('price_breakdown.extras.digital_proof_price') ?? $get('product.digital_proof_price') ?? 0);
         $jobSample = (float) ($get('price_breakdown.extras.job_sample_price') ?? $get('product.job_sample_price') ?? 0);
         $totalShipping = (float) ($get('price_breakdown.shipping.amount') ?? $get('shippings.price') ?? 0);
@@ -162,11 +165,14 @@ class CartItemResource extends JsonResource
 
         // NOTE: if your backend already includes taxes/shipping inside baseSubtotal, adjust logic accordingly.
 
-        $computedTotal = $baseSubtotal + $digitalProofs + $jobSample + $totalShipping + $totalTax + $extrasTotal;
+        $baseSubtotalPrice = $baseSubtotal-$totalShipping;
+
+
+        $computedTotal = $baseSubtotalPrice + $digitalProofs + $jobSample + $totalShipping + $totalTax + $extrasTotal;
 
         $pricing = [
-            'baseSubtotal' => $baseSubtotal,
-            'subtotal' => $baseSubtotal, // keep backwards-compatible key
+            'baseSubtotal' => $baseSubtotalPrice,
+            'subtotal' => $baseSubtotalPrice, // keep backwards-compatible key
             'digitalProofs' => $digitalProofs,
             'jobSample' => $jobSample,
             'totalShipping' => $totalShipping,
