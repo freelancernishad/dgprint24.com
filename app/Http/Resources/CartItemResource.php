@@ -175,8 +175,8 @@ class CartItemResource extends JsonResource
         $computedTotal = $baseSubtotalPrice + $digitalProofs + $jobSample + $totalShipping + $totalTax + $extrasTotal;
 
         $pricing = [
-            'baseSubtotal' => $baseSubtotalPrice-$totalTurnaround,
-            'subtotal' => $baseSubtotalPrice-$totalTurnaround, // keep backwards-compatible key
+            'baseSubtotal' => ($baseSubtotalPrice+$extrasTotal)-$totalTurnaround,
+            'subtotal' => ($baseSubtotalPrice+$extrasTotal)-$totalTurnaround, // keep backwards-compatible key
             'digitalProofs' => $digitalProofs,
             'jobSample' => $jobSample,
             'totalTurnaround' => $totalTurnaround,
