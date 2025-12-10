@@ -233,7 +233,13 @@ class HelpersFunctions
         if ($priceRange) {
             if (isset($params['sq_ft'])) {
                 $total_sq_ft = $params['sq_ft'];
-                $price_per_sq_ft = $priceRange->price_per_sq_ft+$priceConfig->price;
+
+                $priceConfigPrice = 0;
+                if ($priceConfig) {
+                    $priceConfigPrice = $priceConfig->price;
+                }
+
+                $price_per_sq_ft = $priceRange->price_per_sq_ft+$priceConfigPrice;
                 $price_for_sq_ft = $total_sq_ft * $price_per_sq_ft;
                 $price_per_sq_ft = $priceRange->price_per_sq_ft;
             }
