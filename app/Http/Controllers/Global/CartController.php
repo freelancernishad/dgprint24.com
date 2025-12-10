@@ -256,55 +256,6 @@ class CartController extends Controller
             $digitalProofPrice = (float) $request->digital_proof_price;
         }
 
-        // ব্যাকএন্ডে ট্যাক্স ব্যতিরেকে মোট
-        $subtotalBeforeTax = $basePrice + $jobSamplePrice + $digitalProofPrice;
-
-        // ৪. ট্যাক্স লোড করা ও ট্যাক্স মূল্য হিসাব করা (percent)
-        $taxPrice = 0.0;
-        $taxModel = null;
-        if (!empty($request->tax_id)) {
-            $taxModel = \App\Models\Tax::find($request->tax_id);
-            if ($taxModel) {
-                $taxPercentage = (float) $taxModel->price;
-                $taxPrice = round(($subtotalBeforeTax * $taxPercentage) / 100, 2);
-            }
-        }
-
-        // ফাইনাল ব্যাকএন্ড ক্যালকুলেটেড প্রাইস (tax সহ)
-        $backendCalculatedPrice = $subtotalBeforeTax + $taxPrice;
-        $verifiedPrice = $backendCalculatedPrice;
-
-        // price_breakdown-এ ট্যাক্সের তথ্য যোগ করা
-        $priceBreakdown = [
-            "base_price" => [
-                "label" => "Product Price",
-                "details" => $data["breakdown"] ?? null,
-                "amount" => $basePrice,
-            ],
-            "shipping" => [
-                "label" => "Shipping",
-                "details" => $selected_shipping,
-                "amount" => $shippingPrice,
-            ],
-            "turnaround" => [
-                "label" => "Turnaround Time",
-                "details" => $selected_turnaround,
-                "amount" => $turnaroundPrice,
-            ],
-            "extras" => [
-                "job_sample_price" => $jobSamplePrice,
-                "digital_proof_price" => $digitalProofPrice,
-                "total_extras" => $jobSamplePrice + $digitalProofPrice,
-            ],
-            "subtotal_before_tax" => $subtotalBeforeTax,
-            "tax" => [
-                "tax_id" => $taxModel ? $taxModel->id : null,
-                "tax_percentage" => $taxModel ? (float) $taxModel->price : 0,
-                "tax_amount" => $taxPrice,
-            ],
-            "total_price" => $verifiedPrice,
-        ];
-
         $token = $request->bearerToken();
         $authUser = ExternalTokenVerify::verifyExternalToken($token);
 
@@ -350,7 +301,6 @@ class CartController extends Controller
                 $depth = isset($item['__depth']) ? (int)$item['__depth'] : 0;
                 $randomIndex = isset($item['_randomIndex']) ? (int)$item['_randomIndex'] : null;
 
-                // অন্তত label বা selected_option না থাকলে skip না করলাম — আপনি চাইলে stricter করতে পারেন
                 $normalizedItem = [
                     'label' => $label,
                     'selected_option' => $selectedOption,
@@ -359,7 +309,6 @@ class CartController extends Controller
                     '__depth' => $depth,
                 ];
 
-                // randomIndex যোগ করা যদি থাকে
                 if ($randomIndex !== null) {
                     $normalizedItem['_randomIndex'] = $randomIndex;
                 }
@@ -368,8 +317,12 @@ class CartController extends Controller
             }
         }
 
-        // Optionally: যদি order-insensitive তুলনা চান, sort করে নিতে পারেন এখানে
-        // উদাহরণ: usort($normalizedExtras, fn($a,$b) => strcmp($a['label'] ?? '', $b['label'] ?? ''));
+        // extra_selected_options এর amount sum করে quantity দিয়ে গুণ
+        $extraOptionsTotal = 0.0; // per-unit মোট
+        foreach ($normalizedExtras as $extra) {
+            $extraOptionsTotal += (float) ($extra['amount'] ?? 0);
+        }
+        $extraOptionsWithQuantity = $extraOptionsTotal * (int) $request->quantity;
 
         // ================================
         // sets handling (store as JSON array, normalized)
@@ -384,6 +337,69 @@ class CartController extends Controller
 
         // set_count
         $setCount = count($normalizedSets);
+
+        // ================================
+        // ব্যাকএন্ডে ট্যাক্স ব্যতিরেকে মোট
+        // এখানে:
+        // basePrice (ধরা হচ্ছে quantity সহ হিসাব করা)
+        // + job_sample_price (একবার)
+        // + digital_proof_price (একবার)
+        // + (extra_selected_options_amount × quantity)
+        // ================================
+        $subtotalBeforeTax =
+            $basePrice
+            + $jobSamplePrice
+            + $digitalProofPrice
+            + $extraOptionsWithQuantity;
+
+        // ৪. ট্যাক্স লোড করা ও ট্যাক্স মূল্য হিসাব করা (percent)
+        $taxPrice = 0.0;
+        $taxModel = null;
+        if (!empty($request->tax_id)) {
+            $taxModel = \App\Models\Tax::find($request->tax_id);
+            if ($taxModel) {
+                $taxPercentage = (float) $taxModel->price;
+                $taxPrice = round(($subtotalBeforeTax * $taxPercentage) / 100, 2);
+            }
+        }
+
+        // ফাইনাল ব্যাকএন্ড ক্যালকুলেটেড প্রাইস (tax সহ)
+        $backendCalculatedPrice = $subtotalBeforeTax + $taxPrice;
+        $verifiedPrice = $backendCalculatedPrice;
+
+        // price_breakdown-এ ট্যাক্সের তথ্য + extras এর details যোগ করা
+        $priceBreakdown = [
+            "base_price" => [
+                "label" => "Product Price",
+                "details" => $data["breakdown"] ?? null,
+                "amount" => $basePrice,
+            ],
+            "shipping" => [
+                "label" => "Shipping",
+                "details" => $selected_shipping,
+                "amount" => $shippingPrice,
+            ],
+            "turnaround" => [
+                "label" => "Turnaround Time",
+                "details" => $selected_turnaround,
+                "amount" => $turnaroundPrice,
+            ],
+            "extras" => [
+                "job_sample_price" => $jobSamplePrice,
+                "digital_proof_price" => $digitalProofPrice,
+                "extra_selected_options_per_unit" => $extraOptionsTotal,
+                "extra_selected_options_total" => $extraOptionsWithQuantity,
+                "total_extras_without_quantity" => $jobSamplePrice + $digitalProofPrice + $extraOptionsTotal,
+                "total_extras_with_quantity" => $jobSamplePrice + $digitalProofPrice + $extraOptionsWithQuantity,
+            ],
+            "subtotal_before_tax" => $subtotalBeforeTax,
+            "tax" => [
+                "tax_id" => $taxModel ? $taxModel->id : null,
+                "tax_percentage" => $taxModel ? (float) $taxModel->price : 0,
+                "tax_amount" => $taxPrice,
+            ],
+            "total_price" => $verifiedPrice,
+        ];
 
         // ================================
         // find existing cart item (compare options + sets + project_name + extra_selected_options)
