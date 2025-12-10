@@ -641,15 +641,21 @@ protected function decodeJwtPayloadUnsafe(?string $token)
      */
     private function authorizeCart(Cart $cartItem, Request $request)
     {
-        if (Auth::check()) {
-            if ($cartItem->user_id !== Auth::id()) {
-                abort(403, "Unauthorized");
-            }
-        } else {
-            if ($cartItem->session_id !== $this->sessionId) {
+
+
+        $token = $request->bearerToken();
+        $authUser = ExternalTokenVerify::verifyExternalToken($token);
+
+        // ৫. ইউজার বা সেশন আইডি নির্ধারণ
+        if ($authUser) {
+            $sessionId = $authUser->id;
+            if ($cartItem->session_id !== $sessionId) {
                 abort(403, "Unauthorized");
             }
         }
+
+
+
     }
 
     /**
