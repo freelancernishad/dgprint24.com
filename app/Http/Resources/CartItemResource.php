@@ -152,6 +152,7 @@ class CartItemResource extends JsonResource
             }
         }
 
+        $extrasTotal = (float) $extrasTotal*($this->resource['quantity'] ?? $this->resource->quantity ?? 1);
         // NOTE: if your backend already includes taxes inside baseSubtotal (i.e. subtotal already tax-included),
         // then DO NOT add $totalTax here — modify logic accordingly.
         // Example defensive check (optional): if sourceTotal > 0 and close to computed sum, trust sourceTotal.
