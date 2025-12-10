@@ -127,16 +127,52 @@ class CartItemResource extends JsonResource
             'projectName' => $product['project_name'] ?? $product->project_name ?? ($this->resource['projectName'] ?? $this->resource->projectName ?? ($product['projectName'] ?? null)),
         ];
 
-        // pricing block
+        // pricing block (more robust: compute total from components)
+        $baseSubtotal = (float) ($get('price_breakdown.base_price.amount') ?? $basePriceAmount ?? 0);
+        $digitalProofs = (float) ($get('price_breakdown.extras.digital_proof_price') ?? $get('product.digital_proof_price') ?? 0);
+        $jobSample = (float) ($get('price_breakdown.extras.job_sample_price') ?? $get('product.job_sample_price') ?? 0);
+        $totalShipping = (float) ($get('price_breakdown.shipping.amount') ?? $get('shippings.price') ?? 0);
+        $totalTax = (float) ($get('price_breakdown.tax.tax_amount') ?? $get('tax_price') ?? 0);
+
+        // keep source total if provided by backend (for audit/debug)
+        $sourceTotal = (float) ($get('price_breakdown.total_price') ?? $get('price_at_time') ?? $get('totalPrice') ?? 0);
+
+        // compute extras (same as before)
+        $extrasSelected = $get('extra_selected_options', []);
+        $extrasTotal = 0.0;
+        if (!empty($extrasSelected) && is_array($extrasSelected)) {
+            foreach ($extrasSelected as $ex) {
+                $amount = 0;
+                if (is_array($ex)) {
+                    $amount = $ex['amount'] ?? ($ex['selected_amount'] ?? 0);
+                } elseif (is_object($ex)) {
+                    $amount = $ex->amount ?? ($ex->selected_amount ?? 0);
+                }
+                $extrasTotal += (float) $amount;
+            }
+        }
+
+        // NOTE: if your backend already includes taxes inside baseSubtotal (i.e. subtotal already tax-included),
+        // then DO NOT add $totalTax here — modify logic accordingly.
+        // Example defensive check (optional): if sourceTotal > 0 and close to computed sum, trust sourceTotal.
+        // For now we'll compute strictly from components to avoid surprises.
+
+        $computedTotal = $baseSubtotal + $digitalProofs + $jobSample + $totalShipping + $totalTax + $extrasTotal;
+
         $pricing = [
-            'baseSubtotal' => (float) ($basePriceAmount ?? 0),
-            'subtotal' => (float) ($get('price_breakdown.base_price.amount') ?? $basePriceAmount ?? 0),
-            'digitalProofs' => (float) ($get('price_breakdown.extras.digital_proof_price') ?? $get('product.digital_proof_price') ?? 0),
-            'jobSample' => (float) ($get('price_breakdown.extras.job_sample_price') ?? $get('product.job_sample_price') ?? 0),
-            'totalShipping' => (float) ($get('price_breakdown.shipping.amount') ?? $get('shippings.price') ?? 0),
-            'totalTax' => (float) ($get('price_breakdown.tax.tax_amount') ?? $get('tax_price') ?? 0),
-            'total' => (float) ($get('price_breakdown.total_price') ?? $get('price_at_time') ?? $get('totalPrice') ?? 0)
+            'baseSubtotal' => $baseSubtotal,
+            'subtotal' => $baseSubtotal, // keep backwards-compatible key
+            'digitalProofs' => $digitalProofs,
+            'jobSample' => $jobSample,
+            'totalShipping' => $totalShipping,
+            'totalTax' => $totalTax,
+            'extrasTotal' => (float) $extrasTotal,
+            // keep original source total for reference
+            'sourceTotal' => $sourceTotal,
+            // computed authoritative total
+            'total' => (float) $computedTotal,
         ];
+
 
         // -------------------------
         // NEW: sum extra_selected_options.amount (if any) and add to pricing
