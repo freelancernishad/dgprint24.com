@@ -165,16 +165,21 @@ class CartItemResource extends JsonResource
 
         // NOTE: if your backend already includes taxes/shipping inside baseSubtotal, adjust logic accordingly.
 
+
+         $totalTurnaround = $get('price_breakdown.details.turnaround_price');
+
+
         $baseSubtotalPrice = $baseSubtotal-$totalShipping;
 
 
         $computedTotal = $baseSubtotalPrice + $digitalProofs + $jobSample + $totalShipping + $totalTax + $extrasTotal;
 
         $pricing = [
-            'baseSubtotal' => $baseSubtotalPrice+$extrasTotal,
-            'subtotal' => $baseSubtotalPrice+$extrasTotal, // keep backwards-compatible key
+            'baseSubtotal' => $baseSubtotalPrice-$totalTurnaround,
+            'subtotal' => $baseSubtotalPrice-$totalTurnaround, // keep backwards-compatible key
             'digitalProofs' => $digitalProofs,
             'jobSample' => $jobSample,
+            'totalTurnaround' => $totalTurnaround,
             'totalShipping' => $totalShipping,
             'totalTax' => $totalTax,
             'extrasTotal' => (float) $extrasTotal,
