@@ -367,7 +367,7 @@ class CartController extends Controller
                     $shipping_priceByCount = (float) ($data["breakdown"]["shipping_price"] ?? 0);
 
                     $jobSamplePriceByCount =  $jobSamplePrice* $setCount;
-                    $$extraOptionsWithQuantityPrice = $extraOptionsWithQuantity;
+                    $extraOptionsWithQuantityPrice = $extraOptionsWithQuantity;
 
                     $subtotalBeforeTaxByCount = $final_price_without_turnaroundByCount + $turnaround_priceByCount + $shipping_priceByCount + $jobSamplePriceByCount + $extraOptionsWithQuantityPrice;
 
