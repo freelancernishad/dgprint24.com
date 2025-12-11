@@ -357,9 +357,11 @@ class CartController extends Controller
             if ($taxModel) {
                 $taxPercentage = (float) $taxModel->price;
 
-                $taxPrice = round(($subtotalBeforeTax * $taxPercentage) / 100, 2);
 
-                if ($setCount > 1) {
+                // $taxPrice = round(($subtotalBeforeTax * $taxPercentage) / 100, 2);
+
+
+                if ($setCount > 0) {
                     $final_price_without_turnaroundByCount = (float) ($data["breakdown"]["final_price_without_turnaround"] ?? 0) * $setCount;
                     $turnaround_priceByCount = (float) ($data["breakdown"]["turnaround_price"] ?? 0) * $setCount;
                     $shipping_priceByCount = (float) ($data["breakdown"]["shipping_price"] ?? 0);
