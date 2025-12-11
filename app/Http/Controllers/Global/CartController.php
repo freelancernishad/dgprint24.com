@@ -359,7 +359,28 @@ class CartController extends Controller
             $taxModel = \App\Models\Tax::find($request->tax_id);
             if ($taxModel) {
                 $taxPercentage = (float) $taxModel->price;
+
                 $taxPrice = round(($subtotalBeforeTax * $taxPercentage) / 100, 2);
+
+
+
+
+                if($setCount>1){
+
+        $final_price_without_turnaroundByCount = (float) ($data["breakdown"]["final_price_without_turnaround"] ?? 0)*$setCount;
+        $turnaround_priceByCount = (float) ($data["breakdown"]["turnaround_price"] ?? 0)*$setCount;
+        $shipping_priceByCount = (float) ($data["breakdown"]["shipping_price"] ?? 0);
+
+
+          $subtotalBeforeTaxByCount = $final_price_without_turnaroundByCount + $turnaround_priceByCount + $shipping_priceByCount;
+
+          Log::info($subtotalBeforeTaxByCount);
+          Log::info($taxPercentage);
+
+                    $taxPrice = round(($subtotalBeforeTaxByCount * $taxPercentage) / 100, 2);
+                    Log::info($taxPrice);
+                }
+
             }
         }
 

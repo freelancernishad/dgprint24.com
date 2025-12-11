@@ -412,7 +412,7 @@ $breakdown = [
     ],
     'turnaround_price' => round($TurnaroundRangesPriceIntoQuantity, 2),
     'shipping_price' => round($shippingRangesPrice, 2),
-    'final_price_without_turnaround' => round($finalPrice - $TurnaroundRangesPriceIntoQuantity, 2),
+    'final_price_without_turnaround' => round($finalPrice - $TurnaroundRangesPriceIntoQuantity-$shippingRangesPrice, 2),
     'final_price' => round($finalPrice, 2),
     'selected_turnaround' => $selected_turnaround,
     'selected_shipping' => $selected_shipping,
