@@ -179,10 +179,12 @@ class CartItemResource extends JsonResource
 
 
         $subtotal = ($baseSubtotalPrice+$extrasTotal)-$totalTurnaround;
+       
         $computedTotal = $baseSubtotalPrice + $digitalProofs + $jobSample + $totalShipping + $totalTax + $extrasTotal;
         if($setCount>1){
             $subtotal = (($baseSubtotalPrice+$extrasTotal)-$totalTurnaround)*$setCount;
             $totalTurnaround = ($get('price_breakdown.base_price.details.turnaround_price'))*$setCount;
+             $jobSample = $jobSample*$setCount;
 
             $computedTotal = $subtotal + $totalTurnaround + $digitalProofs + $jobSample + $totalShipping + $totalTax;
         }
