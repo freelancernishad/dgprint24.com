@@ -96,7 +96,7 @@ class CartItemResource extends JsonResource
                     'phone' => $addr['phone_number'] ?? $addr['phone'] ?? '',
                 ],
                 'shippingMethod' => [
-                    'name' => $s['shipping_label'] ?? $s->shipping_label ?? ($s['shippingMethod']['name'] ?? ($s['shippingMethod'] ?? '')),
+                    'name' => $s['shippingLabel'] ?? $s['shipping_label'] ?? $s->shipping_label ?? ($s['shippingMethod']['name'] ?? ($s['shippingMethod'] ?? '')),
                     'price' => (float) ($s['price'] ?? ($s['shipping_price'] ?? ($s['shippingPrice'] ?? 0))),
                     'productionFacility' => $s['productionFacility'] ?? 'Default Facility',
                 ],
@@ -179,7 +179,7 @@ class CartItemResource extends JsonResource
 
 
         $subtotal = ($baseSubtotalPrice+$extrasTotal)-$totalTurnaround;
-       
+
         $computedTotal = $baseSubtotalPrice + $digitalProofs + $jobSample + $totalShipping + $totalTax + $extrasTotal;
         if($setCount>1){
             $subtotal = (($baseSubtotalPrice+$extrasTotal)-$totalTurnaround)*$setCount;
