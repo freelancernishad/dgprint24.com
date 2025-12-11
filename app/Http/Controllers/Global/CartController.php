@@ -364,13 +364,14 @@ class CartController extends Controller
                     $turnaround_priceByCount = (float) ($data["breakdown"]["turnaround_price"] ?? 0) * $setCount;
                     $shipping_priceByCount = (float) ($data["breakdown"]["shipping_price"] ?? 0);
 
-                    $subtotalBeforeTaxByCount = $final_price_without_turnaroundByCount + $turnaround_priceByCount + $shipping_priceByCount;
+                    $jobSamplePriceByCount =  $jobSamplePrice* $setCount;
 
-                    Log::info($subtotalBeforeTaxByCount);
-                    Log::info($taxPercentage);
+                    $subtotalBeforeTaxByCount = $final_price_without_turnaroundByCount + $turnaround_priceByCount + $shipping_priceByCount + $jobSamplePriceByCount;
+
+          
 
                     $taxPrice = round(($subtotalBeforeTaxByCount * $taxPercentage) / 100, 2);
-                    Log::info($taxPrice);
+                 
                 }
             }
         }
