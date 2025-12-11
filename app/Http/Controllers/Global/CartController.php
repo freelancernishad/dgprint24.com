@@ -214,6 +214,9 @@ class CartController extends Controller
             $request->shipping_id
         );
 
+
+
+
         $data = $pricingData; // ধরে নিচ্ছি structure ঠিকই দেয়া হচ্ছে
 
         $configuration_id = $data["breakdown"]["configuration_id"] ?? null;

@@ -215,6 +215,41 @@ class HelpersFunctions
                 // ফ্রন্টএন্ডকে শিপিং এবং টার্নআরাউন্ড অপশন দেখানোর জন্য সম্পূর্ণ ডেটা রাখুন
                 $priceConfigData = $priceConfig;
                 $PriceConfigMessage = "Price configuration found.";
+
+
+
+
+                $shippings = $priceConfig->shippings;
+                Log::info($shippings);
+
+                $shipping_item = null;
+
+                foreach ($shippings as $shipping) {
+                    if ($shipping['id'] == $shipping_id) {
+                        $shipping_item = $shipping;
+                        break;
+                    }
+                }
+
+
+
+
+
+                $turnarounds =  $priceConfig->turnarounds;
+            $turnarounds_item = null;
+
+                foreach ($turnarounds as $turnaround) {
+                    if ($turnaround['id'] == $turn_around_times_id) {
+                        $turnarounds_item = $turnaround;
+                        break;
+                    }
+                }
+
+
+
+
+
+
             }
         }
 
@@ -263,16 +298,27 @@ class HelpersFunctions
         })->values(); // <-- এখানে values() যোগ করুন
 
 
+
         $selected_shipping = [];
         $shippingRangesPrice = 0;
-        if($shipping_id){
-            $selected_shipping = $filteredShippingRanges
-            ->pluck('shippings')
-            ->flatten(1)
-            ->firstWhere('id', $shipping_id);
 
-            $shippingRangesPrice = $selected_shipping['price'] ?? 0;
 
+
+       if($product_type === 'general') {
+
+            if($shipping_item){
+                $selected_shipping = $shipping_item;
+                $shippingRangesPrice = $selected_shipping['price'] ?? 0;
+            }
+        }else{
+            if($shipping_id){
+                    $selected_shipping = $filteredShippingRanges
+                    ->pluck('shippings')
+                    ->flatten(1)
+                    ->firstWhere('id', $shipping_id);
+
+                    $shippingRangesPrice = $selected_shipping['price'] ?? 0;
+            }
         }
 
 
@@ -293,15 +339,29 @@ class HelpersFunctions
 
         $selected_turnaround = [];
         $TurnaroundRangesPrice = 0;
-        if($turn_around_times_id){
-            $selected_turnaround = $filteredTurnaroundRanges
-            ->pluck('turnarounds')
-            ->flatten(1)
-            ->firstWhere('id', $turn_around_times_id);
 
-            $TurnaroundRangesPrice = $selected_turnaround['price'] ?? 0;
+        if($product_type === 'general') {
 
+            if($turnarounds_item){
+                $selected_turnaround = $turnarounds_item;
+                $TurnaroundRangesPrice = $selected_turnaround['price'] ?? 0;
+            }
+        }else{
+
+            if($turn_around_times_id){
+                $selected_turnaround = $filteredTurnaroundRanges
+                ->pluck('turnarounds')
+                ->flatten(1)
+                ->firstWhere('id', $turn_around_times_id);
+
+                $TurnaroundRangesPrice = $selected_turnaround['price'] ?? 0;
+
+            }
         }
+
+
+
+
 
 
 
