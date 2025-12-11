@@ -3,6 +3,7 @@
 namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Facades\Log;
 
 class CartItemResource extends JsonResource
 {
@@ -166,17 +167,33 @@ class CartItemResource extends JsonResource
         // NOTE: if your backend already includes taxes/shipping inside baseSubtotal, adjust logic accordingly.
 
 
-         $totalTurnaround = $get('price_breakdown.base_price.details.turnaround_price');
 
 
         $baseSubtotalPrice = $baseSubtotal-$totalShipping;
 
 
+        $totalTurnaround = $get('price_breakdown.base_price.details.turnaround_price');
+        $baseSubtotal = ($baseSubtotalPrice+$extrasTotal)-$totalTurnaround;
+
+        $setCount = is_array($get('sets')) ? count($get('sets')) : 0;
+
+
+        $subtotal = ($baseSubtotalPrice+$extrasTotal)-$totalTurnaround;
         $computedTotal = $baseSubtotalPrice + $digitalProofs + $jobSample + $totalShipping + $totalTax + $extrasTotal;
+        if($setCount>1){
+            $subtotal = (($baseSubtotalPrice+$extrasTotal)-$totalTurnaround)*$setCount;
+            $totalTurnaround = ($get('price_breakdown.base_price.details.turnaround_price'))*$setCount;
+
+            $computedTotal = $subtotal + $totalTurnaround + $digitalProofs + $jobSample + $totalShipping + $totalTax + $extrasTotal;
+        }
+
+
+
 
         $pricing = [
-            'baseSubtotal' => ($baseSubtotalPrice+$extrasTotal)-$totalTurnaround,
-            'subtotal' => ($baseSubtotalPrice+$extrasTotal)-$totalTurnaround, // keep backwards-compatible key
+            'baseSubtotal' => $baseSubtotal,
+            'setCount' => $setCount,
+            'subtotal' =>  $subtotal, // keep backwards-compatible key
             'digitalProofs' => $digitalProofs,
             'jobSample' => $jobSample,
             'totalTurnaround' => $totalTurnaround,
