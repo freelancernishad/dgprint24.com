@@ -28,10 +28,17 @@ class Cart extends Model
         'turnarounds',
         'delivery_address',
 
+
+
        'sets',        // now integer
         'set_count',   // new
         'tax_id',
         'tax_price',
+
+        'job_sample_price',
+        'digital_proof_price',
+        'job_sample',
+'digital_proof',
 
     ];
 
@@ -48,6 +55,10 @@ class Cart extends Model
             'sets' => 'array',
     'set_count' => 'integer',
     'extra_selected_options' => 'array',
+            'job_sample_price' => 'decimal:2',
+        'digital_proof_price' => 'decimal:2',
+    'job_sample' => 'boolean',
+'digital_proof' => 'boolean',
     ];
 
     public function user()

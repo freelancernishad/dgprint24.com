@@ -246,15 +246,14 @@ class CartController extends Controller
             $shippingPrice = (float) ($selected_shipping["price"] ?? 0);
         }
 
-        $jobSamplePrice = 0;
-        if ($request->job_sample_price) {
-            $jobSamplePrice = (float) $request->job_sample_price;
-        }
+        $jobSamplePrice = $request->filled('job_sample_price') ? (float) $request->job_sample_price : 0.0;
+        $digitalProofPrice = $request->filled('digital_proof_price') ? (float) $request->digital_proof_price : 0.0;
 
-        $digitalProofPrice = 0;
-        if ($request->digital_proof_price) {
-            $digitalProofPrice = (float) $request->digital_proof_price;
-        }
+        // auto-boolean flags
+        $jobSampleFlag = $jobSamplePrice > 0 ? true : false;
+        $digitalProofFlag = $digitalProofPrice > 0 ? true : false;
+
+
 
         $token = $request->bearerToken();
         $authUser = ExternalTokenVerify::verifyExternalToken($token);
@@ -288,14 +287,11 @@ class CartController extends Controller
         if (is_array($extrasRaw)) {
             foreach ($extrasRaw as $item) {
                 if (!is_array($item)) {
-                    // যদি API থেকে string/json আসে, চেষ্টা করে decode করা যেতে পারে কিন্তু এখানে safe skip করছি
                     continue;
                 }
 
-                // প্রত্যেক ফিল্ডকে normalize করা
                 $label = isset($item['label']) ? trim((string)$item['label']) : null;
                 $selectedOption = isset($item['selected_option']) ? trim((string)$item['selected_option']) : null;
-                // amount যদি নেটিভভাবে না আসে তাহলে 0 ধরে নিন
                 $amount = isset($item['amount']) && $item['amount'] !== null && $item['amount'] !== '' ? (float)$item['amount'] : 0;
                 $root = isset($item['__root']) ? trim((string)$item['__root']) : $label;
                 $depth = isset($item['__depth']) ? (int)$item['__depth'] : 0;
@@ -329,7 +325,6 @@ class CartController extends Controller
         // ================================
         $setsRaw = $request->input('sets', []); // expect e.g. ["set one", "set two "]
 
-        // Normalize: trim each string and remove empty items
         $normalizedSets = array_values(array_filter(array_map(function($s) {
             if (!is_string($s)) return null;
             return trim($s);
@@ -340,7 +335,6 @@ class CartController extends Controller
 
         // ================================
         // ব্যাকএন্ডে ট্যাক্স ব্যতিরেকে মোট
-        // এখানে:
         // basePrice (ধরা হচ্ছে quantity সহ হিসাব করা)
         // + job_sample_price (একবার)
         // + digital_proof_price (একবার)
@@ -362,25 +356,19 @@ class CartController extends Controller
 
                 $taxPrice = round(($subtotalBeforeTax * $taxPercentage) / 100, 2);
 
+                if ($setCount > 1) {
+                    $final_price_without_turnaroundByCount = (float) ($data["breakdown"]["final_price_without_turnaround"] ?? 0) * $setCount;
+                    $turnaround_priceByCount = (float) ($data["breakdown"]["turnaround_price"] ?? 0) * $setCount;
+                    $shipping_priceByCount = (float) ($data["breakdown"]["shipping_price"] ?? 0);
 
+                    $subtotalBeforeTaxByCount = $final_price_without_turnaroundByCount + $turnaround_priceByCount + $shipping_priceByCount;
 
-
-                if($setCount>1){
-
-        $final_price_without_turnaroundByCount = (float) ($data["breakdown"]["final_price_without_turnaround"] ?? 0)*$setCount;
-        $turnaround_priceByCount = (float) ($data["breakdown"]["turnaround_price"] ?? 0)*$setCount;
-        $shipping_priceByCount = (float) ($data["breakdown"]["shipping_price"] ?? 0);
-
-
-          $subtotalBeforeTaxByCount = $final_price_without_turnaroundByCount + $turnaround_priceByCount + $shipping_priceByCount;
-
-          Log::info($subtotalBeforeTaxByCount);
-          Log::info($taxPercentage);
+                    Log::info($subtotalBeforeTaxByCount);
+                    Log::info($taxPercentage);
 
                     $taxPrice = round(($subtotalBeforeTaxByCount * $taxPercentage) / 100, 2);
                     Log::info($taxPrice);
                 }
-
             }
         }
 
@@ -423,17 +411,17 @@ class CartController extends Controller
         ];
 
         // ================================
-        // find existing cart item (compare options + sets + project_name + extra_selected_options)
+        // find existing cart item (compare options + sets + project_name + extra_selected_options + job/digital flags)
         // ================================
         $cartQuery = Cart::where(function ($query) use ($userId, $sessionId) {
-            if ($userId) {
-                $query->where("user_id", $userId);
-            } else {
-                $query->where("session_id", $sessionId);
-            }
-        })
-        ->where("product_id", $product->id)
-        ->where("status", "pending");
+                if ($userId) {
+                    $query->where("user_id", $userId);
+                } else {
+                    $query->where("session_id", $sessionId);
+                }
+            })
+            ->where("product_id", $product->id)
+            ->where("status", "pending");
 
         // compare options
         if (!empty($request->options)) {
@@ -462,11 +450,14 @@ class CartController extends Controller
             $extrasJson = json_encode($normalizedExtras);
             $cartQuery->where('extra_selected_options', $extrasJson);
         } else {
-            // যদি normalizedExtras খালি হয়, তখন DB-তে null অথবা json([]) থাকা মানিয়ে নিন
             $cartQuery->where(function($q) {
                 $q->whereNull('extra_selected_options')->orWhere('extra_selected_options', json_encode([]));
             });
         }
+
+        // compare boolean flags too (important to avoid merging items with different flags)
+        $cartQuery->where('job_sample', $jobSampleFlag);
+        $cartQuery->where('digital_proof', $digitalProofFlag);
 
         $cartItem = $cartQuery->first();
 
@@ -484,6 +475,14 @@ class CartController extends Controller
             $cartItem->set_count = $setCount;
             $cartItem->project_name = $projectName; // NEW
             $cartItem->extra_selected_options = $normalizedExtras; // NEW
+
+            // NEW: save job/digital prices & flags
+            $cartItem->job_sample_price = $jobSamplePrice;
+            $cartItem->digital_proof_price = $digitalProofPrice;
+
+            $cartItem->job_sample = $jobSampleFlag;
+            $cartItem->digital_proof = $digitalProofFlag;
+
             $cartItem->save();
         } else {
             // ৮. নতুন কার্ট আইটেম তৈরি
@@ -505,6 +504,12 @@ class CartController extends Controller
                 "set_count" => $setCount,
                 "project_name" => $projectName, // NEW
                 "extra_selected_options" => $normalizedExtras, // NEW
+
+                // NEW: job/digital prices & flags
+                "job_sample_price" => $jobSamplePrice,
+                "digital_proof_price" => $digitalProofPrice,
+                "job_sample" => $jobSampleFlag,
+                "digital_proof" => $digitalProofFlag,
             ]);
         }
 
@@ -516,6 +521,7 @@ class CartController extends Controller
             "cart_item" => $cartItem,
         ]);
     }
+
 
 
 protected function decodeJwtPayloadUnsafe(?string $token)
