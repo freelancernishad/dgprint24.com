@@ -85,7 +85,7 @@ class CartItemResource extends JsonResource
 
             return [
                 'id' => isset($s['id']) ? (string)$s['id'] : (string)($s['shipping_id'] ?? ($s['shippingId'] ?? '')),
-                'setCount' => (int)($s['set_count'] ?? (isset($s['sets']) ? count($s['sets']) : ($s['setCount'] ?? 0))),
+                'setCount' => (int)count($this->resource['sets']),
                 'shippingAddress' => [
                     'name' => $name ?: ($addr['first_name'] ?? $addr['firstName'] ?? '') . ' ' . ($addr['last_name'] ?? $addr['lastName'] ?? ''),
                     'street' => $addr['local_address'] ?? $addr['street'] ?? '',
@@ -100,7 +100,7 @@ class CartItemResource extends JsonResource
                     'price' => (float) ($s['price'] ?? ($s['shipping_price'] ?? ($s['shippingPrice'] ?? 0))),
                     'productionFacility' => $s['productionFacility'] ?? 'Default Facility',
                 ],
-                'setNames' => $s['sets'] ?? $s['setNames'] ?? [],
+                'setNames' => $this->resource['sets'] ?? [],
                 'uploadedFiles' => $s['uploadedFiles'] ?? []
             ];
         }, $shipmentsSource ?: [ // if no shipment found, build a single shipment from top-level delivery_address
