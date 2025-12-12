@@ -200,6 +200,8 @@ class HelpersFunctions
             $PriceConfigMessage = 'No price configuration found for the selected options.';
             $configurationId = null;
             $base_price = 0;
+            $shipping_item = null;
+            $turnarounds_item = null;
             if ($priceConfig) {
                 // ডাটাবেসে যে মূল্য সংরক্ষিত আছে সেটাই নিন
                 $configurationPrice = $priceConfig->price;
@@ -222,7 +224,7 @@ class HelpersFunctions
                 $shippings = $priceConfig->shippings;
                 Log::info($shippings);
 
-                $shipping_item = null;
+
 
                 foreach ($shippings as $shipping) {
                     if ($shipping['id'] == $shipping_id) {
@@ -236,7 +238,7 @@ class HelpersFunctions
 
 
                 $turnarounds =  $priceConfig->turnarounds;
-            $turnarounds_item = null;
+
 
                 foreach ($turnarounds as $turnaround) {
                     if ($turnaround['id'] == $turn_around_times_id) {

@@ -50,7 +50,7 @@ class CartController extends Controller
        $authUser =  ExternalTokenVerify::verifyExternalToken($token);
 
         if ($authUser) {
-            $userId = $authUser->id;
+            $userId = $authUser->id ?? $this->sessionId;
 
             // Merge guest cart if exists
             $this->mergeGuestCart($userId, $this->sessionId);
@@ -264,7 +264,7 @@ class CartController extends Controller
         // ৫. ইউজার বা সেশন আইডি নির্ধারণ
         if ($authUser) {
             $userId = null;
-            $sessionId = $authUser->id;
+            $sessionId = $authUser->id ?? $this->sessionId;
             Log::info("Authenticated user ID from token: " . $sessionId);
         } else {
             $userId = null;
@@ -371,10 +371,10 @@ class CartController extends Controller
 
                     $subtotalBeforeTaxByCount = $final_price_without_turnaroundByCount + $turnaround_priceByCount + $shipping_priceByCount + $jobSamplePriceByCount + $extraOptionsWithQuantityPrice;
 
-          
+
 
                     $taxPrice = round(($subtotalBeforeTaxByCount * $taxPercentage) / 100, 2);
-                 
+
                 }
             }
         }
