@@ -528,7 +528,7 @@ if(isset($filteredTurnaroundRanges) && $filteredTurnaroundRanges->count() > 0){
                 'quantity' => $quantity,
                 'price_config_list' => $priceConfigList,
                 'job_sample_price' => number_format($product->job_sample_price, 2),
-                'digital_proof_price' => number_format($product->dital_proof_price, 2),
+                'digital_proof_price' => number_format($product->digital_proof_price, 2),
             ]
         ];
 
