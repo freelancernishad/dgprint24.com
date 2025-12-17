@@ -20,7 +20,7 @@ Route::middleware([StartSession::class])->group(function () {
     Route::prefix('cart')->group(function () {
 
 
-      
+
 
 
         Route::get('/', [CartController::class, 'index']);
@@ -30,3 +30,5 @@ Route::middleware([StartSession::class])->group(function () {
         Route::delete('/', [CartController::class, 'clear']);
     });
 });
+
+  Route::delete('clear/cart/items/{id}', [CartController::class, 'clearCartItems']);

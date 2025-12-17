@@ -37,8 +37,9 @@ class CartController extends Controller
 
     public function __construct(Request $request)
     {
+
         $this->sessionId =
-            $request->header("X-Session-ID") ?? $request->session()->getId();
+            $request->header("X-Session-ID") ?? null;
     }
 
     /**
@@ -814,4 +815,16 @@ protected function decodeJwtPayloadUnsafe(?string $token)
         // কন্ট্রোলারের লজিক যেমনটা আশা করে, সেই 'data' অংশটি রিটার্ন করুন
         return $pricingData["data"];
     }
+
+    function clearCartItems($id)
+    {
+        Cart::where("session_id", $id)
+            ->where("status", "pending")
+            ->delete();
+
+        return response()->json(["message" => "Cart items cleared for session_id: $id"]);
+    }
+
+
+
 }
