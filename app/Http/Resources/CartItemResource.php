@@ -85,6 +85,7 @@ class CartItemResource extends JsonResource
 
             return [
                 'id' => isset($s['id']) ? (string)$s['id'] : (string)($s['shipping_id'] ?? ($s['shippingId'] ?? '')),
+
                 'setCount' => (int)count($this->resource['sets']),
                 'shippingAddress' => [
                     'name' => $name ?: ($addr['first_name'] ?? $addr['firstName'] ?? '') . ' ' . ($addr['last_name'] ?? $addr['lastName'] ?? ''),
@@ -210,6 +211,7 @@ class CartItemResource extends JsonResource
 
         return [
             'id' => (string)($this->resource['id'] ?? $this->resource->id ?? ''),
+            'session_id' => $this->resource['session_id'] ?? $this->resource->session_id ?? '',
             'totalPrice' => $pricing['total'],
             'product' => $finalProduct,
             'shipments' => $shipments,

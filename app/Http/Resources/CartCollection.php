@@ -43,6 +43,7 @@ class CartCollection extends ResourceCollection
         }
 
         return [
+            'session_id' => $cartItems[0]['session_id'] ?? null,
             'cartItems' => $cartItems,
             'cartTotals' => $cartTotals,
         ];
