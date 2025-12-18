@@ -106,56 +106,82 @@ public function store(Request $request)
      * Update the specified resource in storage.
      * কোনো ক্যাটাগরির নাম বা প্যারেন্ট পরিবর্তন করা।
      */
-    public function update(Request $request, Category $category)
-    {
-        $validator = validator($request->all(), [
-            'name' => [
+  public function update(Request $request, Category $category)
+{
+    $validator = validator($request->all(), [
+        'name' => [
             'nullable',
             'string',
             'max:255',
             Rule::unique('categories', 'name')->ignore($category->id),
-            ],
-            'categoryDescription' => 'nullable|string',
-            'catagoryImage' => 'nullable|file|mimes:jpeg,jpg,png,gif,bmp,webp,svg,tiff,ico',
-            'varients' => 'nullable', // পরিবর্তন: string থেকে array
-            'tags' => 'nullable|array',    // পরিবর্তন: string থেকে array
-            'active' => 'nullable',
-            'parent_id' => ['nullable', 'exists:categories,id', 'not_in:' . $category->id],
-        ]);
+        ],
+        'categoryDescription' => 'nullable|string',
+        'catagoryImage' => 'nullable|file|mimes:jpeg,jpg,png,gif,bmp,webp,svg,tiff,ico',
+        'varients' => 'nullable',
+        'tags' => 'nullable|array',
+        'active' => 'nullable',
+        'parent_id' => ['nullable', 'exists:categories,id', 'not_in:' . $category->id],
+    ]);
 
-        if ($validator->fails()) {
-            return response()->json(['errors' => $validator->errors()], 422);
-        }
-
-        $validatedData = $validator->validated();
-
-
-
-        $categoryImageUrl = null;
-        // যদি ছবি আসে, S3 এ আপলোড কর
-        if ($request->hasFile('catagoryImage')) {
-            $file = $request->file('catagoryImage');
-            $filename = time() . '_' . $file->getClientOriginalName();
-            $label = 'category';
-
-            $categoryImageUrl = (new FileUploadService())->uploadFileToS3(
-                $file,
-                'dgprint24/uploads/images/category/' . $label . '_' . $filename
-            );
-        }
-        // আর json_decode করার দরকার নেই
-        $category->update([
-            'name' => $validatedData['name'],
-            'category_description' => $validatedData['categoryDescription'] ?? $category->category_description,
-            'category_image' => $categoryImageUrl ?? $category->category_image,
-            'variants' => $validatedData['varients'] ?? $category->variants, // সরাসরি অ্যারে ব্যবহার করুন
-            'tags' => $validatedData['tags'] ?? $category->tags,        // সরাসরি অ্যারে ব্যবহার করুন
-            'active' => $validatedData['active'] ?? $category->active,
-            'parent_id' => $validatedData['parent_id'] ?? $category->parent_id,
-        ]);
-
-        return response()->json($category);
+    if ($validator->fails()) {
+        return response()->json(['errors' => $validator->errors()], 422);
     }
+
+    $validatedData = $validator->validated();
+
+    // Image upload
+    $categoryImageUrl = $category->category_image;
+    if ($request->hasFile('catagoryImage')) {
+        $file = $request->file('catagoryImage');
+        $filename = time() . '_' . $file->getClientOriginalName();
+        $label = 'category';
+
+        $categoryImageUrl = (new FileUploadService())->uploadFileToS3(
+            $file,
+            'dgprint24/uploads/images/category/' . $label . '_' . $filename
+        );
+    }
+
+    // Active status
+    $activeStatus = array_key_exists('active', $validatedData)
+        ? !empty($validatedData['active'])
+        : $category->active;
+
+    // ===== Handle variants EXACTLY like store() =====
+    $variants = $validatedData['varients'] ?? $category->variants;
+
+    if (is_string($variants)) {
+        $decoded = json_decode($variants, true);
+
+        if (json_last_error() === JSON_ERROR_NONE && is_array($decoded)) {
+
+            // Replace " → ″
+            array_walk_recursive($decoded, function (&$item) {
+                if (is_string($item)) {
+                    $item = str_replace('"', '″', $item);
+                }
+            });
+
+            $variants = $decoded;
+        } else {
+            $variants = $category->variants;
+        }
+    }
+
+    // Update category
+    $category->update([
+        'name' => $validatedData['name'] ?? $category->name,
+        'category_description' => $validatedData['categoryDescription'] ?? $category->category_description,
+        'category_image' => $categoryImageUrl,
+        'variants' => $variants,
+        'tags' => $validatedData['tags'] ?? $category->tags,
+        'active' => $activeStatus,
+        'parent_id' => $validatedData['parent_id'] ?? $category->parent_id,
+    ]);
+
+    return response()->json($category);
+}
+
 
     /**
      * Display the specified resource.
