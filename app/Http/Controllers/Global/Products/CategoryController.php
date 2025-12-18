@@ -43,7 +43,7 @@ class CategoryController extends Controller
      */
     public function parentCategories()
     {
-        $categories = Category::where('parent_id', null) // শুধুমাত্র চাইল্ড ক্যাটাগরি
+        $categories = Category::with('children')->where('parent_id', null) // শুধুমাত্র চাইল্ড ক্যাটাগরি
             ->where('active', true) // শুধুমাত্র অ্যাকটিভ ক্যাটাগরি
             ->select(
                 'id',
