@@ -114,7 +114,11 @@ Route::prefix('admin')->middleware(AuthenticateAdmin::class)->group(function () 
 |--------------------------------------------------------------------------
 | Frontend category and product endpoints.
 */
-Route::get('/categories', [CategoryController::class, 'index']);                                // All active categories
+Route::get('/categories', [CategoryController::class, 'index']);
+Route::get('/categories/children', [CategoryController::class, 'childCategories']);                               // All active categories
+
+
+
 Route::get('/categories/navbar', [CategoryController::class, 'getNavbarCategories']);           // Navbar categories
 Route::get('/categories/navbar/with/products', [CategoryController::class, 'getNavbarCategoriesWithProducts']); // Navbar + products
 

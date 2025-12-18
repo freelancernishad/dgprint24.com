@@ -33,6 +33,34 @@ class CategoryController extends Controller
         return response()->json(['data' => $categories]);
     }
 
+
+
+    /**
+     * Display only child categories (parent_id exists).
+     * যেসব ক্যাটাগরির parent_id আছে শুধু সেগুলো দেখাবে
+     * GET /api/categories/children
+     */
+    public function childCategories()
+    {
+        $categories = Category::whereNotNull('parent_id') // parent_id আছে
+            ->where('active', true) // শুধু active
+            ->select(
+                'id',
+                'name',
+                'category_id',
+                'parent_id',
+                'category_description',
+                'category_image',
+                'variants',
+                'tags',
+                'active'
+            )
+            ->orderBy('id', 'desc')
+            ->get();
+
+        return response()->json(['data' => $categories]);
+    }
+
     /**
      * সব অ্যাকটিভ ক্যাটাগরির ফ্ল্যাট লিস্ট পেতে।
      * GET /api/categories/flat-list
