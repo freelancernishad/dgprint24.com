@@ -17,7 +17,7 @@ class CategoryController extends Controller
     public function index()
     {
         $categories = Category::with('children:id,name,parent_id,category_id')
-        whereNotNull('parent_id')
+        ->whereNotNull('parent_id')
             // ->where('parent_id', null) // শুধুমাত্র রুট লেভেলের ক্যাটাগরি নিচ্ছি
             ->where('active', true) // শুধুমাত্র অ্যাকটিভ ক্যাটাগরি
             ->select('id',         'name',
