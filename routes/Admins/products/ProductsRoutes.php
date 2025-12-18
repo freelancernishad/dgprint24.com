@@ -115,7 +115,7 @@ Route::prefix('admin')->middleware(AuthenticateAdmin::class)->group(function () 
 | Frontend category and product endpoints.
 */
 Route::get('/categories', [CategoryController::class, 'index']);
-Route::get('/categories/children', [CategoryController::class, 'childCategories']);                               // All active categories
+Route::get('/categories/parent', [CategoryController::class, 'parentCategories']);                               // All active categories
 
 
 

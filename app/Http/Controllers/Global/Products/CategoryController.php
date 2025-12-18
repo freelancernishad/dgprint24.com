@@ -17,7 +17,8 @@ class CategoryController extends Controller
     public function index()
     {
         $categories = Category::with('children:id,name,parent_id,category_id')
-            ->where('parent_id', null) // শুধুমাত্র রুট লেভেলের ক্যাটাগরি নিচ্ছি
+        whereNotNull('parent_id')
+            // ->where('parent_id', null) // শুধুমাত্র রুট লেভেলের ক্যাটাগরি নিচ্ছি
             ->where('active', true) // শুধুমাত্র অ্যাকটিভ ক্যাটাগরি
             ->select('id',         'name',
         'category_id',
@@ -40,10 +41,10 @@ class CategoryController extends Controller
      * যেসব ক্যাটাগরির parent_id আছে শুধু সেগুলো দেখাবে
      * GET /api/categories/children
      */
-    public function childCategories()
+    public function parentCategories()
     {
-        $categories = Category::whereNotNull('parent_id') // parent_id আছে
-            ->where('active', true) // শুধু active
+        $categories = Category::where('parent_id', null) // শুধুমাত্র চাইল্ড ক্যাটাগরি
+            ->where('active', true) // শুধুমাত্র অ্যাকটিভ ক্যাটাগরি
             ->select(
                 'id',
                 'name',
