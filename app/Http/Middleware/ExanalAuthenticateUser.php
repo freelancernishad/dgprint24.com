@@ -21,8 +21,9 @@ class ExanalAuthenticateUser
         }
 
         try {
+            $JWT_SECRET = "kJlmH8uiBQKGXzsr83mE9nNF3bCMbsKeTsjqYCpCLOBqjRNQpLZQSebIAE2sqfSx"; // Same secret as in Node.js
             // Decode and verify token using HS256 and the same JWT_SECRET as Node.js
-            $decoded = JWT::decode($token, new Key(env('JWT_SECRET'), 'HS256'));
+            $decoded = JWT::decode($token, new Key($JWT_SECRET, 'HS256'));
 
             // Attach payload to request so controllers can use it
             $request->merge(['user_payload' => (array)$decoded]);
