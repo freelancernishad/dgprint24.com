@@ -2,7 +2,7 @@
 
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Middleware\ExanalAuthenticateUser;
+// use App\Http\Middleware\ExanalAuthenticateUser;
 use App\Http\Controllers\Common\SupportAndConnect\User\SupportTicketApiController;
 use App\Http\Controllers\Common\SupportAndConnect\Admin\AdminSupportTicketApiController;
 
