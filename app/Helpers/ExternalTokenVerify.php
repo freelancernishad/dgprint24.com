@@ -20,7 +20,7 @@ class ExternalTokenVerify
 
         // IMPORTANT: This MUST be the secret key used by the service that issued the token.
         // Do NOT use the JWT_SECRET from your .env file unless they are the same.
-        $correctSecretKey = env('JWT_SECRET');
+        $correctSecretKey = "kJlmH8uiBQKGXzsr83mE9nNF3bCMbsKeTsjqYCpCLOBqjRNQpLZQSebIAE2sqfSx";
         $algorithm = 'HS256'; // This must match the algorithm in the token's header
 
         try {
