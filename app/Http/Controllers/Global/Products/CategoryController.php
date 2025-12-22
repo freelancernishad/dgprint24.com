@@ -41,10 +41,20 @@ class CategoryController extends Controller
      * যেসব ক্যাটাগরির parent_id আছে শুধু সেগুলো দেখাবে
      * GET /api/categories/children
      */
-    public function parentCategories()
+    public function parentCategories(Request $request)
     {
-        $categories = Category::with('children')->where('parent_id', null) // শুধুমাত্র চাইল্ড ক্যাটাগরি
-            ->where('active', true) // শুধুমাত্র অ্যাকটিভ ক্যাটাগরি
+        $search = $request->query('search'); // ?search=print
+
+        $categories = Category::with('children')
+            ->whereNull('parent_id')           // শুধুমাত্র parent category
+            ->where('active', true)            // শুধুমাত্র active
+            ->when($search, function ($query) use ($search) {
+                $query->where(function ($q) use ($search) {
+                    $q->where('name', 'LIKE', "%{$search}%")
+                    ->orWhere('category_id', 'LIKE', "%{$search}%")
+                    ->orWhereJsonContains('tags', $search);
+                });
+            })
             ->select(
                 'id',
                 'name',
@@ -59,7 +69,10 @@ class CategoryController extends Controller
             ->orderBy('id', 'desc')
             ->get();
 
-        return response()->json(['data' => $categories]);
+        return response()->json([
+            'data' => $categories,
+            'search' => $search
+        ]);
     }
 
     /**
