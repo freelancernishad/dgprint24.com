@@ -62,7 +62,7 @@ class AdminProductController extends Controller
             'productImages.*' => 'url',
 
 
-            'priceConfig' => 'nullable|array|min:1',
+            'priceConfig' => 'nullable|array',
             'priceConfig.*.runsize' => '|integer|min:1',
             'priceConfig.*.price' => 'nullable|numeric|min:0',
             'priceConfig.*.discount' => 'nullable|numeric|min:0|max:100',
