@@ -194,6 +194,8 @@ class CartController extends Controller
             // নতুন: extra_selected_options (array of objects)
             "extra_selected_options" => "nullable|array",
             "extra_selected_options.*" => "nullable|array",
+            "files" => "nullable|array",
+            "files.*" => "nullable|string", // URL / path
         ]);
 
         if ($validator->fails()) {
@@ -336,6 +338,15 @@ class CartController extends Controller
 
         // set_count
         $setCount = count($normalizedSets);
+
+
+
+        // ================================
+        // 8. files normalize (URL array)
+        // ================================
+        $normalizedFiles = array_values(array_unique(array_filter(array_map(function ($f) {
+            return is_string($f) && trim($f) !== '' ? trim($f) : null;
+        }, $request->input('files', [])))));
 
         // ================================
         // ব্যাকএন্ডে ট্যাক্স ব্যতিরেকে মোট
@@ -483,6 +494,7 @@ class CartController extends Controller
             $cartItem->set_count = $setCount;
             $cartItem->project_name = $projectName; // NEW
             $cartItem->extra_selected_options = $normalizedExtras; // NEW
+            $cartItem->files = $normalizedFiles;
 
             // NEW: save job/digital prices & flags
             $cartItem->job_sample_price = $jobSamplePrice;
@@ -512,6 +524,7 @@ class CartController extends Controller
                 "set_count" => $setCount,
                 "project_name" => $projectName, // NEW
                 "extra_selected_options" => $normalizedExtras, // NEW
+                "files" => $normalizedFiles, // NEW
 
                 // NEW: job/digital prices & flags
                 "job_sample_price" => $jobSamplePrice,
