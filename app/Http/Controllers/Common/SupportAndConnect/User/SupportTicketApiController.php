@@ -28,7 +28,7 @@ class SupportTicketApiController extends Controller
         }
 
         $tickets = SupportTicket::where('user_id', $userId)->orderBy('id', 'desc')->get();
-        return response()->json($tickets, 200);
+        return response()->json(["data" => $tickets], 200);
     }
 
     // Create a new support ticket
