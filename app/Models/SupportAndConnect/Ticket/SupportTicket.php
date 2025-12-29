@@ -5,10 +5,11 @@ namespace App\Models\SupportAndConnect\Ticket;
 
 use App\Models\User;
 
-use App\Models\SupportAndConnect\Ticket\SupportTicketReply;
+use App\Helpers\ExternalTokenVerify;
 use Illuminate\Database\Eloquent\Model;
 use App\Services\FileSystem\FileUploadService;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Models\SupportAndConnect\Ticket\SupportTicketReply;
 
 class SupportTicket extends Model
 {
@@ -41,22 +42,30 @@ class SupportTicket extends Model
         'message',
     ];
 
+       protected $appends = ['user'];
 
     protected $with = [
-        'user',
+     
         'replies',
     ];
 
-    public function user()
-    {
-        return $this->belongsTo(User::class);
-    }
+
 
     public function replies()
     {
         return $this->hasMany(SupportTicketReply::class);
     }
 
+
+       // ✅ USER DATA LOADER (NO RELATION)
+    public function getUserAttribute()
+    {
+        try {
+         return null;
+        } catch (\Throwable $e) {
+            return null;
+        }
+    }
 
 
     /**

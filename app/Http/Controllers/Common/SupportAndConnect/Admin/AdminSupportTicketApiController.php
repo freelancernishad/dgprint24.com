@@ -3,25 +3,26 @@
 namespace App\Http\Controllers\Common\SupportAndConnect\Admin;
 
 use Illuminate\Http\Request;
-use App\Models\SupportTicket;
+use App\Helpers\ExternalTokenVerify;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
+use App\Models\SupportAndConnect\Ticket\SupportTicket;
 
 class AdminSupportTicketApiController extends Controller
 {
     // Get all support tickets for admin
     public function index()
     {
-        $tickets = SupportTicket::with('user')->latest()->get();
-        return response()->json($tickets);
+        $tickets = SupportTicket::latest()->get();
+        return response()->json(['data' => $tickets], 200);
     }
 
     // View a specific support ticket
     public function show($id)
     {
-        $ticket = SupportTicket::with(['user', 'replies'])->findOrFail($id);
-        return response()->json($ticket);
+        $ticket = SupportTicket::with(['replies'])->findOrFail($id);
+        return response()->json(['data' => $ticket], 200);
     }
 
     // Reply to a support ticket
@@ -55,7 +56,17 @@ class AdminSupportTicketApiController extends Controller
         if (auth()->guard('admin')->check()) {
             $replyData['admin_id'] = auth()->guard('admin')->id();
         } else {
-            $replyData['user_id'] = auth()->guard('user')->id();
+
+            $token = $request->bearerToken();
+            $authUser = ExternalTokenVerify::verifyExternalToken($token);
+
+            // ৫. ইউজার বা সেশন আইডি নির্ধারণ
+            $userId = null;
+            if ($authUser) {
+                $userId = $authUser->id ?? null;
+            }
+
+            $replyData['user_id'] = $userId;
         }
 
         // Create a new reply associated with the support ticket

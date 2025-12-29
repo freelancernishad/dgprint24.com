@@ -4,18 +4,30 @@ namespace App\Http\Controllers\Common\SupportAndConnect\User;
 
 use Illuminate\Http\Request;
 
-use App\Models\SupportAndConnect\Ticket\SupportTicket;
+use Illuminate\Support\Facades\Log;
+use App\Helpers\ExternalTokenVerify;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
+use App\Models\SupportAndConnect\Ticket\SupportTicket;
 
 class SupportTicketApiController extends Controller
 {
     // Get all support tickets for the authenticated user
-    public function index()
+    public function index(Request $request)
     {
-        $tickets = SupportTicket::where('user_id', Auth::id())->orderBy('id', 'desc')->get();
+
+
+        $token = $request->bearerToken();
+        $authUser = ExternalTokenVerify::verifyExternalToken($token);
+
+        // ৫. ইউজার বা সেশন আইডি নির্ধারণ
+        $userId = null;
+        if ($authUser) {
+            $userId = $authUser->id ?? null;
+        }
+
+        $tickets = SupportTicket::where('user_id', $userId)->orderBy('id', 'desc')->get();
         return response()->json($tickets, 200);
     }
 
@@ -44,10 +56,22 @@ class SupportTicketApiController extends Controller
             return response()->json(['errors' => $validator->errors()], 422);
         }
 
-    
+
+
+        $token = $request->bearerToken();
+        $authUser = ExternalTokenVerify::verifyExternalToken($token);
+
+        // ৫. ইউজার বা সেশন আইডি নির্ধারণ
+        $userId = null;
+        if ($authUser) {
+            $userId = $authUser->id ?? null;
+        }
+
+
+
         // Create the ticket
         $ticket = SupportTicket::create([
-            'user_id' => Auth::id(),
+            'user_id' => $userId,
             'subject' => "-",
             'message' => "-",
             'priority' => $request->priority,
@@ -73,9 +97,21 @@ class SupportTicketApiController extends Controller
     }
 
     // Show a specific support ticket
-    public function show(SupportTicket $ticket)
+    public function show(Request $request, SupportTicket $ticket)
     {
-        if ($ticket->user_id != Auth::id()) {
+
+        $token = $request->bearerToken();
+        $authUser = ExternalTokenVerify::verifyExternalToken($token);
+
+        // ৫. ইউজার বা সেশন আইডি নির্ধারণ
+        $userId = null;
+        if ($authUser) {
+            $userId = $authUser->id ?? null;
+        }
+
+
+
+        if ($ticket->user_id != $userId) {
             return response()->json(['message' => 'Unauthorized access.'], 403);
         }
 
@@ -85,7 +121,17 @@ class SupportTicketApiController extends Controller
     // Update a support ticket
     public function update(Request $request, SupportTicket $ticket)
     {
-        if ($ticket->user_id != Auth::id()) {
+
+        $token = $request->bearerToken();
+        $authUser = ExternalTokenVerify::verifyExternalToken($token);
+
+        // ৫. ইউজার বা সেশন আইডি নির্ধারণ
+        $userId = null;
+        if ($authUser) {
+            $userId = $authUser->id ?? null;
+        }
+
+        if ($ticket->user_id != $userId) {
             return response()->json(['message' => 'Unauthorized access.'], 403);
         }
 

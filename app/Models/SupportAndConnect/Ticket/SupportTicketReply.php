@@ -5,6 +5,7 @@ namespace App\Models\SupportAndConnect\Ticket;
 use App\Models\User;
 use App\Models\Admin;
 
+use App\Helpers\ExternalTokenVerify;
 use Illuminate\Database\Eloquent\Model;
 use App\Services\FileSystem\FileUploadService;
 use App\Models\SupportAndConnect\Ticket\SupportTicket;
@@ -26,9 +27,9 @@ class SupportTicketReply extends Model
 
     protected $with = [
         'admin',
-        'user',
-    ];
 
+    ];
+    protected $appends = ['user'];
 
     // The parent reply relationship
     public function parent()
@@ -51,10 +52,14 @@ class SupportTicketReply extends Model
     {
         return $this->belongsTo(Admin::class); // Assuming you have an Admin model
     }
-    // Relationship with the User
-    public function user()
+
+    public function getUserAttribute()
     {
-        return $this->belongsTo(User::class); // Assuming you have a User model
+        try {
+           return null;
+        } catch (\Throwable $e) {
+            return null;
+        }
     }
 
 
