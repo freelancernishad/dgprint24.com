@@ -63,7 +63,8 @@ class ProductController extends Controller
     public function show($productId)
     {
         $product = Product::with([
-            'category:id,name',
+            'category:id,name,parent_id',
+            'category.parent:id,name',
             'faqs',
             'images',
             'dimensionPricing'
@@ -74,6 +75,7 @@ class ProductController extends Controller
 
         return response()->json($product);
     }
+
 
 
     public function mostPopular(Request $request)
