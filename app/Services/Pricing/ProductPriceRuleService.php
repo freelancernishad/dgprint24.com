@@ -3,43 +3,39 @@
 namespace App\Services\Pricing;
 
 use App\Models\ProductPriceRule;
-use Carbon\Carbon;
 
 class ProductPriceRuleService
 {
     /**
-     * Calculate final price for a product
+     * Calculate final price
      */
-    public function calculate(float $basePrice, string $productId): float
+    public function calculate(float $basePrice, string $productId = null): float
     {
         $price = $basePrice;
-        $today = Carbon::today();
 
-        $rules = ProductPriceRule::where('active', true)
+        $rule = ProductPriceRule::where('active', true)
             ->where(function ($q) use ($productId) {
-                $q->whereNull('product_id')
-                  ->orWhere('product_id', $productId);
-            })
-            ->where(function ($q) use ($today) {
-                $q->whereNull('start_date')
-                  ->orWhere('start_date', '<=', $today);
-            })
-            ->where(function ($q) use ($today) {
-                $q->whereNull('end_date')
-                  ->orWhere('end_date', '>=', $today);
-            })
-            ->orderBy('id') // predictable order
-            ->get();
+                $q->whereNull('product_id');
 
-        foreach ($rules as $rule) {
-            $price = $this->applyRule($price, $rule);
+                if ($productId) {
+                    $q->orWhere('product_id', $productId);
+                }
+            })
+            ->first();
+
+        // যদি কোনো active rule না থাকে
+        if (! $rule) {
+            return round($price, 2);
         }
 
-        return max(round($price, 2), 0);
+        return max(
+            round($this->applyRule($price, $rule), 2),
+            0
+        );
     }
 
     /**
-     * Apply single rule
+     * Apply active rule
      */
     protected function applyRule(float $price, ProductPriceRule $rule): float
     {

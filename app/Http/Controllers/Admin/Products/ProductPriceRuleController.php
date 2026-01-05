@@ -124,12 +124,12 @@ public function calculate(
 ) {
     $data = $request->validate([
         'base_price' => 'required|numeric|min:0',
-        'product_id' => 'required|exists:products,product_id',
+        'product_id' => 'nullable|exists:products,product_id',
     ]);
 
     $finalPrice = $pricingService->calculate(
         $data['base_price'],
-        $data['product_id']
+        $data['product_id'] ?? null
     );
 
     return response()->json([
