@@ -2,12 +2,13 @@
 
 namespace App\Http\Controllers\Admin\Products;
 
-use Illuminate\Http\Request;
-use Illuminate\Validation\Rule;
-use App\Models\ProductPriceRule;
-use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
+use App\Models\ProductPriceRule;
 use App\Services\Pricing\ProductPriceRuleService;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rule;
 
 class ProductPriceRuleController extends Controller
 {
@@ -26,21 +27,26 @@ class ProductPriceRuleController extends Controller
      */
     public function store(Request $request)
     {
-        $data = $request->validate([
+        $validator = Validator::make($request->all(), [
             'product_id' => 'nullable|exists:products,product_id',
             'type' => ['required', Rule::in(['discount', 'price_add'])],
             'value_type' => ['required', Rule::in(['flat', 'percentage'])],
             'value' => 'required|numeric|min:0',
-            'active' => 'boolean',
-            'start_date' => 'nullable|date',
-            'end_date' => 'nullable|date|after_or_equal:start_date',
+            'active' => 'sometimes|boolean',
         ]);
 
-        $rule = ProductPriceRule::create($data);
+        if ($validator->fails()) {
+            return response()->json([
+                'message' => 'Validation failed',
+                'errors' => $validator->errors(),
+            ], 422);
+        }
+
+        $rule = ProductPriceRule::create($validator->validated());
 
         return response()->json([
             'message' => 'Price rule created successfully',
-            'data' => $rule
+            'data' => $rule,
         ], 201);
     }
 
@@ -57,21 +63,26 @@ class ProductPriceRuleController extends Controller
      */
     public function update(Request $request, ProductPriceRule $productPriceRule)
     {
-        $data = $request->validate([
+        $validator = Validator::make($request->all(), [
             'product_id' => 'nullable|exists:products,product_id',
             'type' => ['required', Rule::in(['discount', 'price_add'])],
             'value_type' => ['required', Rule::in(['flat', 'percentage'])],
             'value' => 'required|numeric|min:0',
-            'active' => 'boolean',
-            'start_date' => 'nullable|date',
-            'end_date' => 'nullable|date|after_or_equal:start_date',
+            'active' => 'sometimes|boolean',
         ]);
 
-        $productPriceRule->update($data);
+        if ($validator->fails()) {
+            return response()->json([
+                'message' => 'Validation failed',
+                'errors' => $validator->errors(),
+            ], 422);
+        }
+
+        $productPriceRule->update($validator->validated());
 
         return response()->json([
             'message' => 'Price rule updated successfully',
-            'data' => $productPriceRule
+            'data' => $productPriceRule,
         ]);
     }
 
@@ -83,60 +94,66 @@ class ProductPriceRuleController extends Controller
         $productPriceRule->delete();
 
         return response()->json([
-            'message' => 'Price rule deleted successfully'
+            'message' => 'Price rule deleted successfully',
         ]);
     }
 
-public function activate($id)
-{
-    $rule = ProductPriceRule::findOrFail($id);
+    /**
+     * Activate / Deactivate rule (toggle)
+     */
+    public function activate($id)
+    {
+        $rule = ProductPriceRule::findOrFail($id);
 
-    DB::transaction(function () use ($rule) {
+        DB::transaction(function () use ($rule) {
 
-        // যদি rule টা already active থাকে
-        if ($rule->active) {
-
-            // 👉 সব rule deactivate করে দাও
+            // সব rule deactivate
             ProductPriceRule::where('active', true)
                 ->update(['active' => false]);
 
-        } else {
+            // যদি আগেই active না থাকে, তাহলে activate
+            if (! $rule->active) {
+                $rule->update(['active' => true]);
+            }
+        });
 
-            // 👉 আগে সব deactivate
-            ProductPriceRule::where('active', true)
-                ->update(['active' => false]);
+        return response()->json([
+            'message' => $rule->active
+                ? 'All price rules deactivated'
+                : 'Price rule activated successfully',
+        ]);
+    }
 
-            // 👉 তারপর এই rule activate
-            $rule->update(['active' => true]);
+    /**
+     * Calculate final price
+     */
+    public function calculate(
+        Request $request,
+        ProductPriceRuleService $pricingService
+    ) {
+        $validator = Validator::make($request->all(), [
+            'base_price' => 'required|numeric|min:0',
+            'product_id' => 'nullable|exists:products,product_id',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'message' => 'Validation failed',
+                'errors' => $validator->errors(),
+            ], 422);
         }
-    });
 
-    return response()->json([
-        'message' => $rule->active
-            ? 'All price rules deactivated'
-            : 'Price rule activated successfully'
-    ]);
-}
+        $data = $validator->validated();
 
-public function calculate(
-    Request $request,
-    ProductPriceRuleService $pricingService
-) {
-    $data = $request->validate([
-        'base_price' => 'required|numeric|min:0',
-        'product_id' => 'nullable|exists:products,product_id',
-    ]);
+        $finalPrice = $pricingService->calculate(
+            $data['base_price'],
+            $data['product_id'] ?? null
+        );
 
-    $finalPrice = $pricingService->calculate(
-        $data['base_price'],
-        $data['product_id'] ?? null
-    );
-
-    return response()->json([
-        'base_price' => (float) $data['base_price'],
-        'final_price' => (float) $finalPrice,
-        'difference' => round($finalPrice - $data['base_price'], 2),
-    ]);
-}
-
+        return response()->json([
+            'base_price' => (float) $data['base_price'],
+            'final_price' => (float) $finalPrice,
+            'difference' => round($finalPrice - $data['base_price'], 2),
+        ]);
+    }
 }
