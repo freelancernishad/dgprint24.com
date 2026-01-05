@@ -12,9 +12,6 @@ use Illuminate\Validation\Rule;
 
 class ProductPriceRuleController extends Controller
 {
-    /**
-     * List rules
-     */
     public function index()
     {
         return response()->json(
@@ -22,13 +19,11 @@ class ProductPriceRuleController extends Controller
         );
     }
 
-    /**
-     * Store new rule
-     */
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
             'product_id' => 'nullable|exists:products,product_id',
+            'label' => 'nullable|string|max:255', // ✅ added
             'type' => ['required', Rule::in(['discount', 'price_add'])],
             'value_type' => ['required', Rule::in(['flat', 'percentage'])],
             'value' => 'required|numeric|min:0',
@@ -50,21 +45,16 @@ class ProductPriceRuleController extends Controller
         ], 201);
     }
 
-    /**
-     * Show single rule
-     */
     public function show(ProductPriceRule $productPriceRule)
     {
         return response()->json($productPriceRule);
     }
 
-    /**
-     * Update rule
-     */
     public function update(Request $request, ProductPriceRule $productPriceRule)
     {
         $validator = Validator::make($request->all(), [
             'product_id' => 'nullable|exists:products,product_id',
+            'label' => 'nullable|string|max:255', // ✅ added
             'type' => ['required', Rule::in(['discount', 'price_add'])],
             'value_type' => ['required', Rule::in(['flat', 'percentage'])],
             'value' => 'required|numeric|min:0',
@@ -86,9 +76,6 @@ class ProductPriceRuleController extends Controller
         ]);
     }
 
-    /**
-     * Delete rule
-     */
     public function destroy(ProductPriceRule $productPriceRule)
     {
         $productPriceRule->delete();
@@ -99,7 +86,7 @@ class ProductPriceRuleController extends Controller
     }
 
     /**
-     * Activate / Deactivate rule (toggle)
+     * Toggle activate / deactivate
      */
     public function activate($id)
     {
@@ -107,11 +94,9 @@ class ProductPriceRuleController extends Controller
 
         DB::transaction(function () use ($rule) {
 
-            // সব rule deactivate
             ProductPriceRule::where('active', true)
                 ->update(['active' => false]);
 
-            // যদি আগেই active না থাকে, তাহলে activate
             if (! $rule->active) {
                 $rule->update(['active' => true]);
             }
@@ -124,9 +109,6 @@ class ProductPriceRuleController extends Controller
         ]);
     }
 
-    /**
-     * Calculate final price
-     */
     public function calculate(
         Request $request,
         ProductPriceRuleService $pricingService
