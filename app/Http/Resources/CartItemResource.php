@@ -55,6 +55,24 @@ class CartItemResource extends JsonResource
             }
         }
 
+
+        if (isset($this->resource['height']) || isset($this->resource->height)) {
+            $formattedOptions[] = [
+                'label' => 'Height',
+                'value' => (string) ($this->resource['height'] ?? $this->resource->height ?? null)
+            ];
+        }
+
+        if (isset($this->resource['width']) || isset($this->resource->width)) {
+            $formattedOptions[] = [
+                'label' => 'Width',
+                'value' => (string) ($this->resource['width'] ?? $this->resource->width ?? null)
+            ];
+        }
+
+
+
+
         // shipment(s)
         $rawShip = $get('shippings', null); // single object
         $shipmentsArr = $get('shipments', null); // maybe array
