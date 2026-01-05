@@ -8,6 +8,7 @@ class ProductPriceRule extends Model
 {
     protected $fillable = [
         'product_id',
+        'label',  
         'type',
         'value_type',
         'value',

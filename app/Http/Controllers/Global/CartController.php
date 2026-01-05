@@ -196,6 +196,7 @@ class CartController extends Controller
             "extra_selected_options.*" => "nullable|array",
             "Height" => "nullable",
             "Width" => "nullable",
+            "discount_or_add" => "nullable",
             "files" => "nullable|array",
             "files.*" => "nullable|string", // URL / path
         ]);
@@ -499,6 +500,7 @@ class CartController extends Controller
             $cartItem->files = $normalizedFiles;
             $cartItem->Height = $request->Height ?? null;
             $cartItem->Width = $request->Width ?? null;
+            $cartItem->discount_or_add = $request->discount_or_add ?? 0;
 
             // NEW: save job/digital prices & flags
             $cartItem->job_sample_price = $jobSamplePrice;
@@ -523,6 +525,7 @@ class CartController extends Controller
                 "delivery_address" => $request->delivery_address ?? null,
                 "Width" => $request->Width ?? null,
                 "Height" => $request->Height ?? null,
+                "discount_or_add" => $request->discount_or_add ?? 0,
                 "status" => "pending",
                 "tax_id" => $taxModel ? $taxModel->id : null,
                 "tax_price" => $taxPrice,

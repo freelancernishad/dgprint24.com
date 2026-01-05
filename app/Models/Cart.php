@@ -42,6 +42,7 @@ class Cart extends Model
         'files', // ✅ new
         'width',
         'height',
+        'discount_or_add',
 
     ];
 
@@ -65,6 +66,7 @@ class Cart extends Model
     'files' => 'array', // ✅ JSON → Array
     'width'  => 'decimal:2',
     'height' => 'decimal:2',
+    'discount_or_add' => 'float',
     ];
 
     public function user()
