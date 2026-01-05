@@ -498,8 +498,8 @@ class CartController extends Controller
             $cartItem->project_name = $projectName; // NEW
             $cartItem->extra_selected_options = $normalizedExtras; // NEW
             $cartItem->files = $normalizedFiles;
-            $cartItem->Height = $request->Height ?? null;
-            $cartItem->Width = $request->Width ?? null;
+            $cartItem->height = $request->height ?? null;
+            $cartItem->width = $request->width ?? null;
             $cartItem->discount_or_add = $request->discount_or_add ?? 0;
 
             // NEW: save job/digital prices & flags
@@ -523,8 +523,8 @@ class CartController extends Controller
                 "turnarounds" => $selected_turnaround,
                 "shippings" => $selected_shipping,
                 "delivery_address" => $request->delivery_address ?? null,
-                "Width" => $request->Width ?? null,
-                "Height" => $request->Height ?? null,
+                "width" => $request->width ?? null,
+                "height" => $request->height ?? null,
                 "discount_or_add" => $request->discount_or_add ?? 0,
                 "status" => "pending",
                 "tax_id" => $taxModel ? $taxModel->id : null,
