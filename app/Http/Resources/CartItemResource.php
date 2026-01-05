@@ -222,6 +222,8 @@ class CartItemResource extends JsonResource
                 'extrasPerUnit' => (float) $extrasPerUnit,
                 'extrasTotal' => (float) $extrasTotal
             ],
+            'height' => $this->resource['height'] ?? $this->resource->height ?? null,
+            'width' => $this->resource['width'] ?? $this->resource->width,
             'files' => $this->resource['files'] ?? $this->resource->files ?? [],
             // 'raw' => [
             //     'original_payload' => $this->resource

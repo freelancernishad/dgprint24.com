@@ -194,6 +194,8 @@ class CartController extends Controller
             // নতুন: extra_selected_options (array of objects)
             "extra_selected_options" => "nullable|array",
             "extra_selected_options.*" => "nullable|array",
+            "Height" => "nullable",
+            "Width" => "nullable",
             "files" => "nullable|array",
             "files.*" => "nullable|string", // URL / path
         ]);
@@ -495,6 +497,8 @@ class CartController extends Controller
             $cartItem->project_name = $projectName; // NEW
             $cartItem->extra_selected_options = $normalizedExtras; // NEW
             $cartItem->files = $normalizedFiles;
+            $cartItem->Height = $request->Height ?? null;
+            $cartItem->Width = $request->Width ?? null;
 
             // NEW: save job/digital prices & flags
             $cartItem->job_sample_price = $jobSamplePrice;
@@ -517,6 +521,8 @@ class CartController extends Controller
                 "turnarounds" => $selected_turnaround,
                 "shippings" => $selected_shipping,
                 "delivery_address" => $request->delivery_address ?? null,
+                "Width" => $request->Width ?? null,
+                "Height" => $request->Height ?? null,
                 "status" => "pending",
                 "tax_id" => $taxModel ? $taxModel->id : null,
                 "tax_price" => $taxPrice,

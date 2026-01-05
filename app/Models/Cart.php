@@ -38,8 +38,10 @@ class Cart extends Model
         'job_sample_price',
         'digital_proof_price',
         'job_sample',
-'digital_proof',
-    'files', // ✅ new
+        'digital_proof',
+        'files', // ✅ new
+        'width',
+        'height',
 
     ];
 
@@ -61,6 +63,8 @@ class Cart extends Model
     'job_sample' => 'boolean',
 'digital_proof' => 'boolean',
     'files' => 'array', // ✅ JSON → Array
+    'width'  => 'decimal:2',
+    'height' => 'decimal:2',
     ];
 
     public function user()

@@ -14,4 +14,10 @@ if (file_exists($ProductsEditRoutes = __DIR__.'/products/ProductsEditRoutes.php'
 }
 
 
+// Load ProductPricingRulesRoutes
+if (file_exists($ProductPricingRulesRoutes = __DIR__.'/products/ProductPricingRulesRoutes.php')) {
+    require $ProductPricingRulesRoutes;
+}
+
+
 
