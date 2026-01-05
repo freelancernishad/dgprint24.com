@@ -44,6 +44,12 @@ Route::prefix('admin')->middleware(AuthenticateAdmin::class)->group(function () 
         [ProductPriceRuleController::class, 'destroy']
     );
 
+      Route::patch(
+            'product-price-rules/{id}/toggle-activate',
+            [ProductPriceRuleController::class, 'activate']
+        );
+
+
     Route::post(
         'product-price-rules/calculate',
         [ProductPriceRuleController::class, 'calculate']

@@ -22,9 +22,22 @@ class ProductPriceRule extends Model
         'end_date' => 'date',
     ];
 
+    protected static function booted()
+    {
+        static::saving(function ($rule) {
+
+            // যদি এই rule টা active করা হয়
+            if ($rule->active) {
+
+                static::where('active', true)
+                    ->where('id', '!=', $rule->id)
+                    ->update(['active' => false]);
+            }
+        });
+    }
+
     public function product()
     {
         return $this->belongsTo(Product::class, 'product_id', 'product_id');
     }
 }
-

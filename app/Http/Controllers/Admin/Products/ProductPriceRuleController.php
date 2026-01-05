@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin\Products;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use App\Models\ProductPriceRule;
+use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use App\Services\Pricing\ProductPriceRuleService;
 
@@ -86,7 +87,36 @@ class ProductPriceRuleController extends Controller
         ]);
     }
 
+public function activate($id)
+{
+    $rule = ProductPriceRule::findOrFail($id);
 
+    DB::transaction(function () use ($rule) {
+
+        // যদি rule টা already active থাকে
+        if ($rule->active) {
+
+            // 👉 সব rule deactivate করে দাও
+            ProductPriceRule::where('active', true)
+                ->update(['active' => false]);
+
+        } else {
+
+            // 👉 আগে সব deactivate
+            ProductPriceRule::where('active', true)
+                ->update(['active' => false]);
+
+            // 👉 তারপর এই rule activate
+            $rule->update(['active' => true]);
+        }
+    });
+
+    return response()->json([
+        'message' => $rule->active
+            ? 'All price rules deactivated'
+            : 'Price rule activated successfully'
+    ]);
+}
 
 public function calculate(
     Request $request,
