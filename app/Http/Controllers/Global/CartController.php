@@ -194,8 +194,8 @@ class CartController extends Controller
             // নতুন: extra_selected_options (array of objects)
             "extra_selected_options" => "nullable|array",
             "extra_selected_options.*" => "nullable|array",
-            "Height" => "nullable",
-            "Width" => "nullable",
+            "height" => "nullable",
+            "width" => "nullable",
             "discount_or_add" => "nullable",
             "files" => "nullable|array",
             "files.*" => "nullable|string", // URL / path
