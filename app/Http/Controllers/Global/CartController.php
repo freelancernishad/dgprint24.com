@@ -484,7 +484,10 @@ class CartController extends Controller
 
         $discount_or_add = (new ProductPriceRuleService())->calculate($verifiedPrice);
 
-        $discount_or_add_defarence = $discount_or_add['final_price'] - $verifiedPrice;
+        $discount_or_add_defarence = 0;
+        if (isset($discount_or_add['rules_found'])) {
+            $discount_or_add_defarence = $discount_or_add['final_price'] - $verifiedPrice;
+        }
         $discount_or_add_text = $discount_or_add['rule_applied']['label'] ?? null;
 
 

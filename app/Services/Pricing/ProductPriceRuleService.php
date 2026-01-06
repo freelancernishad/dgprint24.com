@@ -33,6 +33,7 @@ class ProductPriceRuleService
             0
         );
 return [
+            'rules_found' => !$rule ? false : true,
             'final_price' => $discountOrAdd,
             'rule_applied' => $rule
 ];
