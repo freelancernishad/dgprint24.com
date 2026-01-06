@@ -23,6 +23,7 @@ use App\Http\Resources\CartCollection;
 use Illuminate\Support\Facades\Validator;
 use Tymon\JWTAuth\Exceptions\JWTException;
 use Firebase\JWT\SignatureInvalidException;
+use App\Services\Pricing\ProductPriceRuleService;
 use Tymon\JWTAuth\Exceptions\TokenExpiredException;
 use Tymon\JWTAuth\Exceptions\TokenInvalidException;
 
@@ -481,6 +482,12 @@ class CartController extends Controller
         $cartQuery->where('job_sample', $jobSampleFlag);
         $cartQuery->where('digital_proof', $digitalProofFlag);
 
+        $discount_or_add = (new ProductPriceRuleService())->calculate($verifiedPrice);
+
+        $discount_or_add_defarence = $discount_or_add['final_price'] - $verifiedPrice;
+        $discount_or_add_text = $discount_or_add['rule_applied']['label'] ?? null;
+
+
         $cartItem = $cartQuery->first();
 
         if ($cartItem) {
@@ -500,7 +507,8 @@ class CartController extends Controller
             $cartItem->files = $normalizedFiles;
             $cartItem->height = $request->height ?? null;
             $cartItem->width = $request->width ?? null;
-            $cartItem->discount_or_add = $request->discount_or_add ?? 0;
+            $cartItem->discount_or_add = $discount_or_add_defarence ?? 0;
+            $cartItem->discount_or_add_text = $discount_or_add_text ?? null;
 
             // NEW: save job/digital prices & flags
             $cartItem->job_sample_price = $jobSamplePrice;
@@ -525,7 +533,8 @@ class CartController extends Controller
                 "delivery_address" => $request->delivery_address ?? null,
                 "width" => $request->width ?? null,
                 "height" => $request->height ?? null,
-                "discount_or_add" => $request->discount_or_add ?? 0,
+                "discount_or_add" => $discount_or_add_defarence ?? 0,
+                "discount_or_add_text" => $discount_or_add_text ?? null,
                 "status" => "pending",
                 "tax_id" => $taxModel ? $taxModel->id : null,
                 "tax_price" => $taxPrice,

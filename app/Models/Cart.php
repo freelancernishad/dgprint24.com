@@ -43,6 +43,7 @@ class Cart extends Model
         'width',
         'height',
         'discount_or_add',
+        'discount_or_add_text',
 
     ];
 

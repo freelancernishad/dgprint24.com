@@ -9,7 +9,7 @@ class ProductPriceRuleService
     /**
      * Calculate final price
      */
-    public function calculate(float $basePrice, string $productId = null): float
+    public function calculate($basePrice, string $productId = null)
     {
         $price = $basePrice;
 
@@ -28,10 +28,14 @@ class ProductPriceRuleService
             return round($price, 2);
         }
 
-        return max(
+        $discountOrAdd = max(
             round($this->applyRule($price, $rule), 2),
             0
         );
+return [
+            'final_price' => $discountOrAdd,
+            'rule_applied' => $rule
+];
     }
 
     /**

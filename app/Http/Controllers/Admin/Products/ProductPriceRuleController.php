@@ -134,8 +134,9 @@ class ProductPriceRuleController extends Controller
 
         return response()->json([
             'base_price' => (float) $data['base_price'],
-            'final_price' => (float) $finalPrice,
-            'difference' => round($finalPrice - $data['base_price'], 2),
+            'final_price' => (float) $finalPrice['final_price'],
+            'difference' => round($finalPrice['final_price'] - $data['base_price'], 2),
+            'rule_applied' => $finalPrice['rule_applied'],
         ]);
     }
 }

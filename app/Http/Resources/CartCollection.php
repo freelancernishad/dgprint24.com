@@ -29,6 +29,8 @@ class CartCollection extends ResourceCollection
             'totalShipping' => 0,
             'totalTax' => 0,
             'extrasTotal' => 0,     // NEW: sum of extra_selected_options amounts across items
+            'discount' => 0,
+            'price_add' => 0,
             'grandTotal' => 0,
         ];
 
@@ -39,6 +41,10 @@ class CartCollection extends ResourceCollection
             $cartTotals['totalShipping'] += $ci['pricing']['totalShipping'] ?? 0;
             $cartTotals['totalTax'] += $ci['pricing']['totalTax'] ?? 0;
             $cartTotals['extrasTotal'] += $ci['pricing']['extrasTotal'] ?? ($ci['extras']['extrasTotal'] ?? 0);
+
+            $cartTotals['discount'] += $ci['pricing']['discount'] ?? 0;
+            $cartTotals['price_add'] += $ci['pricing']['price_add'] ?? 0;
+
             $cartTotals['grandTotal'] += $ci['pricing']['total'] ?? 0;
         }
 

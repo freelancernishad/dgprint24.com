@@ -210,19 +210,36 @@ class CartItemResource extends JsonResource
 
 
 
+       $discount_or_add =  $this->resource['discount_or_add'] ?? $this->resource->discount_or_add ?? 0;
+       $discount = 0;
+       $add = 0;
+       // if discount_or_add is positive it means price addition, if negative means discount
+       if($discount_or_add > 0) {
+            $add  = $discount_or_add;
+           $computedTotal = $computedTotal + $discount_or_add;
+       } else {
+            $discount = abs($discount_or_add);
+           $computedTotal = $computedTotal - abs($discount_or_add);
+       }
 
         $pricing = [
             'baseSubtotal' => $baseSubtotal,
             'setCount' => $setCount,
             'subtotal' =>  $subtotal, // keep backwards-compatible key
+
             'digitalProofs' => $digitalProofs,
             'jobSample' => $jobSample,
             'totalTurnaround' => $totalTurnaround,
             'totalShipping' => $totalShipping,
             'totalTax' => $totalTax,
             'extrasTotal' => (float) $extrasTotal,
+
+            'discount' => $discount,
+            'price_add' => $add,
+
             // keep original source total for reference
             'sourceTotal' => $sourceTotal,
+
             // computed authoritative total
             'total' => (float) $computedTotal,
         ];
@@ -234,6 +251,7 @@ class CartItemResource extends JsonResource
             'product' => $finalProduct,
             'shipments' => $shipments,
             'pricing' => $pricing,
+            'discount_or_add_text' => $this->resource['discount_or_add_text'] ?? $this->resource->discount_or_add_text ?? null,
             // expose extras info for frontend
             'extras' => [
                 'selectedOptions' => $extrasSelected,
