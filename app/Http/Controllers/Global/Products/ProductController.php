@@ -66,6 +66,7 @@ class ProductController extends Controller
                 'id',
                 'product_id',
                 'product_name',
+                'product_description',
                 'thumbnail',
                 'base_price',
                 'job_sample_price',
