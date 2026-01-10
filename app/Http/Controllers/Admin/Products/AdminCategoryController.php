@@ -18,7 +18,7 @@ class AdminCategoryController extends Controller
     public function index()
     {
         $categories = Category::with('parent', 'children')
-            ->whereNotNull('parent_id') // parent_id NULL বাদ
+            ->whereNull('parent_id') // parent_id NULL বাদ
             ->orderBy('name')
             ->paginate(50);
 
