@@ -33,7 +33,7 @@ class ShippingController extends Controller
             'category_name' => 'nullable|string|max:255',
             'category_id' => 'nullable|string|exists:categories,category_id',
             'shipping_label' => 'required|string|max:255',
-            'shipping_value' => 'required|integer|min:1',
+            'shipping_value' => 'required|integer|min:0',
             'price' => 'required|numeric|min:0',
             'note' => 'nullable|string',
             'runsize' => 'nullable|integer|min:1',
