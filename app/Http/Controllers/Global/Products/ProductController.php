@@ -37,23 +37,49 @@ class ProductController extends Controller
      */
     public function getByCategory(Request $request, $category_id)
     {
-
         $per_page = $request->input('per_page', 20);
-        $category = Category::where('category_id', $category_id)->first();
+
+        // category_id দিয়ে category খোঁজা
+        $category = Category::where('category_id', $category_id)
+            ->with('children') // children load
+            ->first();
+
         if (!$category) {
             return response()->json(['message' => 'Category not found.'], 404);
         }
 
-        $categoryId = $category->id;
+        // parent + child category IDs
+        $categoryIds = [$category->id];
+
+        if ($category->children->isNotEmpty()) {
+            $categoryIds = array_merge(
+                $categoryIds,
+                $category->children->pluck('id')->toArray()
+            );
+        }
+
+        // products load
         $products = Product::with(['category:id,name', 'images'])
             ->where('active', true)
-            ->where('category_id', $categoryId)
-            ->select('id', 'product_id', 'product_name', 'thumbnail', 'base_price', 'job_sample_price', 'digital_proof_price', 'active', 'popular_product', 'category_id')
+            ->whereIn('category_id', $categoryIds)
+            ->select(
+                'id',
+                'product_id',
+                'product_name',
+                'thumbnail',
+                'base_price',
+                'job_sample_price',
+                'digital_proof_price',
+                'active',
+                'popular_product',
+                'category_id'
+            )
             ->latest()
             ->paginate($per_page);
 
         return response()->json($products);
     }
+
 
 
     /**
