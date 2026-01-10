@@ -15,7 +15,7 @@ return new class extends Migration {
 
         Schema::table('support_tickets', function (Blueprint $table) {
             // 🔹 Change column to string
-            $table->string('user_id')->change();
+            $table->string('user_id')->nullable()->change();
         });
     }
 
