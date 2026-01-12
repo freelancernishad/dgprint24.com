@@ -17,13 +17,14 @@ class AdminCategoryController extends Controller
      */
     public function index()
     {
-        // অ্যাডমিনকে সব ক্যাটাগরি দেখানো হবে, এমনকি ইনঅ্যাক্টিভও
         $categories = Category::with('parent', 'children')
+            ->whereNull('parent_id') // parent_id NULL বাদ
             ->orderBy('name')
-            ->paginate(50); // পেজিনেশন যোগ করা হয়েছে
+            ->paginate(50);
 
         return response()->json($categories);
     }
+
 
     /**
      * Store a newly created resource in storage.

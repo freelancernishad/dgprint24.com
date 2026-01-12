@@ -34,7 +34,7 @@ class TurnAroundTimeController extends Controller
             'category_name' => 'nullable|string|max:255',
             'category_id' => 'nullable|string|exists:categories,category_id',
             'turnaround_label' => 'nullable|string|max:255',
-            'turnaround_value' => 'nullable|integer|min:1',
+            'turnaround_value' => 'nullable|integer|min:0',
             'price' => 'nullable|numeric|min:0',
             'discount' => 'nullable|numeric|min:0|max:100',
             'note' => 'nullable|string',

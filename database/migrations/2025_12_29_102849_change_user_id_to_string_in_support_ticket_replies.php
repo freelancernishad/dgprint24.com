@@ -17,7 +17,7 @@ return new class extends Migration {
 
         // 🔹 user_id কে string করা
         Schema::table('support_ticket_replies', function (Blueprint $table) {
-            $table->string('user_id')->change();
+            $table->string('user_id')->nullable()->change();
         });
     }
 
