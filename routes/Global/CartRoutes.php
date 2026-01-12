@@ -32,3 +32,5 @@ Route::middleware([StartSession::class])->group(function () {
 });
 
   Route::delete('clear/cart/items/{id}', [CartController::class, 'clearCartItems']);
+
+Route::post('/cart/{cart_id}/files', [CartController::class, 'updateFiles']);

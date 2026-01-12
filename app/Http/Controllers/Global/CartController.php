@@ -172,6 +172,9 @@ class CartController extends Controller
     /**
      * Add item to cart (guest or user)
      */
+
+
+
     public function store(Request $request)
     {
         // ১. ভ্যালিডেশন
@@ -564,6 +567,70 @@ class CartController extends Controller
         ]);
     }
 
+ public function updateFiles(Request $request, $cart_id)
+    {
+        // =========================
+        // 1️⃣ Validation
+        // =========================
+        $validator = Validator::make($request->all(), [
+            'files' => 'required|array',
+            'files.*' => 'string',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'errors' => $validator->errors()
+            ], 422);
+        }
+
+        // =========================
+        // 2️⃣ Find cart SAFELY
+        // =========================
+        $cart = Cart::where('id', $cart_id)
+            ->where('status', 'pending')
+            ->first();
+
+        if (!$cart) {
+            return response()->json([
+                'error' => 'Cart item not found'
+            ], 404);
+        }
+
+
+        // =========================
+        // 4️⃣ Normalize files
+        // =========================
+        $filesInput = $request->input('files', []);
+
+        $normalizedFiles = array_values(
+            array_unique(
+                array_filter(
+                    array_map(function ($file) {
+                        return is_string($file) && trim($file) !== ''
+                            ? trim($file)
+                            : null;
+                    }, $filesInput)
+                )
+            )
+        );
+
+        // =========================
+        // 5️⃣ Update files only
+        // =========================
+        $cart->files = $normalizedFiles;
+        $cart->save();
+
+        $cart->refresh();
+
+        // =========================
+        // 6️⃣ Response
+        // =========================
+        return response()->json([
+            'message' => 'Cart files updated successfully',
+            'files' => $cart->files,
+            'cart_item' => $cart
+        ]);
+    }
 
 
 protected function decodeJwtPayloadUnsafe(?string $token)
