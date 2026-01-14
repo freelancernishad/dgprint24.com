@@ -16,20 +16,41 @@ class ProductController extends Controller
      * Display a listing of the resource.
      * ফ্রন্টএন্ডে সব অ্যাকটিভ প্রোডাক্টের লিস্ট দেখানোর জন্য।
      */
-    public function index(Request $request)
-    {
-        $products = Product::with(['category:id,name','images'])
-            ->where('active', true)
-            ->when($request->category_id, function ($query, $categoryId) {
-                return $query->where('category_id', $categoryId);
-            })
-            ->select('id', 'product_id', 'product_name', 'thumbnail', 'base_price', 'job_sample_price', 'digital_proof_price', 'active', 'popular_product','category_id')
-            ->latest()
-            ->paginate(20);
+public function index(Request $request)
+{
+    $products = Product::with(['category:id,name', 'images'])
+        ->where('active', true)
 
-        return response()->json($products);
-    }
+        // Category filter
+        ->when($request->category_id, function ($query, $categoryId) {
+            $query->where('category_id', $categoryId);
+        })
 
+        // Search filter
+        ->when($request->search, function ($query, $search) {
+            $query->where(function ($q) use ($search) {
+                $q->where('product_name', 'LIKE', "%{$search}%")
+                  ->orWhere('product_id', 'LIKE', "%{$search}%");
+            });
+        })
+
+        ->select(
+            'id',
+            'product_id',
+            'product_name',
+            'thumbnail',
+            'base_price',
+            'job_sample_price',
+            'digital_proof_price',
+            'active',
+            'popular_product',
+            'category_id'
+        )
+        ->latest()
+        ->paginate(20);
+
+    return response()->json($products);
+}
 
     /**
      * Get products by category ID.
