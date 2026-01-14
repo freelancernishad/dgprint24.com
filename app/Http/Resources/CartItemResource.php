@@ -132,6 +132,7 @@ class CartItemResource extends JsonResource
 
         // Build final product object (use options mapping)
         $finalProduct = [
+            'id' => $product['id'] ?? $product->id ?? $get('product.id') ?? $get('id'),
             'product_name' => $product['product_name'] ?? $product->product_name ?? $get('product.product_name') ?? $get('product_name'),
             'product_type' => $product['product_type'] ?? $product->product_type ?? $get('product.product_type') ?? $get('product.type'),
             'images' => $product['images'] ?? $product->images ?? [],
@@ -143,7 +144,11 @@ class CartItemResource extends JsonResource
             'options' => $formattedOptions,
 
             'runSize' => (int) ($this->resource['quantity'] ?? $this->resource->quantity ?? $product['runSize'] ?? $product->selectedRunSize ?? 0),
-            'turnaroundTime' => $get('price_breakdown.base_price.details.selected_turnaround.turnaround_label') ?? $get('turnarounds.turnaround_label') ?? $get('turnaround.turnaround_label') ?? null,
+
+            'turnaroundTime' => $this->resource['turnarounds']['turnaround_label'] ?? $get('price_breakdown.base_price.details.selected_turnaround.turnaround_label') ?? $get('turnarounds.turnaround_label') ?? $get('turnaround.turnaround_label') ?? null,
+            'turnaroundValue' => $this->resource['turnarounds']['turnaroundValue'] ?? $get('price_breakdown.base_price.details.selected_turnaround.turnaround_value') ?? $get('turnarounds.turnaround_value') ?? $get('turnaround.turnaround_value') ?? null,
+
+
             'projectName' => $this->resource['project_name'],
         ];
 
