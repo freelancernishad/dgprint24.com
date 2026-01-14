@@ -148,7 +148,7 @@ class CartItemResource extends JsonResource
             'turnaroundTime' => $this->resource['turnarounds']['turnaround_label'] ??  $this->resource['turnarounds']['turnaroundLabel'] ?? $get('price_breakdown.base_price.details.selected_turnaround.turnaround_label') ?? $get('price_breakdown.base_price.details.selected_turnaround.turnaroundLabel') ?? $get('turnarounds.turnaround_label') ?? $get('turnarounds.turnaroundLabel') ?? $get('turnaround.turnaround_label') ?? $get('turnaround.turnaroundLabel') ?? null,
 
 
-            'turnaroundValue' => $this->resource['turnarounds']['turnaroundValue'] ?? $this->resource['turnarounds']['turnaround_value'] ?? $get('price_breakdown.base_price.details.selected_turnaround.turnaround_value') ?? $get('turnarounds.turnaround_value') ?? $get('turnaround.turnaround_value') ?? null,
+            'turnaroundValue' =>  $this->resource['turnarounds']['turnaroundValue'] ?? $this->resource['turnarounds']['turnaround_value'] ?? $get('price_breakdown.base_price.details.selected_turnaround.turnaround_value') ?? $get('turnarounds.turnaround_value') ?? $get('turnaround.turnaround_value') ?? null,
 
 
             'projectName' => $this->resource['project_name'],
