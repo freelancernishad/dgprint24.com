@@ -145,7 +145,9 @@ class CartItemResource extends JsonResource
 
             'runSize' => (int) ($this->resource['quantity'] ?? $this->resource->quantity ?? $product['runSize'] ?? $product->selectedRunSize ?? 0),
 
-            'turnaroundTime' => $this->resource['turnarounds']['turnaround_label'] ?? $get('price_breakdown.base_price.details.selected_turnaround.turnaround_label') ?? $get('turnarounds.turnaround_label') ?? $get('turnaround.turnaround_label') ?? null,
+            'turnaroundTime' => $this->resource['turnarounds']['turnaround_label'] ??  $this->resource['turnarounds']['turnaroundLabel'] ?? $get('price_breakdown.base_price.details.selected_turnaround.turnaround_label') ?? $get('price_breakdown.base_price.details.selected_turnaround.turnaroundLabel') ?? $get('turnarounds.turnaround_label') ?? $get('turnarounds.turnaroundLabel') ?? $get('turnaround.turnaround_label') ?? $get('turnaround.turnaroundLabel') ?? null,
+
+
             'turnaroundValue' => $this->resource['turnarounds']['turnaroundValue'] ?? $get('price_breakdown.base_price.details.selected_turnaround.turnaround_value') ?? $get('turnarounds.turnaround_value') ?? $get('turnaround.turnaround_value') ?? null,
 
 
