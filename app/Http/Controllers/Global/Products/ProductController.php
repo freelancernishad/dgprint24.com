@@ -18,7 +18,7 @@ class ProductController extends Controller
      */
 public function index(Request $request)
 {
-    $products = Product::with(['category:id,name', 'images'])
+    $products = Product::with(['category:id,name,category_id', 'images'])
         ->where('active', true)
 
         // Category filter
