@@ -68,3 +68,4 @@ Route::prefix('admin')->middleware(AuthenticateAdmin::class)->group(function () 
 
 
     Route::post('pricing/calculate',[ProductPriceRuleController::class, 'calculate']);
+    Route::get('pricing/calculate',[ProductPriceRuleController::class, 'calculate']);
