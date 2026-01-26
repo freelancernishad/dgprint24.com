@@ -56,33 +56,15 @@ public function index(Request $request)
      * Get products by category ID.
      * নির্দিষ্ট ক্যাটাগরি আইডি দিয়ে প্রোডাক্টের লিস্ট দেখানোর জন্য।
      */
-    public function getByCategory(Request $request, $category_id)
-    {
-        $per_page = $request->input('per_page', 20);
+public function getByCategory(Request $request, $category_id)
+{
+    $per_page = $request->input('per_page', 20);
 
-        // category_id দিয়ে category খোঁজা
-        $category = Category::where('category_id', $category_id)
-            ->with('children') // children load
-            ->first();
+    // যদি category_id = all হয়
+    if ($category_id === 'all') {
 
-        if (!$category) {
-            return response()->json(['message' => 'Category not found.'], 404);
-        }
-
-        // parent + child category IDs
-        $categoryIds = [$category->id];
-
-        if ($category->children->isNotEmpty()) {
-            $categoryIds = array_merge(
-                $categoryIds,
-                $category->children->pluck('id')->toArray()
-            );
-        }
-
-        // products load
         $products = Product::with(['category:id,name', 'images'])
             ->where('active', true)
-            ->whereIn('category_id', $categoryIds)
             ->select(
                 'id',
                 'product_id',
@@ -101,6 +83,48 @@ public function index(Request $request)
 
         return response()->json($products);
     }
+
+    // ====== Normal Category Logic ======
+
+    $category = Category::where('category_id', $category_id)
+        ->with('children')
+        ->first();
+
+    if (!$category) {
+        return response()->json(['message' => 'Category not found.'], 404);
+    }
+
+    // parent + child category IDs
+    $categoryIds = [$category->id];
+
+    if ($category->children->isNotEmpty()) {
+        $categoryIds = array_merge(
+            $categoryIds,
+            $category->children->pluck('id')->toArray()
+        );
+    }
+
+    $products = Product::with(['category:id,name', 'images'])
+        ->where('active', true)
+        ->whereIn('category_id', $categoryIds)
+        ->select(
+            'id',
+            'product_id',
+            'product_name',
+            'product_description',
+            'thumbnail',
+            'base_price',
+            'job_sample_price',
+            'digital_proof_price',
+            'active',
+            'popular_product',
+            'category_id'
+        )
+        ->latest()
+        ->paginate($per_page);
+
+    return response()->json($products);
+}
 
 
 
