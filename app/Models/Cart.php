@@ -44,6 +44,7 @@ class Cart extends Model
         'height',
         'discount_or_add',
         'discount_or_add_text',
+        'note',
 
     ];
 
@@ -68,6 +69,7 @@ class Cart extends Model
     'width'  => 'decimal:2',
     'height' => 'decimal:2',
     'discount_or_add' => 'float',
+    'note' => 'string',
     ];
 
     public function user()

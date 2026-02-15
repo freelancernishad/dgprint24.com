@@ -203,6 +203,7 @@ class CartController extends Controller
             "discount_or_add" => "nullable",
             "files" => "nullable|array",
             "files.*" => "nullable|string", // URL / path
+            "note" => "nullable|string",
         ]);
 
         if ($validator->fails()) {
@@ -522,6 +523,7 @@ class CartController extends Controller
 
             $cartItem->job_sample = $jobSampleFlag;
             $cartItem->digital_proof = $digitalProofFlag;
+            $cartItem->note = $request->note ?? null;
 
             $cartItem->save();
         } else {
@@ -555,6 +557,7 @@ class CartController extends Controller
                 "digital_proof_price" => $digitalProofPrice,
                 "job_sample" => $jobSampleFlag,
                 "digital_proof" => $digitalProofFlag,
+                "note" => $request->note ?? null,
             ]);
         }
 
