@@ -256,6 +256,7 @@ class CartItemResource extends JsonResource
             'session_id' => $this->resource['session_id'] ?? $this->resource->session_id ?? '',
             'totalPrice' => $pricing['total'],
             'product' => $finalProduct,
+            'note' => $this->resource['note'] ?? $this->resource->note ?? null,
             'shipments' => $shipments,
             'pricing' => $pricing,
             'discount_or_add_text' => $this->resource['discount_or_add_text'] ?? $this->resource->discount_or_add_text ?? null,
