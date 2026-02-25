@@ -50,4 +50,23 @@ class SettingController extends Controller
             'data' => $setting
         ]);
     }
+
+    public function destroy($key)
+    {
+        $setting = \App\Models\Setting::where('key', $key)->first();
+        
+        if (!$setting) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Setting not found'
+            ], 404);
+        }
+
+        $setting->delete();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Setting deleted successfully'
+        ]);
+    }
 }

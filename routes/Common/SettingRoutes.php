@@ -8,6 +8,7 @@ use App\Http\Middleware\AuthenticateAdmin;
 Route::prefix('admin')->group(function () {
     Route::middleware(AuthenticateAdmin::class)->group(function () {
         Route::post('/settings', [SettingController::class, 'storeOrUpdate']);
+        Route::delete('/settings/{key}', [SettingController::class, 'destroy']);
     });
 });
 
