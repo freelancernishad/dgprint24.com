@@ -134,14 +134,17 @@ class CategoryController extends Controller
 
 
         if($type=='all'){
+
             // Find all categories where the 'show_in_navbar' column is true
-            $categories = Category::with(['products' => function($query) {
+            $categories = Category::whereNull('parent_id')->with(['products' => function($query) {
                 $query->select('id', 'product_id', 'product_name','category_id');
             },'children.products' => function($query) {
                 $query->select('id', 'product_id', 'product_name','category_id');
             }])
-            ->select('id', 'category_id', 'name', 'category_image')
+            ->select('id', 'category_id', 'name', 'category_image','parent_id')
             ->get();
+
+
         }else{
             // Find all categories where the 'show_in_navbar' column is true
             $categories = Category::with(['products' => function($query) {
