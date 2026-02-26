@@ -223,35 +223,35 @@ public function store(Request $request)
 
 
 
-
     public function destroy(Category $category)
     {
         $this->deleteCategoryWithChildren($category);
 
         return response()->json([
-            'message' => 'Category, subcategories and all products deleted successfully.'
-        ], 200);
+            'message' => 'Category and all related data deleted successfully.'
+        ]);
     }
 
-
-    /**
-     * Recursive delete function
-     */
     private function deleteCategoryWithChildren($category)
     {
-        // প্রথমে সব child category delete
         foreach ($category->children as $child) {
             $this->deleteCategoryWithChildren($child);
         }
 
-        // এই ক্যাটাগরির products delete
-        $category->products()->delete();
+        // Products collect করো
+        $products = $category->products;
+
+        foreach ($products as $product) {
+            // আগে carts delete
+            $product->carts()->delete();
+
+            // তারপর product delete
+            $product->delete();
+        }
 
         // শেষে category delete
         $category->delete();
     }
-
-
 
 
     public function toggleShowInNavbar($id)

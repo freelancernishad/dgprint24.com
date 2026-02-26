@@ -83,4 +83,11 @@ class Product extends Model
     {
         return $this->hasMany(ProductShippingRange::class);
     }
+
+
+    public function carts()
+{
+    return $this->hasMany(Cart::class);
+}
+
 }
