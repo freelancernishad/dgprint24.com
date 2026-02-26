@@ -198,26 +198,60 @@ public function store(Request $request)
      * Remove the specified resource from storage.
      * ক্যাটাগরি ডিলিট করা।
      */
+    // public function destroy(Category $category)
+    // {
+    //     // চেক করুন এই ক্যাটাগরিতে কোনো প্রোডাক্ট আছে কিনা
+    //     if ($category->products()->exists()) {
+    //         return response()->json([
+    //             'error' => 'Cannot delete category because it has associated products.'
+    //         ], 409); // 409 Conflict স্ট্যাটাস কোড
+    //     }
+
+    //     // চেক করুন এই ক্যাটাগরির অধীনে কোনো সাব-ক্যাটাগরি আছে কিনা
+    //     if ($category->children()->exists()) {
+    //         return response()->json([
+    //             'error' => 'Cannot delete category because it has sub-categories.'
+    //         ], 409);
+    //     }
+
+
+    //     $category->delete();
+
+    //     return response()->json(null, 204);
+    // }
+
+
+
+
+
     public function destroy(Category $category)
     {
-        // চেক করুন এই ক্যাটাগরিতে কোনো প্রোডাক্ট আছে কিনা
-        if ($category->products()->exists()) {
-            return response()->json([
-                'error' => 'Cannot delete category because it has associated products.'
-            ], 409); // 409 Conflict স্ট্যাটাস কোড
-        }
+        $this->deleteCategoryWithChildren($category);
 
-        // চেক করুন এই ক্যাটাগরির অধীনে কোনো সাব-ক্যাটাগরি আছে কিনা
-        if ($category->children()->exists()) {
-            return response()->json([
-                'error' => 'Cannot delete category because it has sub-categories.'
-            ], 409);
-        }
-
-        $category->delete();
-
-        return response()->json(null, 204);
+        return response()->json([
+            'message' => 'Category, subcategories and all products deleted successfully.'
+        ], 200);
     }
+
+
+    /**
+     * Recursive delete function
+     */
+    private function deleteCategoryWithChildren($category)
+    {
+        // প্রথমে সব child category delete
+        foreach ($category->children as $child) {
+            $this->deleteCategoryWithChildren($child);
+        }
+
+        // এই ক্যাটাগরির products delete
+        $category->products()->delete();
+
+        // শেষে category delete
+        $category->delete();
+    }
+
+
 
 
     public function toggleShowInNavbar($id)
