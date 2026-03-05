@@ -111,6 +111,7 @@ class CartItemResource extends JsonResource
                     'city' => $addr['city'] ?? '',
                     'state' => $addr['state'] ?? '',
                     'zip' => $addr['zip_code'] ?? $addr['zip'] ?? '',
+                    'country' => $addr['country'] ?? $addr['country_code'] ?? '',
                     'company' => $addr['company'] ?? '',
                     'phone' => $addr['phone_number'] ?? $addr['phone'] ?? '',
                 ],
