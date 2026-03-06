@@ -20,6 +20,7 @@ class Category extends Model
         'tags',
         'active',
         'show_in_navbar',
+        'serial',
     ];
 
     // JSON কাস্টিং যোগ করুন

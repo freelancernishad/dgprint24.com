@@ -19,7 +19,8 @@ class AdminCategoryController extends Controller
     {
         $categories = Category::with('parent', 'children')
             ->whereNull('parent_id') // parent_id NULL বাদ
-            ->orderBy('name')
+            ->orderBy('serial', 'asc')
+            ->orderBy('id', 'desc')
             ->paginate(50);
 
         return response()->json($categories);
@@ -40,6 +41,7 @@ public function store(Request $request)
         'tags' => 'nullable|array',
         'active' => 'nullable',
         'parent_id' => 'nullable|exists:categories,id',
+        'serial' => 'nullable|integer',
     ]);
 
     if ($validator->fails()) {
@@ -88,6 +90,13 @@ public function store(Request $request)
     }
 
     // Create category
+    $parentId = $validatedData['parent_id'] ?? null;
+    $serial = $validatedData['serial'] ?? null;
+
+    if ($serial === null) {
+        $serial = Category::where('parent_id', $parentId)->max('serial') + 1;
+    }
+
     $category = Category::create([
         'name' => $validatedData['name'],
         'category_description' => $validatedData['categoryDescription'] ?? null,
@@ -95,7 +104,8 @@ public function store(Request $request)
         'variants' => $variants,
         'tags' => $validatedData['tags'] ?? [],
         'active' => $activeStatus,
-        'parent_id' => $validatedData['parent_id'] ?? null,
+        'parent_id' => $parentId,
+        'serial' => $serial,
     ]);
 
     return response()->json($category, 201);
@@ -122,6 +132,7 @@ public function store(Request $request)
         'tags' => 'nullable|array',
         'active' => 'nullable',
         'parent_id' => ['nullable', 'exists:categories,id', 'not_in:' . $category->id],
+        'serial' => 'nullable|integer',
     ]);
 
     if ($validator->fails()) {
@@ -178,6 +189,7 @@ public function store(Request $request)
         'tags' => $validatedData['tags'] ?? $category->tags,
         'active' => $activeStatus,
         'parent_id' => $validatedData['parent_id'] ?? $category->parent_id,
+        'serial' => $validatedData['serial'] ?? $category->serial,
     ]);
 
     return response()->json($category);
@@ -265,6 +277,57 @@ public function store(Request $request)
         return response()->json([
             'success' => true,
             'message' => 'Category navbar visibility updated successfully!',
+            'data' => $category
+        ]);
+    }
+
+
+    public function toggleStatus($id)
+    {
+        $category = Category::findOrFail($id);
+        $category->active = !$category->active;
+        $category->save();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Category status updated successfully!',
+            'data' => $category
+        ]);
+    }
+
+    public function updateSerial(Request $request, $id)
+    {
+        $request->validate([
+            'newSerial' => 'required|integer|min:1'
+        ]);
+
+        $category = Category::findOrFail($id);
+        $oldSerial = $category->serial;
+        $newSerial = $request->newSerial;
+        $parentId = $category->parent_id;
+
+        if ($oldSerial == $newSerial) {
+            return response()->json(['message' => 'Serial is already the same.'], 200);
+        }
+
+        if ($oldSerial < $newSerial) {
+            // Moving down (e.g., 2 to 5): Shift 3, 4, 5 to 2, 3, 4
+            Category::where('parent_id', $parentId)
+                ->whereBetween('serial', [$oldSerial + 1, $newSerial])
+                ->decrement('serial');
+        } else {
+            // Moving up (e.g., 5 to 2): Shift 2, 3, 4 to 3, 4, 5
+            Category::where('parent_id', $parentId)
+                ->whereBetween('serial', [$newSerial, $oldSerial - 1])
+                ->increment('serial');
+        }
+
+        $category->serial = $newSerial;
+        $category->save();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Category serial updated and others shifted successfully!',
             'data' => $category
         ]);
     }

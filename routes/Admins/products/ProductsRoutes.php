@@ -38,6 +38,8 @@ Route::prefix('admin')->middleware(AuthenticateAdmin::class)->group(function () 
     Route::delete('categories/{category}', [AdminCategoryController::class, 'destroy']); // Delete category
 
     Route::patch('categories/{id}/toggle-navbar', [AdminCategoryController::class, 'toggleShowInNavbar']); // Toggle navbar visibility
+    Route::patch('categories/{id}/toggle-status', [AdminCategoryController::class, 'toggleStatus']); // Toggle active status
+    Route::patch('categories/{id}/update-serial', [AdminCategoryController::class, 'updateSerial']); // Update serial with shifting logic
 
 
     /*

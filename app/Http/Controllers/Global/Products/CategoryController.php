@@ -17,17 +17,20 @@ class CategoryController extends Controller
     public function index()
     {
         $categories = Category::with('children:id,name,parent_id,category_id')
-        ->whereNotNull('parent_id')
-            // ->where('parent_id', null) // শুধুমাত্র রুট লেভেলের ক্যাটাগরি নিচ্ছি
+            ->whereNotNull('parent_id')
             ->where('active', true) // শুধুমাত্র অ্যাকটিভ ক্যাটাগরি
-            ->select('id',         'name',
-        'category_id',
-        'parent_id',
-        'category_description',
-        'category_image',
-        'variants',
-        'tags',
-        'active')
+            ->select(
+                'id',
+                'name',
+                'category_id',
+                'parent_id',
+                'category_description',
+                'category_image',
+                'variants',
+                'tags',
+                'active'
+            )
+            ->orderBy('serial', 'asc')
             ->orderBy('id', 'desc')
             ->get();
 
@@ -66,6 +69,7 @@ class CategoryController extends Controller
                 'tags',
                 'active'
             )
+            ->orderBy('serial', 'asc')
             ->orderBy('id', 'desc')
             ->get();
 
@@ -82,8 +86,9 @@ class CategoryController extends Controller
     public function flatList()
     {
         $categories = Category::where('active', true)
-            ->select('id', 'name', 'category_id', 'parent_id')
-            ->orderBy('name')
+            ->select('id', 'name', 'category_id', 'parent_id', 'serial')
+            ->orderBy('serial', 'asc')
+            ->orderBy('id', 'desc')
             ->get();
 
         return response()->json($categories);
@@ -112,8 +117,11 @@ class CategoryController extends Controller
      */
     public function getNavbarCategories()
     {
-        // Find all categories where the 'show_in_navbar' column is true
-        $categories = Category::where('show_in_navbar', true)->get();
+        // Find all categories where the 'show_in_navbar' column is true and it's active
+        $categories = Category::where('show_in_navbar', true)
+            ->where('active', true)
+            ->orderBy('serial', 'asc')
+            ->get();
 
         // Return the list of categories as a JSON response
         return response()->json([
@@ -136,25 +144,30 @@ class CategoryController extends Controller
         if($type=='all'){
 
             // Find all categories where the 'show_in_navbar' column is true
-            $categories = Category::whereNull('parent_id')->with(['products' => function($query) {
-                $query->select('id', 'product_id', 'product_name','category_id');
-            },'children.products' => function($query) {
-                $query->select('id', 'product_id', 'product_name','category_id');
-            }])
-            ->select('id', 'category_id', 'name', 'category_image','parent_id')
-            ->get();
+            $categories = Category::whereNull('parent_id')
+                ->where('active', true)
+                ->with(['products' => function ($query) {
+                    $query->select('id', 'product_id', 'product_name', 'category_id')->where('active', true);
+                }, 'children.products' => function ($query) {
+                    $query->select('id', 'product_id', 'product_name', 'category_id')->where('active', true);
+                }])
+                ->select('id', 'category_id', 'name', 'category_image', 'parent_id', 'serial')
+                ->orderBy('serial', 'asc')
+                ->get();
 
 
         }else{
             // Find all categories where the 'show_in_navbar' column is true
-            $categories = Category::with(['products' => function($query) {
-                $query->select('id', 'product_id', 'product_name','category_id');
-            },'children.products' => function($query) {
-                $query->select('id', 'product_id', 'product_name','category_id');
+            $categories = Category::with(['products' => function ($query) {
+                $query->select('id', 'product_id', 'product_name', 'category_id')->where('active', true);
+            }, 'children.products' => function ($query) {
+                $query->select('id', 'product_id', 'product_name', 'category_id')->where('active', true);
             }])
-            ->where('show_in_navbar', true)
-            ->select('id', 'category_id', 'name', 'category_image')
-            ->get();
+                ->where('show_in_navbar', true)
+                ->where('active', true)
+                ->select('id', 'category_id', 'name', 'category_image', 'serial')
+                ->orderBy('serial', 'asc')
+                ->get();
         }
 
 
