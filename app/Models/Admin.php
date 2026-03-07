@@ -65,6 +65,7 @@ class Admin extends Authenticatable implements JWTSubject, MustVerifyEmail
     {
         return [
             'id' => $this->id,
+            'user_id' => $this->id,
             'name' => $this->name,
             'email' => $this->email,
             'username' => $this->username,
