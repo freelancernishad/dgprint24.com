@@ -9,6 +9,8 @@ use Illuminate\Validation\Rule;
 use App\Http\Controllers\Controller;
 use App\Services\FileSystem\FileUploadService;
 
+use Illuminate\Support\Facades\DB;
+
 class AdminCategoryController extends Controller
 {
     /**
@@ -31,85 +33,85 @@ class AdminCategoryController extends Controller
      * Store a newly created resource in storage.
      * নতুন ক্যাটাগরি তৈরি করা।
      */
-public function store(Request $request)
-{
-    $validator = validator($request->all(), [
-        'name' => 'required|string|max:255|unique:categories,name',
-        'categoryDescription' => 'nullable|string',
-        'catagoryImage' => 'nullable|file|mimes:jpeg,jpg,png,gif,bmp,webp,svg,tiff,ico',
-        'varients' => 'nullable',
-        'tags' => 'nullable|array',
-        'active' => 'nullable',
-        'parent_id' => 'nullable|exists:categories,id',
-        'serial' => 'nullable|integer',
-    ]);
+    public function store(Request $request)
+    {
+        $validator = validator($request->all(), [
+            'name' => 'required|string|max:255|unique:categories,name',
+            'categoryDescription' => 'nullable|string',
+            'catagoryImage' => 'nullable|file|mimes:jpeg,jpg,png,gif,bmp,webp,svg,tiff,ico',
+            'varients' => 'nullable',
+            'tags' => 'nullable|array',
+            'active' => 'nullable',
+            'parent_id' => 'nullable|exists:categories,id',
+            'serial' => 'nullable|integer',
+        ]);
 
-    if ($validator->fails()) {
-        return response()->json(['errors' => $validator->errors()], 422);
-    }
-
-    $validatedData = $validator->validated();
-
-    $categoryImageUrl = null;
-
-    // Upload category image to S3
-    if ($request->hasFile('catagoryImage')) {
-        $file = $request->file('catagoryImage');
-        $filename = time() . '_' . $file->getClientOriginalName();
-        $label = 'category';
-
-        $categoryImageUrl = (new FileUploadService())->uploadFileToS3(
-            $file,
-            'dgprint24/uploads/images/category/' . $label . '_' . $filename
-        );
-    }
-
-    // Active status
-    $activeStatus = !empty($validatedData['active']);
-
-    // Handle variants (string or array)
-    $variants = $validatedData['varients'] ?? [];
-
-    if (is_string($variants)) {
-        $decoded = json_decode($variants, true);
-
-        if (json_last_error() === JSON_ERROR_NONE && is_array($decoded)) {
-
-            // Replace " with inch symbol ″ everywhere
-            array_walk_recursive($decoded, function (&$item) {
-                if (is_string($item)) {
-                    // convert " → ″
-                    $item = str_replace('"', '″', $item);
-                }
-            });
-
-            $variants = $decoded;
-        } else {
-            $variants = [];
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 422);
         }
+
+        $validatedData = $validator->validated();
+
+        $categoryImageUrl = null;
+
+        // Upload category image to S3
+        if ($request->hasFile('catagoryImage')) {
+            $file = $request->file('catagoryImage');
+            $filename = time() . '_' . $file->getClientOriginalName();
+            $label = 'category';
+
+            $categoryImageUrl = (new FileUploadService())->uploadFileToS3(
+                $file,
+                'dgprint24/uploads/images/category/' . $label . '_' . $filename
+            );
+        }
+
+        // Active status
+        $activeStatus = !empty($validatedData['active']);
+
+        // Handle variants (string or array)
+        $variants = $validatedData['varients'] ?? [];
+
+        if (is_string($variants)) {
+            $decoded = json_decode($variants, true);
+
+            if (json_last_error() === JSON_ERROR_NONE && is_array($decoded)) {
+
+                // Replace " with inch symbol ″ everywhere
+                array_walk_recursive($decoded, function (&$item) {
+                    if (is_string($item)) {
+                        // convert " → ″
+                        $item = str_replace('"', '″', $item);
+                    }
+                });
+
+                $variants = $decoded;
+            } else {
+                $variants = [];
+            }
+        }
+
+        // Create category
+        $parentId = $validatedData['parent_id'] ?? null;
+        $serial = $validatedData['serial'] ?? null;
+
+        if ($serial === null) {
+            $serial = Category::where('parent_id', $parentId)->max('serial') + 1;
+        }
+
+        $category = Category::create([
+            'name' => $validatedData['name'],
+            'category_description' => $validatedData['categoryDescription'] ?? null,
+            'category_image' => $categoryImageUrl,
+            'variants' => $variants,
+            'tags' => $validatedData['tags'] ?? [],
+            'active' => $activeStatus,
+            'parent_id' => $parentId,
+            'serial' => $serial,
+        ]);
+
+        return response()->json($category, 201);
     }
-
-    // Create category
-    $parentId = $validatedData['parent_id'] ?? null;
-    $serial = $validatedData['serial'] ?? null;
-
-    if ($serial === null) {
-        $serial = Category::where('parent_id', $parentId)->max('serial') + 1;
-    }
-
-    $category = Category::create([
-        'name' => $validatedData['name'],
-        'category_description' => $validatedData['categoryDescription'] ?? null,
-        'category_image' => $categoryImageUrl,
-        'variants' => $variants,
-        'tags' => $validatedData['tags'] ?? [],
-        'active' => $activeStatus,
-        'parent_id' => $parentId,
-        'serial' => $serial,
-    ]);
-
-    return response()->json($category, 201);
-}
 
 
 
@@ -117,83 +119,83 @@ public function store(Request $request)
      * Update the specified resource in storage.
      * কোনো ক্যাটাগরির নাম বা প্যারেন্ট পরিবর্তন করা।
      */
-  public function update(Request $request, Category $category)
-{
-    $validator = validator($request->all(), [
-        'name' => [
-            'nullable',
-            'string',
-            'max:255',
-            Rule::unique('categories', 'name')->ignore($category->id),
-        ],
-        'categoryDescription' => 'nullable|string',
-        'catagoryImage' => 'nullable|file|mimes:jpeg,jpg,png,gif,bmp,webp,svg,tiff,ico',
-        'varients' => 'nullable',
-        'tags' => 'nullable|array',
-        'active' => 'nullable',
-        'parent_id' => ['nullable', 'exists:categories,id', 'not_in:' . $category->id],
-        'serial' => 'nullable|integer',
-    ]);
+    public function update(Request $request, Category $category)
+    {
+        $validator = validator($request->all(), [
+            'name' => [
+                'nullable',
+                'string',
+                'max:255',
+                Rule::unique('categories', 'name')->ignore($category->id),
+            ],
+            'categoryDescription' => 'nullable|string',
+            'catagoryImage' => 'nullable|file|mimes:jpeg,jpg,png,gif,bmp,webp,svg,tiff,ico',
+            'varients' => 'nullable',
+            'tags' => 'nullable|array',
+            'active' => 'nullable',
+            'parent_id' => ['nullable', 'exists:categories,id', 'not_in:' . $category->id],
+            'serial' => 'nullable|integer',
+        ]);
 
-    if ($validator->fails()) {
-        return response()->json(['errors' => $validator->errors()], 422);
-    }
-
-    $validatedData = $validator->validated();
-
-    // Image upload
-    $categoryImageUrl = $category->category_image;
-    if ($request->hasFile('catagoryImage')) {
-        $file = $request->file('catagoryImage');
-        $filename = time() . '_' . $file->getClientOriginalName();
-        $label = 'category';
-
-        $categoryImageUrl = (new FileUploadService())->uploadFileToS3(
-            $file,
-            'dgprint24/uploads/images/category/' . $label . '_' . $filename
-        );
-    }
-
-    // Active status
-    $activeStatus = array_key_exists('active', $validatedData)
-        ? !empty($validatedData['active'])
-        : $category->active;
-
-    // ===== Handle variants EXACTLY like store() =====
-    $variants = $validatedData['varients'] ?? $category->variants;
-
-    if (is_string($variants)) {
-        $decoded = json_decode($variants, true);
-
-        if (json_last_error() === JSON_ERROR_NONE && is_array($decoded)) {
-
-            // Replace " → ″
-            array_walk_recursive($decoded, function (&$item) {
-                if (is_string($item)) {
-                    $item = str_replace('"', '″', $item);
-                }
-            });
-
-            $variants = $decoded;
-        } else {
-            $variants = $category->variants;
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 422);
         }
+
+        $validatedData = $validator->validated();
+
+        // Image upload
+        $categoryImageUrl = $category->category_image;
+        if ($request->hasFile('catagoryImage')) {
+            $file = $request->file('catagoryImage');
+            $filename = time() . '_' . $file->getClientOriginalName();
+            $label = 'category';
+
+            $categoryImageUrl = (new FileUploadService())->uploadFileToS3(
+                $file,
+                'dgprint24/uploads/images/category/' . $label . '_' . $filename
+            );
+        }
+
+        // Active status
+        $activeStatus = array_key_exists('active', $validatedData)
+            ? !empty($validatedData['active'])
+            : $category->active;
+
+        // ===== Handle variants EXACTLY like store() =====
+        $variants = $validatedData['varients'] ?? $category->variants;
+
+        if (is_string($variants)) {
+            $decoded = json_decode($variants, true);
+
+            if (json_last_error() === JSON_ERROR_NONE && is_array($decoded)) {
+
+                // Replace " → ″
+                array_walk_recursive($decoded, function (&$item) {
+                    if (is_string($item)) {
+                        $item = str_replace('"', '″', $item);
+                    }
+                });
+
+                $variants = $decoded;
+            } else {
+                $variants = $category->variants;
+            }
+        }
+
+        // Update category
+        $category->update([
+            'name' => $validatedData['name'] ?? $category->name,
+            'category_description' => $validatedData['categoryDescription'] ?? $category->category_description,
+            'category_image' => $categoryImageUrl,
+            'variants' => $variants,
+            'tags' => $validatedData['tags'] ?? $category->tags,
+            'active' => $activeStatus,
+            'parent_id' => $validatedData['parent_id'] ?? $category->parent_id,
+            'serial' => $validatedData['serial'] ?? $category->serial,
+        ]);
+
+        return response()->json($category);
     }
-
-    // Update category
-    $category->update([
-        'name' => $validatedData['name'] ?? $category->name,
-        'category_description' => $validatedData['categoryDescription'] ?? $category->category_description,
-        'category_image' => $categoryImageUrl,
-        'variants' => $variants,
-        'tags' => $validatedData['tags'] ?? $category->tags,
-        'active' => $activeStatus,
-        'parent_id' => $validatedData['parent_id'] ?? $category->parent_id,
-        'serial' => $validatedData['serial'] ?? $category->serial,
-    ]);
-
-    return response()->json($category);
-}
 
 
     /**
@@ -303,27 +305,28 @@ public function store(Request $request)
 
         $category = Category::findOrFail($id);
         $oldSerial = $category->serial;
-        $newSerial = $request->newSerial;
+        $newSerial = (int) $request->newSerial;
         $parentId = $category->parent_id;
 
-        if ($oldSerial == $newSerial) {
-            return response()->json(['message' => 'Serial is already the same.'], 200);
-        }
+        DB::transaction(function () use ($category, $oldSerial, $newSerial, $parentId) {
+            // ১. আগের পজিশন থেকে গ্যাপ কমানো (যদি আগে কোনো সিরিয়াল ছিল)
+            if ($oldSerial !== null) {
+                Category::where('parent_id', $parentId)
+                    ->where('id', '!=', $category->id)
+                    ->where('serial', '>', $oldSerial)
+                    ->decrement('serial');
+            }
 
-        if ($oldSerial < $newSerial) {
-            // Moving down (e.g., 2 to 5): Shift 3, 4, 5 to 2, 3, 4
+            // ২. নতুন পজিশনের জন্য জায়গা তৈরি করা (পজিশনের পরের সবগুলোকে এক বাড়িয়ে দেয়া)
             Category::where('parent_id', $parentId)
-                ->whereBetween('serial', [$oldSerial + 1, $newSerial])
-                ->decrement('serial');
-        } else {
-            // Moving up (e.g., 5 to 2): Shift 2, 3, 4 to 3, 4, 5
-            Category::where('parent_id', $parentId)
-                ->whereBetween('serial', [$newSerial, $oldSerial - 1])
+                ->where('id', '!=', $category->id)
+                ->where('serial', '>=', $newSerial)
                 ->increment('serial');
-        }
 
-        $category->serial = $newSerial;
-        $category->save();
+            // ৩. বর্তমান ক্যাটাগরির সিরিয়াল আপডেট করা
+            $category->serial = $newSerial;
+            $category->save();
+        });
 
         return response()->json([
             'success' => true,
@@ -331,6 +334,4 @@ public function store(Request $request)
             'data' => $category
         ]);
     }
-
-
 }
