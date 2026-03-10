@@ -21,6 +21,7 @@ use App\Http\Controllers\Admin\Subscriptions\PlanSubscriptionsController;
 | All admin-related routes—Category, Product, Shipping, Tax, Turnaround Time.
 | These routes require admin authentication and use the URL prefix "admin".
 */
+
 Route::prefix('admin')->middleware(AuthenticateAdmin::class)->group(function () {
 
     /*
@@ -106,7 +107,6 @@ Route::prefix('admin')->middleware(AuthenticateAdmin::class)->group(function () 
     | Using apiResource for full REST functionality.
     */
     Route::apiResource('taxes', TaxController::class);
-
 }); // End Admin Group
 
 
@@ -137,3 +137,6 @@ Route::post('/product/{productId}/price', [ProductController::class, 'getPrice']
 // tax price route
 Route::get('/taxes/price', [TaxController::class, 'getTaxByLocation']);
 Route::post('/taxes/price', [TaxController::class, 'getTaxByLocation']);
+
+// Image metadata route
+Route::post('/image/metadata', [\App\Http\Controllers\Global\ImageMetadataController::class, 'getMetadata']);
