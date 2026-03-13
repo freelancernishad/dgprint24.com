@@ -49,7 +49,7 @@ class CartController extends Controller
     public function getFormatedCartItems(Request $request)
     {
         $token = $request->bearerToken();
-       $authUser =  ExternalTokenVerify::verifyExternalToken($token);
+        $authUser =  ExternalTokenVerify::verifyExternalToken($token);
 
         if ($authUser) {
             $userId = $authUser->id ?? $this->sessionId;
@@ -102,7 +102,8 @@ class CartController extends Controller
 
         return new CartCollection($cartItems);
         return response()->json($formattedItems);
-    }  /**
+    }
+    /**
      * View all cart items (for user or guest)
      */
     public function index(Request $request)
@@ -111,7 +112,7 @@ class CartController extends Controller
 
 
         $token = $request->bearerToken();
-       $authUser =  ExternalTokenVerify::verifyExternalToken($token);
+        $authUser =  ExternalTokenVerify::verifyExternalToken($token);
 
 
 
@@ -339,7 +340,7 @@ class CartController extends Controller
         // ================================
         $setsRaw = $request->input('sets', []); // expect e.g. ["set one", "set two "]
 
-        $normalizedSets = array_values(array_filter(array_map(function($s) {
+        $normalizedSets = array_values(array_filter(array_map(function ($s) {
             if (!is_string($s)) return null;
             return trim($s);
         }, $setsRaw)));
@@ -386,7 +387,7 @@ class CartController extends Controller
                     $turnaround_priceByCount = (float) ($data["breakdown"]["turnaround_price"] ?? 0) * $setCount;
                     $shipping_priceByCount = (float) ($data["breakdown"]["shipping_price"] ?? 0);
 
-                    $jobSamplePriceByCount =  $jobSamplePrice* $setCount;
+                    $jobSamplePriceByCount =  $jobSamplePrice * $setCount;
                     $extraOptionsWithQuantityPrice = $extraOptionsWithQuantity * $setCount;
 
                     $subtotalBeforeTaxByCount = $final_price_without_turnaroundByCount + $turnaround_priceByCount + $shipping_priceByCount + $jobSamplePriceByCount + $extraOptionsWithQuantityPrice;
@@ -394,7 +395,6 @@ class CartController extends Controller
 
 
                     $taxPrice = round(($subtotalBeforeTaxByCount * $taxPercentage) / 100, 2);
-
                 }
             }
         }
@@ -441,12 +441,12 @@ class CartController extends Controller
         // find existing cart item (compare options + sets + project_name + extra_selected_options + job/digital flags)
         // ================================
         $cartQuery = Cart::where(function ($query) use ($userId, $sessionId) {
-                if ($userId) {
-                    $query->where("user_id", $userId);
-                } else {
-                    $query->where("session_id", $sessionId);
-                }
-            })
+            if ($userId) {
+                $query->where("user_id", $userId);
+            } else {
+                $query->where("session_id", $sessionId);
+            }
+        })
             ->where("product_id", $product->id)
             ->where("status", "pending");
 
@@ -454,7 +454,7 @@ class CartController extends Controller
         if (!empty($request->options)) {
             $cartQuery->where('options', json_encode($request->options));
         } else {
-            $cartQuery->where(function($q){
+            $cartQuery->where(function ($q) {
                 $q->whereNull('options')->orWhere('options', json_encode([]));
             });
         }
@@ -467,7 +467,7 @@ class CartController extends Controller
         if ($projectName !== null) {
             $cartQuery->where('project_name', $projectName);
         } else {
-            $cartQuery->where(function($q) {
+            $cartQuery->where(function ($q) {
                 $q->whereNull('project_name')->orWhere('project_name', '');
             });
         }
@@ -477,7 +477,7 @@ class CartController extends Controller
             $extrasJson = json_encode($normalizedExtras);
             $cartQuery->where('extra_selected_options', $extrasJson);
         } else {
-            $cartQuery->where(function($q) {
+            $cartQuery->where(function ($q) {
                 $q->whereNull('extra_selected_options')->orWhere('extra_selected_options', json_encode([]));
             });
         }
@@ -497,72 +497,72 @@ class CartController extends Controller
 
         $cartItem = $cartQuery->first();
 
-        if ($cartItem) {
-            // ৭. যদি আইটেম আগে থেকেই থাকে, পরিমাণ ও মূল্য আপডেট করা
-            $cartItem->quantity += $request->quantity;
-            $cartItem->price_at_time = $verifiedPrice;
-            $cartItem->price_breakdown = $priceBreakdown;
-            $cartItem->turnarounds = $selected_turnaround;
-            $cartItem->shippings = $selected_shipping;
-            $cartItem->delivery_address = $request->delivery_address ?? null;
-            $cartItem->tax_id = $taxModel ? $taxModel->id : null;
-            $cartItem->tax_price = $taxPrice;
-            $cartItem->sets = $normalizedSets;   // saved as JSON
-            $cartItem->set_count = $setCount;
-            $cartItem->project_name = $projectName; // NEW
-            $cartItem->extra_selected_options = $normalizedExtras; // NEW
-            $cartItem->files = $normalizedFiles;
-            $cartItem->height = $request->height ?? null;
-            $cartItem->width = $request->width ?? null;
-            $cartItem->discount_or_add = $discount_or_add_defarence ?? 0;
-            $cartItem->discount_or_add_text = $discount_or_add_text ?? null;
+        // if ($cartItem) {
+        //     // ৭. যদি আইটেম আগে থেকেই থাকে, পরিমাণ ও মূল্য আপডেট করা
+        //     $cartItem->quantity += $request->quantity;
+        //     $cartItem->price_at_time = $verifiedPrice;
+        //     $cartItem->price_breakdown = $priceBreakdown;
+        //     $cartItem->turnarounds = $selected_turnaround;
+        //     $cartItem->shippings = $selected_shipping;
+        //     $cartItem->delivery_address = $request->delivery_address ?? null;
+        //     $cartItem->tax_id = $taxModel ? $taxModel->id : null;
+        //     $cartItem->tax_price = $taxPrice;
+        //     $cartItem->sets = $normalizedSets;   // saved as JSON
+        //     $cartItem->set_count = $setCount;
+        //     $cartItem->project_name = $projectName; // NEW
+        //     $cartItem->extra_selected_options = $normalizedExtras; // NEW
+        //     $cartItem->files = $normalizedFiles;
+        //     $cartItem->height = $request->height ?? null;
+        //     $cartItem->width = $request->width ?? null;
+        //     $cartItem->discount_or_add = $discount_or_add_defarence ?? 0;
+        //     $cartItem->discount_or_add_text = $discount_or_add_text ?? null;
 
-            // NEW: save job/digital prices & flags
-            $cartItem->job_sample_price = $jobSamplePrice;
-            $cartItem->digital_proof_price = $digitalProofPrice;
+        //     // NEW: save job/digital prices & flags
+        //     $cartItem->job_sample_price = $jobSamplePrice;
+        //     $cartItem->digital_proof_price = $digitalProofPrice;
 
-            $cartItem->job_sample = $jobSampleFlag;
-            $cartItem->digital_proof = $digitalProofFlag;
-            $cartItem->note = $request->note ?? null;
+        //     $cartItem->job_sample = $jobSampleFlag;
+        //     $cartItem->digital_proof = $digitalProofFlag;
+        //     $cartItem->note = $request->note ?? null;
 
-            $cartItem->save();
-        } else {
-            // ৮. নতুন কার্ট আইটেম তৈরি
-            $cartItem = Cart::create([
-                "user_id" => $userId,
-                "session_id" => $sessionId,
-                "product_id" => $product->id,
-                "quantity" => $request->quantity,
-                "price_at_time" => $verifiedPrice,
-                "options" => $request->options ?? null,
-                "price_breakdown" => $priceBreakdown,
-                "turnarounds" => $selected_turnaround,
-                "shippings" => $selected_shipping,
-                "delivery_address" => $request->delivery_address ?? null,
-                "width" => $request->width ?? null,
-                "height" => $request->height ?? null,
-                "discount_or_add" => $discount_or_add_defarence ?? 0,
-                "discount_or_add_text" => $discount_or_add_text ?? null,
-                "status" => "pending",
-                "tax_id" => $taxModel ? $taxModel->id : null,
-                "tax_price" => $taxPrice,
-                "sets" => $normalizedSets, // JSON array
-                "set_count" => $setCount,
-                "project_name" => $projectName, // NEW
-                "extra_selected_options" => $normalizedExtras, // NEW
-                "files" => $normalizedFiles, // NEW
+        //     $cartItem->save();
+        // } else {
+        // ৮. নতুন কার্ট আইটেম তৈরি
+        $cartItem = Cart::create([
+            "user_id" => $userId,
+            "session_id" => $sessionId,
+            "product_id" => $product->id,
+            "quantity" => $request->quantity,
+            "price_at_time" => $verifiedPrice,
+            "options" => $request->options ?? null,
+            "price_breakdown" => $priceBreakdown,
+            "turnarounds" => $selected_turnaround,
+            "shippings" => $selected_shipping,
+            "delivery_address" => $request->delivery_address ?? null,
+            "width" => $request->width ?? null,
+            "height" => $request->height ?? null,
+            "discount_or_add" => $discount_or_add_defarence ?? 0,
+            "discount_or_add_text" => $discount_or_add_text ?? null,
+            "status" => "pending",
+            "tax_id" => $taxModel ? $taxModel->id : null,
+            "tax_price" => $taxPrice,
+            "sets" => $normalizedSets, // JSON array
+            "set_count" => $setCount,
+            "project_name" => $projectName, // NEW
+            "extra_selected_options" => $normalizedExtras, // NEW
+            "files" => $normalizedFiles, // NEW
 
-                // NEW: job/digital prices & flags
-                "job_sample_price" => $jobSamplePrice,
-                "digital_proof_price" => $digitalProofPrice,
-                "job_sample" => $jobSampleFlag,
-                "digital_proof" => $digitalProofFlag,
-                "note" => $request->note ?? null,
-            ]);
-        }
+            // NEW: job/digital prices & flags
+            "job_sample_price" => $jobSamplePrice,
+            "digital_proof_price" => $digitalProofPrice,
+            "job_sample" => $jobSampleFlag,
+            "digital_proof" => $digitalProofFlag,
+            "note" => $request->note ?? null,
+        ]);
+        // }
 
         // রিফ্রেশ করে নতুন ডেটা পাঠানো ভাল
-        $cartItem->refresh();
+        // $cartItem->refresh();
 
         return response()->json([
             "message" => "Item added to cart successfully",
@@ -570,7 +570,7 @@ class CartController extends Controller
         ]);
     }
 
- public function updateFiles(Request $request, $cart_id)
+    public function updateFiles(Request $request, $cart_id)
     {
         // =========================
         // 1️⃣ Validation
@@ -636,20 +636,20 @@ class CartController extends Controller
     }
 
 
-protected function decodeJwtPayloadUnsafe(?string $token)
-{
-    if (!$token) return null;
-    // token parts: header.payload.signature
-    $parts = explode('.', $token);
-    if (count($parts) < 2) return null;
-    $payload = $parts[1];
-    // base64url decode
-    $payload = str_replace(['-', '_'], ['+', '/'], $payload);
-    $padding = 4 - (strlen($payload) % 4);
-    if ($padding !== 4) $payload .= str_repeat('=', $padding);
-    $json = base64_decode($payload);
-    return json_decode($json, true);
-}
+    protected function decodeJwtPayloadUnsafe(?string $token)
+    {
+        if (!$token) return null;
+        // token parts: header.payload.signature
+        $parts = explode('.', $token);
+        if (count($parts) < 2) return null;
+        $payload = $parts[1];
+        // base64url decode
+        $payload = str_replace(['-', '_'], ['+', '/'], $payload);
+        $padding = 4 - (strlen($payload) % 4);
+        if ($padding !== 4) $payload .= str_repeat('=', $padding);
+        $json = base64_decode($payload);
+        return json_decode($json, true);
+    }
 
 
     /**
@@ -661,7 +661,7 @@ protected function decodeJwtPayloadUnsafe(?string $token)
             "quantity" => "required|integer|min:1",
             "options" => "nullable|array",
             "price_configuration_id" =>
-                "nullable|exists:price_configurations,id",
+            "nullable|exists:price_configurations,id",
             "shipping_id" => "nullable|exists:shippings,id",
             "turnaround_id" => "nullable|exists:turnarounds,id",
             "expected_price" => "nullable|numeric|min:0",
@@ -739,7 +739,7 @@ protected function decodeJwtPayloadUnsafe(?string $token)
                 return response()->json(
                     [
                         "error" =>
-                            "Price validation failed. The price has been updated.",
+                        "Price validation failed. The price has been updated.",
                         "calculated_price" => $calculatedPrice,
                         "expected_price" => $request->expected_price,
                     ],
@@ -867,9 +867,6 @@ protected function decodeJwtPayloadUnsafe(?string $token)
                 abort(403, "Unauthorized");
             }
         }
-
-
-
     }
 
     /**
@@ -928,7 +925,4 @@ protected function decodeJwtPayloadUnsafe(?string $token)
 
         return response()->json(["message" => "Cart items cleared for session_id: $id"]);
     }
-
-
-
 }
