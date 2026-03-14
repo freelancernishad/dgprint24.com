@@ -127,20 +127,33 @@ class ImageMetadataController extends Controller
                 // Skip signature (8 bytes)
                 fread($handle, 8);
                 while (!feof($handle)) {
-                    $length = unpack('N', fread($handle, 4))[1];
+                    $rawLength = fread($handle, 4);
+                    if ($rawLength === false || strlen($rawLength) < 4) {
+                        break;
+                    }
+                    $length = unpack('N', $rawLength)[1];
+
                     $type = fread($handle, 4);
+                    if ($type === false || strlen($type) < 4) {
+                        break;
+                    }
+
                     if ($type === 'pHYs') {
                         $data = fread($handle, $length);
-                        $pixelsPerMetreX = unpack('N', substr($data, 0, 4))[1];
-                        $pixelsPerMetreY = unpack('N', substr($data, 4, 4))[1];
-                        $unit = ord($data[8]);
-                        if ($unit === 1) { // Metre
-                            $dpi['x'] = round($pixelsPerMetreX * 0.0254);
-                            $dpi['y'] = round($pixelsPerMetreY * 0.0254);
+                        if ($data !== false && strlen($data) >= 9) {
+                            $pixelsPerMetreX = unpack('N', substr($data, 0, 4))[1];
+                            $pixelsPerMetreY = unpack('N', substr($data, 4, 4))[1];
+                            $unit = ord($data[8]);
+                            if ($unit === 1) { // Metre
+                                $dpi['x'] = round($pixelsPerMetreX * 0.0254);
+                                $dpi['y'] = round($pixelsPerMetreY * 0.0254);
+                            }
                         }
                         break;
                     }
-                    fseek($handle, $length + 4, SEEK_CUR); // Skip data + CRC
+                    if (@fseek($handle, $length + 4, SEEK_CUR) === -1) {
+                        break;
+                    }
                 }
                 fclose($handle);
             }
