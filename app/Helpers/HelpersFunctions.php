@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Helpers;
+
 use App\Models\Product;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
@@ -36,7 +37,8 @@ class HelpersFunctions
     }
 
 
-    function flattenSelectedOptions(array $options, string $prefix = ''): array {
+    function flattenSelectedOptions(array $options, string $prefix = ''): array
+    {
         $flat = [];
 
         foreach ($options as $key => $value) {
@@ -104,73 +106,73 @@ class HelpersFunctions
         if ($hasOptions) {
 
 
-        $query = PriceConfiguration::with(['shippings', 'turnarounds', 'optionsRel'])
-            ->where('product_id', $product->id);
+            $query = PriceConfiguration::with(['shippings', 'turnarounds', 'optionsRel'])
+                ->where('product_id', $product->id);
 
-        $priceConfigList = $query->get();
+            $priceConfigList = $query->get();
 
-        $filteredConfigList = collect();
+            $filteredConfigList = collect();
 
-        foreach ($priceConfigList as $config) {
+            foreach ($priceConfigList as $config) {
 
-            // Config options array বানানো (key => value)
-            $configOptions = $config->optionsRel
-                ->pluck('value', 'key')
-                ->toArray();
-
-
-                    // Decode incoming param keys
-    $rawParams = $params['options'] ?? [];
-    $paramOptions = [];
-
-    foreach ($rawParams as $key => $value) {
-        $paramOptions[ urldecode($key) ] = $value;
-    }
+                // Config options array বানানো (key => value)
+                $configOptions = $config->optionsRel
+                    ->pluck('value', 'key')
+                    ->toArray();
 
 
-            // Params options array
-            // $paramOptions = $params['options'] ?? [];
+                // Decode incoming param keys
+                $rawParams = $params['options'] ?? [];
+                $paramOptions = [];
 
-            Log::info("Config ID: {$config->id}");
-            Log::info("Config Options: " . json_encode($configOptions));
-            Log::info("Param Options: " . json_encode($paramOptions));
+                foreach ($rawParams as $key => $value) {
+                    $paramOptions[urldecode($key)] = $value;
+                }
 
-            // 100% match check → দুই array সম্পূর্ণ সমান কি না
-            if ($configOptions == $paramOptions) {
-                Log::info("✅ 100% MATCH FOUND");
-                $filteredConfigList->push($config);
-            } else {
-                Log::info("❌ Not 100% match");
+
+                // Params options array
+                // $paramOptions = $params['options'] ?? [];
+
+                Log::info("Config ID: {$config->id}");
+                Log::info("Config Options: " . json_encode($configOptions));
+                Log::info("Param Options: " . json_encode($paramOptions));
+
+                // 100% match check → দুই array সম্পূর্ণ সমান কি না
+                if ($configOptions == $paramOptions) {
+                    Log::info("✅ 100% MATCH FOUND");
+                    $filteredConfigList->push($config);
+                } else {
+                    Log::info("❌ Not 100% match");
+                }
             }
-        }
 
-        // foreach ($priceConfigList as $config) {
+            // foreach ($priceConfigList as $config) {
 
-        //     $totalOptions = $config->optionsRel->count();
-        //     $matchedOptions = $config->optionsRel->filter(function($opt) use ($params) {
-        //         return isset($params['options'][$opt->key]) && $params['options'][$opt->key] == $opt->value;
-        //     })->count();
+            //     $totalOptions = $config->optionsRel->count();
+            //     $matchedOptions = $config->optionsRel->filter(function($opt) use ($params) {
+            //         return isset($params['options'][$opt->key]) && $params['options'][$opt->key] == $opt->value;
+            //     })->count();
 
-        //     Log::info("PriceConfiguration ID: {$config->id}");
-        //     Log::info("Total Options: {$totalOptions}");
-        //     Log::info("Matched Options: {$matchedOptions}");
+            //     Log::info("PriceConfiguration ID: {$config->id}");
+            //     Log::info("Total Options: {$totalOptions}");
+            //     Log::info("Matched Options: {$matchedOptions}");
 
-        //     if ($matchedOptions === $totalOptions) {
-        //         Log::info("✅ All options match for this configuration.");
-        //         $filteredConfigList->push($config);
-        //     } else {
-        //         Log::info("❌ Not all options match.");
-        //     }
-        // }
-
+            //     if ($matchedOptions === $totalOptions) {
+            //         Log::info("✅ All options match for this configuration.");
+            //         $filteredConfigList->push($config);
+            //     } else {
+            //         Log::info("❌ Not all options match.");
+            //     }
+            // }
 
 
 
 
-        $priceConfigList = $filteredConfigList;
 
-        // প্রতিটি প্রাইস কনফিগারেশনের জন্য ডিসকাউন্ট ক্যালকুলেশন করুন
-        $priceConfigList = $priceConfigList->map(function($config) use ($quantity) {
+            $priceConfigList = $filteredConfigList;
+            $configurationId = null;
+            // প্রতিটি প্রাইস কনফিগারেশনের জন্য ডিসকাউন্ট ক্যালকুলেশন করুন
+            $priceConfigList = $priceConfigList->map(function ($config) use ($quantity) {
 
                 $originalPrice = (float)$config->price;
                 $discountAmount = (float)$config->discount;
@@ -189,9 +191,8 @@ class HelpersFunctions
             });
 
 
-            if($product_type === 'general') {
+            if ($product_type === 'general') {
                 $query->where('runsize', $quantity);
-
             }
             $priceConfig = $filteredConfigList->first();
 
@@ -246,12 +247,6 @@ class HelpersFunctions
                         break;
                     }
                 }
-
-
-
-
-
-
             }
         }
 
@@ -265,7 +260,7 @@ class HelpersFunctions
             })
             ->first();
 
-            // Log::info("Price Range for quantity {$quantity}: " . ($priceRange ? $priceRange : 'None'));
+        // Log::info("Price Range for quantity {$quantity}: " . ($priceRange ? $priceRange : 'None'));
 
         if ($priceRange) {
             if (isset($params['sq_ft'])) {
@@ -276,7 +271,7 @@ class HelpersFunctions
                     $priceConfigPrice = $priceConfig->price;
                 }
 
-                $price_per_sq_ft = $priceRange->price_per_sq_ft+$priceConfigPrice;
+                $price_per_sq_ft = $priceRange->price_per_sq_ft + $priceConfigPrice;
                 $price_for_sq_ft = $total_sq_ft * $price_per_sq_ft;
                 $price_per_sq_ft = $priceRange->price_per_sq_ft;
             }
@@ -306,20 +301,20 @@ class HelpersFunctions
 
 
 
-       if($product_type === 'general') {
+        if ($product_type === 'general') {
 
-            if($shipping_item){
+            if ($shipping_item) {
                 $selected_shipping = $shipping_item;
                 $shippingRangesPrice = $selected_shipping['price'] ?? 0;
             }
-        }else{
-            if($shipping_id){
-                    $selected_shipping = $filteredShippingRanges
+        } else {
+            if ($shipping_id) {
+                $selected_shipping = $filteredShippingRanges
                     ->pluck('shippings')
                     ->flatten(1)
                     ->firstWhere('id', $shipping_id);
 
-                    $shippingRangesPrice = $selected_shipping['price'] ?? 0;
+                $shippingRangesPrice = $selected_shipping['price'] ?? 0;
             }
         }
 
@@ -342,22 +337,21 @@ class HelpersFunctions
         $selected_turnaround = [];
         $TurnaroundRangesPrice = 0;
 
-        if($product_type === 'general') {
+        if ($product_type === 'general') {
 
-            if($turnarounds_item){
+            if ($turnarounds_item) {
                 $selected_turnaround = $turnarounds_item;
                 $TurnaroundRangesPrice = $selected_turnaround['price'] ?? 0;
             }
-        }else{
+        } else {
 
-            if($turn_around_times_id){
+            if ($turn_around_times_id) {
                 $selected_turnaround = $filteredTurnaroundRanges
-                ->pluck('turnarounds')
-                ->flatten(1)
-                ->firstWhere('id', $turn_around_times_id);
+                    ->pluck('turnarounds')
+                    ->flatten(1)
+                    ->firstWhere('id', $turn_around_times_id);
 
                 $TurnaroundRangesPrice = $selected_turnaround['price'] ?? 0;
-
             }
         }
 
@@ -386,7 +380,7 @@ class HelpersFunctions
 
 
         $TurnaroundRangesPriceIntoQuantity = round($TurnaroundRangesPrice, 2);
-        if($product_type === 'banner') {
+        if ($product_type === 'banner') {
             // $configuration_price_into_quantity_price = $configurationPrice * $quantity;
             $configuration_price_into_quantity_price = 0;
 
@@ -400,107 +394,107 @@ class HelpersFunctions
 
 
 
-// ✅ Detailed Human-Readable Calculation Breakdown
-$breakdownMessage = "------ PRICE BREAKDOWN ------\n";
-$breakdownMessage .= "🧾 Product: {$product->product_name}\n";
-$breakdownMessage .= "📦 Product Type: {$product_type}\n";
-$breakdownMessage .= "🔢 Quantity Ordered: " . number_format($quantity) . "\n";
-$breakdownMessage .= "💰 Base Price: " . number_format($configurationPrice, 2) . "\n";
+        // ✅ Detailed Human-Readable Calculation Breakdown
+        $breakdownMessage = "------ PRICE BREAKDOWN ------\n";
+        $breakdownMessage .= "🧾 Product: {$product->product_name}\n";
+        $breakdownMessage .= "📦 Product Type: {$product_type}\n";
+        $breakdownMessage .= "🔢 Quantity Ordered: " . number_format($quantity) . "\n";
+        $breakdownMessage .= "💰 Base Price: " . number_format($configurationPrice, 2) . "\n";
 
-// Configuration Price × Quantity
-if ($product_type === 'banner') {
-    $breakdownMessage .= "📦 Base Price × Quantity = " . number_format($configuration_price_into_quantity_price, 2) . "\n";
-} else {
-    $breakdownMessage .= "📦 Fixed Base Price (No Quantity Multiplier) = " . number_format($configuration_price_into_quantity_price, 2) . "\n";
-}
+        // Configuration Price × Quantity
+        if ($product_type === 'banner') {
+            $breakdownMessage .= "📦 Base Price × Quantity = " . number_format($configuration_price_into_quantity_price, 2) . "\n";
+        } else {
+            $breakdownMessage .= "📦 Fixed Base Price (No Quantity Multiplier) = " . number_format($configuration_price_into_quantity_price, 2) . "\n";
+        }
 
-// Discounts / special config (if available)
-if(!empty($priceConfigData)) {
-    if(isset($priceConfigData->discount) && $priceConfigData->discount > 0){
-        $breakdownMessage .= "💸 Discount Applied: " . number_format($priceConfigData->discount,2) . "\n";
-        $breakdownMessage .= "💰 Price After Discount: " . number_format($priceConfigData->price_after_discount,2) . "\n";
-    }
-}
+        // Discounts / special config (if available)
+        if (!empty($priceConfigData)) {
+            if (isset($priceConfigData->discount) && $priceConfigData->discount > 0) {
+                $breakdownMessage .= "💸 Discount Applied: " . number_format($priceConfigData->discount, 2) . "\n";
+                $breakdownMessage .= "💰 Price After Discount: " . number_format($priceConfigData->price_after_discount, 2) . "\n";
+            }
+        }
 
-// Sq Ft Calculation
-if (!empty($params['sq_ft']) && $total_sq_ft > 0) {
-    $breakdownMessage .= "\n📏 Sq. Ft Pricing Details:\n";
-    $breakdownMessage .= "    Total Sq Ft: " . number_format($total_sq_ft, 2) . "\n";
-    $breakdownMessage .= "    Rate per Sq Ft: " . number_format($price_per_sq_ft, 2) . "\n";
-    $breakdownMessage .= "    Total Sq Ft Price: " . number_format($price_for_sq_ft, 2) . "\n";
-    $breakdownMessage .= "    Quantity × Sq Ft Price: " . number_format($quantity_into_total_sq_ft_price, 2) . "\n";
-} else {
-    $breakdownMessage .= "\n📏 Sq. Ft pricing not applied.\n";
-}
+        // Sq Ft Calculation
+        if (!empty($params['sq_ft']) && $total_sq_ft > 0) {
+            $breakdownMessage .= "\n📏 Sq. Ft Pricing Details:\n";
+            $breakdownMessage .= "    Total Sq Ft: " . number_format($total_sq_ft, 2) . "\n";
+            $breakdownMessage .= "    Rate per Sq Ft: " . number_format($price_per_sq_ft, 2) . "\n";
+            $breakdownMessage .= "    Total Sq Ft Price: " . number_format($price_for_sq_ft, 2) . "\n";
+            $breakdownMessage .= "    Quantity × Sq Ft Price: " . number_format($quantity_into_total_sq_ft_price, 2) . "\n";
+        } else {
+            $breakdownMessage .= "\n📏 Sq. Ft pricing not applied.\n";
+        }
 
-// Final Price Summary
-$breakdownMessage .= "\n------------------------------\n";
-$breakdownMessage .= "✅ FINAL PRICE TO PAY: " . number_format($finalPrice, 2) . "\n";
-$breakdownMessage .= "------------------------------\n";
+        // Final Price Summary
+        $breakdownMessage .= "\n------------------------------\n";
+        $breakdownMessage .= "✅ FINAL PRICE TO PAY: " . number_format($finalPrice, 2) . "\n";
+        $breakdownMessage .= "------------------------------\n";
 
-// Optional: Estimated Shipping & Turnaround (if data available)
-if(isset($filteredShippingRanges) && $filteredShippingRanges->count() > 0){
-    $breakdownMessage .= "\n🚚 Applicable Shipping Options:\n";
-    foreach($filteredShippingRanges as $range){
-        $breakdownMessage .= "    - " . $range->title . ": " . number_format($range->price,2) . "\n";
-    }
-}
-if(isset($filteredTurnaroundRanges) && $filteredTurnaroundRanges->count() > 0){
-    $breakdownMessage .= "\n⏱ Applicable Turnaround Times:\n";
-    foreach($filteredTurnaroundRanges as $range){
-        $breakdownMessage .= "    - " . $range->title . ": " . $range->days . " days\n";
-    }
-}
+        // Optional: Estimated Shipping & Turnaround (if data available)
+        if (isset($filteredShippingRanges) && $filteredShippingRanges->count() > 0) {
+            $breakdownMessage .= "\n🚚 Applicable Shipping Options:\n";
+            foreach ($filteredShippingRanges as $range) {
+                $breakdownMessage .= "    - " . $range->title . ": " . number_format($range->price, 2) . "\n";
+            }
+        }
+        if (isset($filteredTurnaroundRanges) && $filteredTurnaroundRanges->count() > 0) {
+            $breakdownMessage .= "\n⏱ Applicable Turnaround Times:\n";
+            foreach ($filteredTurnaroundRanges as $range) {
+                $breakdownMessage .= "    - " . $range->title . ": " . $range->days . " days\n";
+            }
+        }
 
 
 
-$breakdown = [
-    'PriceConfigMessage' => $PriceConfigMessage,
-    'configuration_id' => $configurationId,
-    'product' => [
-        'name' => $product->product_name,
-        'type' => $product_type,
-    ],
-    'quantity' => $quantity,
-    'base_price' => round($base_price, 2),
-    'discount' => isset($priceConfigData->discount) ? round($priceConfigData->discount, 2) : 0,
-    'price_after_discount' => isset($priceConfigData->price_after_discount) ? round($priceConfigData->price_after_discount, 2) : null,
-    'configuration_price_times_quantity' => round($configuration_price_into_quantity_price, 2),
-    'sq_ft' => [
-        'total_sq_ft' => $total_sq_ft,
-        'rate_per_sq_ft' => round($price_per_sq_ft, 2),
-        'total_sq_ft_price' => round($price_for_sq_ft, 2),
-        'quantity_times_sq_ft_price' => round($quantity_into_total_sq_ft_price ?? 0, 2),
-    ],
-    'turnaround_price' => round($TurnaroundRangesPriceIntoQuantity, 2),
-    'shipping_price' => round($shippingRangesPrice, 2),
-    'final_price_without_turnaround' => round($finalPrice - $TurnaroundRangesPriceIntoQuantity-$shippingRangesPrice, 2),
-    'final_price' => round($finalPrice, 2),
-    'selected_turnaround' => $selected_turnaround,
-    'selected_shipping' => $selected_shipping,
-    'shipping_options' => [],
-    'turnaround_times' => []
-];
-
-// Shipping
-if(isset($filteredShippingRanges) && $filteredShippingRanges->count() > 0){
-    foreach($filteredShippingRanges as $range){
-        $breakdown['shipping_options'][] = [
-            'title' => $range->title,
-            'price' => round($range->price, 2)
+        $breakdown = [
+            'PriceConfigMessage' => $PriceConfigMessage,
+            'configuration_id' => $configurationId,
+            'product' => [
+                'name' => $product->product_name,
+                'type' => $product_type,
+            ],
+            'quantity' => $quantity,
+            'base_price' => round($base_price, 2),
+            'discount' => isset($priceConfigData->discount) ? round($priceConfigData->discount, 2) : 0,
+            'price_after_discount' => isset($priceConfigData->price_after_discount) ? round($priceConfigData->price_after_discount, 2) : null,
+            'configuration_price_times_quantity' => round($configuration_price_into_quantity_price, 2),
+            'sq_ft' => [
+                'total_sq_ft' => $total_sq_ft,
+                'rate_per_sq_ft' => round($price_per_sq_ft, 2),
+                'total_sq_ft_price' => round($price_for_sq_ft, 2),
+                'quantity_times_sq_ft_price' => round($quantity_into_total_sq_ft_price ?? 0, 2),
+            ],
+            'turnaround_price' => round($TurnaroundRangesPriceIntoQuantity, 2),
+            'shipping_price' => round($shippingRangesPrice, 2),
+            'final_price_without_turnaround' => round($finalPrice - $TurnaroundRangesPriceIntoQuantity - $shippingRangesPrice, 2),
+            'final_price' => round($finalPrice, 2),
+            'selected_turnaround' => $selected_turnaround,
+            'selected_shipping' => $selected_shipping,
+            'shipping_options' => [],
+            'turnaround_times' => []
         ];
-    }
-}
 
-// Turnaround
-if(isset($filteredTurnaroundRanges) && $filteredTurnaroundRanges->count() > 0){
-    foreach($filteredTurnaroundRanges as $range){
-        $breakdown['turnaround_times'][] = [
-            'title' => $range->title,
-            'days' => $range->days
-        ];
-    }
-}
+        // Shipping
+        if (isset($filteredShippingRanges) && $filteredShippingRanges->count() > 0) {
+            foreach ($filteredShippingRanges as $range) {
+                $breakdown['shipping_options'][] = [
+                    'title' => $range->title,
+                    'price' => round($range->price, 2)
+                ];
+            }
+        }
+
+        // Turnaround
+        if (isset($filteredTurnaroundRanges) && $filteredTurnaroundRanges->count() > 0) {
+            foreach ($filteredTurnaroundRanges as $range) {
+                $breakdown['turnaround_times'][] = [
+                    'title' => $range->title,
+                    'days' => $range->days
+                ];
+            }
+        }
 
 
 
@@ -543,7 +537,4 @@ if(isset($filteredTurnaroundRanges) && $filteredTurnaroundRanges->count() > 0){
 
         return $response;
     }
-
-
-
 }
