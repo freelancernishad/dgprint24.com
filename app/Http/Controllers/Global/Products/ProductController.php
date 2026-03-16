@@ -139,11 +139,16 @@ public function getByCategory(Request $request, $category_id)
             'category.parent:id,name',
             'faqs',
             'images',
-            'dimensionPricing'
+            'dimensionPricing',
+            'priceRanges'
         ])
         ->where('active', true)
         ->where('product_id', $productId)
         ->firstOrFail();
+
+        // Aggregate min and max quantity from price ranges
+        $product->min_quantity = $product->priceRanges->min('min_quantity');
+        $product->max_quantity = $product->priceRanges->max('max_quantity');
 
         return response()->json($product);
     }
