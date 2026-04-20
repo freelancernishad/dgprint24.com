@@ -12,7 +12,7 @@ Route::prefix('admin')->group(function () {
             Route::get('/', [BlogPostController::class, 'index']);
             Route::post('/', [BlogPostController::class, 'store']);
             Route::get('{id}', [BlogPostController::class, 'show']);
-            Route::post('{id}', [BlogPostController::class, 'update']);
+            Route::post('blogs/articles/{id}', [BlogPostController::class, 'update']);
             Route::delete('{id}', [BlogPostController::class, 'destroy']);
 
             // Add or remove categories to/from articles
