@@ -12,6 +12,7 @@ use App\Http\Controllers\Global\Products\ProductController;
 use App\Http\Controllers\Global\Products\CategoryController;
 use App\Http\Controllers\Admin\Products\AdminProductController;
 use App\Http\Controllers\Admin\Products\AdminCategoryController;
+use App\Http\Controllers\Admin\Products\AdminArtworkTemplateController;
 use App\Http\Controllers\Admin\Subscriptions\PlanSubscriptionsController;
 
 /*
@@ -23,6 +24,23 @@ use App\Http\Controllers\Admin\Subscriptions\PlanSubscriptionsController;
 */
 
 Route::prefix('admin')->middleware(AuthenticateAdmin::class)->group(function () {
+
+    /*
+    |--------------------------------------------------------------------------
+    | Admin Artwork Template Routes
+    |--------------------------------------------------------------------------
+    | Manage structural template groups and their variations.
+    | */
+    Route::get('template-groups/{category_id}', [AdminArtworkTemplateController::class, 'indexGroups']);
+    Route::get('template-groups/item/{group}', [AdminArtworkTemplateController::class, 'showGroup']);
+    Route::post('template-groups', [AdminArtworkTemplateController::class, 'storeGroup']);
+    Route::put('template-groups/{group}', [AdminArtworkTemplateController::class, 'updateGroup']);
+    Route::delete('template-groups/{group}', [AdminArtworkTemplateController::class, 'destroyGroup']);
+
+    Route::post('template-groups/{group}/templates', [AdminArtworkTemplateController::class, 'storeTemplate']);
+    Route::put('templates/{template}', [AdminArtworkTemplateController::class, 'updateTemplate']);
+    Route::get('templates/item/{template}', [AdminArtworkTemplateController::class, 'showTemplate']);
+    Route::delete('templates/{template}', [AdminArtworkTemplateController::class, 'destroyTemplate']);
 
     /*
     |--------------------------------------------------------------------------

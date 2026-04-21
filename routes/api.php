@@ -137,6 +137,11 @@ if (file_exists($CartRoutes = __DIR__.'/Global/CartRoutes.php')) {
     require $CartRoutes;
 }
 
+// Load ArtworkTemplateRoutes
+if (file_exists($ArtworkTemplateRoutes = __DIR__.'/Global/ArtworkTemplateRoutes.php')) {
+    require $ArtworkTemplateRoutes;
+}
+
 
 
 

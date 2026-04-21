@@ -21,6 +21,7 @@ class Category extends Model
         'active',
         'show_in_navbar',
         'serial',
+        'template_group_by',
     ];
 
     // JSON কাস্টিং যোগ করুন
@@ -82,5 +83,10 @@ class Category extends Model
     public function children()
     {
         return $this->hasMany(Category::class, 'parent_id');
+    }
+
+    public function templateGroups()
+    {
+        return $this->hasMany(ArtworkTemplateGroup::class);
     }
 }
