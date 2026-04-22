@@ -24,24 +24,31 @@ class ArtworkTemplateController extends Controller
             ->orWhere('id', $categoryId)
             ->firstOrFail();
 
-        // 2. Fetch groups with active templates
+        // 2. Get all relevant category IDs (the category + its children)
+        $categoryIds = [$category->id];
+        $children = $category->children()->pluck('id')->toArray();
+        $allCategoryIds = array_merge($categoryIds, $children);
+
+        // 3. Fetch groups with active templates for all these categories
         $groups = ArtworkTemplateGroup::with(['templates' => function ($query) {
             $query->where('active', true);
-        }])
-            ->where('category_id', $category->id)
+        }, 'category'])
+            ->whereIn('category_id', $allCategoryIds)
             ->where('active', true)
             ->get();
 
-        // 3. Format results hierarchically
+        // 4. Format results hierarchically
         $subcategoriesMap = [];
         $totalTemplates = 0;
 
         foreach ($groups as $group) {
-            $subCategoryId = null;
-            $subCategoryName = null;
+            // Determine if this group belongs to a subcategory
+            $isSubCategory = $group->category_id != $category->id;
+            $subCategoryId = $isSubCategory ? ($group->category->category_id ?? $group->category->id) : null;
+            $subCategoryName = $isSubCategory ? $group->category->name : null;
 
             // Initialize the subcategory if it doesn't exist
-            $subCatKey = $subCategoryId ?? 'null';
+            $subCatKey = $subCategoryId ?? 'parent';
             if (!isset($subcategoriesMap[$subCatKey])) {
                 $subcategoriesMap[$subCatKey] = [
                     'sub_category_id' => $subCategoryId,

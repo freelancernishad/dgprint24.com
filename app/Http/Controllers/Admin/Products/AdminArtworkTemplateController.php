@@ -10,18 +10,21 @@ use Illuminate\Http\Request;
 
 class AdminArtworkTemplateController extends Controller
 {
-    /**
-     * List all groups for a category.
-     */
     public function indexGroups($categoryId)
     {
+        // Get the category and its children IDs
+        $categoryIds = Category::where('id', $categoryId)
+            ->orWhere('parent_id', $categoryId)
+            ->pluck('id')
+            ->toArray();
+
         $groups = ArtworkTemplateGroup::with('templates')
-            ->where('category_id', $categoryId)
+            ->whereIn('category_id', $categoryIds)
             ->get();
 
         return response()->json([
             'success' => true,
-            'data' => $groups // Keep it consistent with the user's JSON wrapper
+            'data' => $groups
         ]);
     }
 
