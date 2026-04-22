@@ -32,53 +32,75 @@ class ArtworkTemplateController extends Controller
             ->where('active', true)
             ->get();
 
-        // 3. Flatten and Format results
-        $data = [];
+        // 3. Format results hierarchically
+        $subcategoriesMap = [];
+        $totalTemplates = 0;
+
         foreach ($groups as $group) {
+            $subCategoryId = null;
+            $subCategoryName = null;
+
+            // Initialize the subcategory if it doesn't exist
+            $subCatKey = $subCategoryId ?? 'null';
+            if (!isset($subcategoriesMap[$subCatKey])) {
+                $subcategoriesMap[$subCatKey] = [
+                    'sub_category_id' => $subCategoryId,
+                    'sub_category_name' => $subCategoryName,
+                    'groups' => []
+                ];
+            }
+
+            $groupName = $group->group_value;
+
+            // Initialize the group inside the subcategory if it doesn't exist
+            if (!isset($subcategoriesMap[$subCatKey]['groups'][$groupName])) {
+                $subcategoriesMap[$subCatKey]['groups'][$groupName] = [
+                    'group' => $groupName,
+                    'labels' => []
+                ];
+            }
+
             foreach ($group->templates as $template) {
-                // Merge Group options and Template options, ensuring keys are uppercase
-                $mergedOptions = [];
-                $mergedOptions[strtoupper($group->group_label)] = $group->group_value;
+                $totalTemplates++;
 
-                if (isset($template->options) && is_array($template->options)) {
-                    foreach ($template->options as $k => $v) {
-                        $mergedOptions[strtoupper($k)] = $v;
-                    }
-                }
-
-                $data[] = [
-                    '_id' => (string) $template->id,
-                    'category_id' => (string) $category->id,
-                    'category_name' => strtoupper($category->name),
-                    'sub_category_id' => null,
-                    'sub_category_name' => null,
-                    'group' => $group->group_value,
+                $subcategoriesMap[$subCatKey]['groups'][$groupName]['labels'][] = [
                     'label' => $template->label,
-                    'options' => $mergedOptions,
-                    'files' => array_map(function ($file) use ($template) {
+                    'files' => array_map(function ($file) {
                         return [
-                            '_id' => uniqid(),
-                            'file_name' => basename($file['url']),
                             'format' => $file['format'] ?? 'UNKNOWN',
-                            'url' => $file['url'],
-                            'createdAt' => $template->created_at->toISOString(),
-                            'updatedAt' => $template->updated_at->toISOString(),
-                            '__v' => 0
+                            'url' => $file['url']
                         ];
-                    }, $template->files ?? []),
-                    'createdAt' => $template->created_at->toISOString(),
-                    'updatedAt' => $template->updated_at->toISOString(),
-                    '__v' => 0
+                    }, $template->files ?? [])
                 ];
             }
         }
 
+        // Filter out empty groups and reset group array keys
+        foreach ($subcategoriesMap as $key => $subcat) {
+            $filteredGroups = array_filter($subcat['groups'], function ($g) {
+                return count($g['labels']) > 0;
+            });
+            $subcategoriesMap[$key]['groups'] = array_values($filteredGroups);
+        }
+
+        $formattedData = [
+            [
+                'subcategories' => array_values($subcategoriesMap),
+                'category_id' => (string) ($category->category_id ?? $category->id),
+                'category_name' => strtoupper($category->name)
+            ]
+        ];
+
         return response()->json([
-            'statusCode' => 200,
-            'success' => true,
-            'message' => 'Artwork template retrieved successfully',
-            'traceId' => bin2hex(random_bytes(16)),
-            'data' => $data
+            'message' => 'Templates retrieved successfully',
+            'data' => [
+                'meta' => [
+                    'page' => 1,
+                    'limit' => 10,
+                    'total' => $totalTemplates
+                ],
+                'data' => $formattedData
+            ]
         ]);
     }
 
@@ -92,7 +114,8 @@ class ArtworkTemplateController extends Controller
     public function search(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'category_id' => 'required',
+            'category_id' => 'required_without:sub_category_id',
+            'sub_category_id' => 'required_without:category_id',
             'options' => 'nullable|array'
         ]);
 
@@ -104,8 +127,17 @@ class ArtworkTemplateController extends Controller
             ], 422);
         }
 
-        $categoryId = $request->category_id;
+        $categoryId = $request->sub_category_id ?? $request->category_id;
         $searchOptions = $request->options ?? [];
+
+        if (empty($searchOptions)) {
+            // If options are sent as top-level keys like "options[SIZE]" in JSON body
+            foreach ($request->all() as $key => $value) {
+                if (preg_match('/^options\[(.*?)\]$/', $key, $matches)) {
+                    $searchOptions[$matches[1]] = $value;
+                }
+            }
+        }
 
         // 1. Find category
         $category = Category::where('category_id', $categoryId)
@@ -148,7 +180,7 @@ class ArtworkTemplateController extends Controller
         $variations = $templates->filter(function ($template) use ($searchOptions) {
             $templateOpts = $template->options ?? [];
             Log::info('Checking Template: ' . $template->id . ' | Label: ' . $template->label . ' | Opts: ' . json_encode($templateOpts));
-            
+
             if (empty($templateOpts)) {
                 Log::info('Template ' . $template->id . ' has no filters, including.');
                 return true;
@@ -240,10 +272,7 @@ class ArtworkTemplateController extends Controller
         })->values();
 
         return response()->json([
-            'statusCode' => 200,
             'success' => true,
-            'message' => 'Artwork template retrieved successfully',
-            'traceId' => bin2hex(random_bytes(16)),
             'data' => $data
         ]);
     }

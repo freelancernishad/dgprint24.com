@@ -100,28 +100,35 @@ class AdminArtworkTemplateController extends Controller
     }
 
     /**
-     * Store a new variation template under a group.
+     * Store one or more new variation templates under a group.
      */
     public function storeTemplate(Request $request, $groupId)
     {
         $group = ArtworkTemplateGroup::findOrFail($groupId);
 
-        $validated = $request->validate([
-            'side' => 'required|string|in:FRONT,BACK,BOTH',
-            'label' => 'required|string',
-            'options' => 'nullable|array',
-            'files' => 'required|array',
-            'files.*.format' => 'required|string',
-            'files.*.url' => 'required|string',
-            'active' => 'boolean'
-        ]);
+        // Check if input is a list of variations or a single one
+        $isBulk = isset($request->variations) && is_array($request->variations);
+        $data = $isBulk ? $request->variations : [$request->all()];
 
-        $template = $group->templates()->create($validated);
+        $results = [];
+        foreach ($data as $item) {
+            $validated = validator($item, [
+                'side' => 'required|string|in:FRONT,BACK,BOTH',
+                'label' => 'required|string',
+                'options' => 'nullable|array',
+                'files' => 'required|array',
+                'files.*.format' => 'required|string',
+                'files.*.url' => 'required|string',
+                'active' => 'boolean'
+            ])->validate();
+
+            $results[] = $group->templates()->create($validated);
+        }
 
         return response()->json([
             'success' => true,
-            'message' => 'Template variation created successfully.',
-            'template' => $template
+            'message' => count($results) . ' Template variation(s) created successfully.',
+            'templates' => $results
         ], 201);
     }
 
