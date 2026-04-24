@@ -76,6 +76,8 @@ Route::prefix('admin')->middleware(AuthenticateAdmin::class)->group(function () 
     Route::delete('product/{product}', [AdminProductController::class, 'destroy']);     // Delete product
 
     Route::patch('products/{product}/toggle-popular', [AdminProductController::class, 'togglePopular']); // Toggle popular status
+    Route::patch('products/{id}/toggle-status', [AdminProductController::class, 'toggleStatus']); // Toggle active status
+    Route::patch('products/{id}/update-serial', [AdminProductController::class, 'updateSerial']); // Update serial with shifting logic
     Route::get('single/product/{id}/for/edit', [AdminProductController::class, 'showForEdit']);          // Fetch product for editing
 
 

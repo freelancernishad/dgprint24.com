@@ -28,8 +28,9 @@ class AdminProductController extends Controller
         $perPage = (int) $request->input('per_page', 20);
 
         $query = Product::with(['category:id,name', 'faqs', 'images'])
-            ->select('id', 'product_id', 'product_name', 'category_id', 'active', 'popular_product', 'dynamicOptions', 'extraDynamicOptions', 'created_at')
-            ->latest();
+            ->select('id', 'product_id', 'product_name', 'category_id', 'active', 'serial', 'popular_product', 'dynamicOptions', 'extraDynamicOptions', 'created_at')
+            ->orderBy('serial', 'asc')
+            ->orderBy('id', 'desc');
 
         if ($search = trim((string) $request->input('search', ''))) {
             $query->where(function ($q) use ($search) {
@@ -98,6 +99,7 @@ class AdminProductController extends Controller
                 'dynamicOptions' => $validatedData['productOptions']['dynamicOptions'] ?? null,
                 'extraDynamicOptions' => $validatedData['productOptions']['extraDynamicOptions'] ?? null,
                 'active' => true,
+                'serial' => $validatedData['serial'] ?? (Product::where('category_id', $validatedData['categoryId'])->max('serial') + 1),
                 'job_sample_price' => $validatedData['productOptions']['advanceOptions']['jobSamplePrice'] ?? 0,
                 'digital_proof_price' => $validatedData['productOptions']['advanceOptions']['digitalProofPrice'] ?? 0,
             ]);
@@ -437,5 +439,52 @@ class AdminProductController extends Controller
         ]);
     }
 
+    public function toggleStatus(Product $product)
+    {
+        $product->active = !$product->active;
+        $product->save();
 
-}
+        return response()->json([
+            'success' => true,
+            'message' => 'Product status updated successfully!',
+            'data' => $product
+        ]);
+    }
+
+    public function updateSerial(Request $request, $id)
+    {
+        $request->validate([
+            'newSerial' => 'required|integer|min:1'
+        ]);
+
+        $product = Product::findOrFail($id);
+        $oldSerial = $product->serial;
+        $newSerial = (int) $request->newSerial;
+        $categoryId = $product->category_id;
+
+        DB::transaction(function () use ($product, $oldSerial, $newSerial, $categoryId) {
+            // ১. আগের পজিশন থেকে গ্যাপ কমানো
+            if ($oldSerial !== null) {
+                Product::where('category_id', $categoryId)
+                    ->where('id', '!=', $product->id)
+                    ->where('serial', '>', $oldSerial)
+                    ->decrement('serial');
+            }
+
+            // ২. নতুন পজিশনের জন্য জায়গা তৈরি করা
+            Product::where('category_id', $categoryId)
+                ->where('id', '!=', $product->id)
+                ->where('serial', '>=', $newSerial)
+                ->increment('serial');
+
+            // ৩. বর্তমান প্রোডাক্টের সিরিয়াল আপডেট করা
+            $product->serial = $newSerial;
+            $product->save();
+        });
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Product serial updated and others shifted successfully!',
+            'data' => $product
+        ]);
+    }

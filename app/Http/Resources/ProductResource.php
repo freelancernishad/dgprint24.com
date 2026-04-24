@@ -139,6 +139,7 @@ class ProductResource extends JsonResource
             'thumbnail' => $this->thumbnail,
             'base_price' => $this->base_price,
             'active' => $this->active,
+            'serial' => $this->serial,
             'popular_product' => $this->popular_product,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,

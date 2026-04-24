@@ -46,7 +46,8 @@ public function index(Request $request)
             'popular_product',
             'category_id'
         )
-        ->latest()
+        ->orderBy('serial', 'asc')
+        ->orderBy('id', 'desc')
         ->paginate(20);
 
     return response()->json($products);
@@ -78,7 +79,8 @@ public function getByCategory(Request $request, $category_id)
                 'popular_product',
                 'category_id'
             )
-            ->latest()
+            ->orderBy('serial', 'asc')
+            ->orderBy('id', 'desc')
             ->paginate($per_page);
 
         return response()->json($products);
@@ -120,7 +122,8 @@ public function getByCategory(Request $request, $category_id)
             'popular_product',
             'category_id'
         )
-        ->latest()
+        ->orderBy('serial', 'asc')
+        ->orderBy('id', 'desc')
         ->paginate($per_page);
 
     return response()->json($products);
