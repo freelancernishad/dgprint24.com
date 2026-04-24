@@ -488,3 +488,4 @@ class AdminProductController extends Controller
             'data' => $product
         ]);
     }
+}
