@@ -12,6 +12,7 @@ use App\Helpers\HelpersFunctions;
 use App\Models\PriceConfiguration;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Validator;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\ProductResource;
 use App\Models\PriceConfigurationShipping;
@@ -54,7 +55,7 @@ class AdminProductController extends Controller
     public function store(Request $request)
     {
         // পরিবর্তন ১: 'productOptions' এর ভ্যালিডেশন রুলটি 'json' থেকে 'array' এ পরিবর্তন করুন
-        $validator = \Illuminate\Support\Facades\Validator::make($request->all(), [
+        $validator = Validator::make($request->all(), [
             'categoryId' => 'required|exists:categories,id',
             'productName' => 'required|string|max:255',
             'productDescription' => 'nullable|string',
@@ -453,9 +454,13 @@ class AdminProductController extends Controller
 
     public function updateSerial(Request $request, $id)
     {
-        $request->validate([
+        $validator = Validator::make($request->all(), [
             'newSerial' => 'required|integer|min:1'
         ]);
+
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 422);
+        }
 
         $product = Product::findOrFail($id);
         $oldSerial = $product->serial;
