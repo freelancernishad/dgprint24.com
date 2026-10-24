@@ -410,8 +410,8 @@ class AdminProductController extends Controller
     public function destroy($id)
     {
         $product = Product::findOrFail($id);
-        // ডাটাবেসে foreign key এ 'onDelete("cascade")' থাকায়,
-        // প্রোডাক্ট ডিলিট করলে এর সাথে সম্পর্কিত সব ডেটা অটোমেটিক ডিলিট হয়ে যাবে।
+        // কার্টে যদি এই প্রোডাক্ট থেকে থাকে তাহলে আগে কার্ট আইটেম ডিলিট করা হচ্ছে
+        $product->carts()->delete();
         $product->delete();
         return response()->json(['message' => 'Product deleted successfully.'], 200);
     }

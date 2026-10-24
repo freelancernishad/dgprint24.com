@@ -100,6 +100,10 @@ class HelpersFunctions
         $quantity_into_total_sq_ft_price = 0;
         $priceConfigList = [];
         $PriceConfigMessage = 'No price configuration found for the selected options.';
+        $shipping_item = null;
+        $turnarounds_item = null;
+        $configurationId = null;
+        $base_price = 0;
 
         // --- ধাপ ১: কনফিগারেশন মূল্য খুঁজে বের করুন ---
         // যদি ইউজার কোনো অপশন সিলেক্ট করে থাকে
@@ -113,61 +117,66 @@ class HelpersFunctions
 
             $filteredConfigList = collect();
 
-            foreach ($priceConfigList as $config) {
+            // Decode incoming param keys once
+            $rawParams = $params['options'] ?? [];
+            $paramOptions = [];
+            foreach ($rawParams as $key => $value) {
+                $paramOptions[urldecode($key)] = $value;
+            }
 
+            $normalizeToLeaves = function (array $arr) {
+                $normalized = [];
+                foreach ($arr as $k => $v) {
+                    $leaf = (strrpos($k, '.') !== false) ? substr($k, strrpos($k, '.') + 1) : $k;
+                    $normalized[$leaf] = (string)$v;
+                }
+                return $normalized;
+            };
+            $paramLeaves = $normalizeToLeaves($paramOptions);
+
+            foreach ($priceConfigList as $config) {
                 // Config options array বানানো (key => value)
                 $configOptions = $config->optionsRel
                     ->pluck('value', 'key')
                     ->toArray();
 
+                // 1. Direct match check
+                $isMatch = ($configOptions == $paramOptions);
 
-                // Decode incoming param keys
-                $rawParams = $params['options'] ?? [];
-                $paramOptions = [];
-
-                foreach ($rawParams as $key => $value) {
-                    $paramOptions[urldecode($key)] = $value;
+                // 2. Leaf key match (e.g. flat keys vs nested keys)
+                if (!$isMatch) {
+                    $configLeaves = $normalizeToLeaves($configOptions);
+                    if ($configLeaves == $paramLeaves) {
+                        $isMatch = true;
+                    } else {
+                        // If param specifies "No Spot UV" and config has no SPOT UV row, treat as matching
+                        $paramLeavesNoSpot = $paramLeaves;
+                        foreach ($paramLeavesNoSpot as $pk => $pv) {
+                            if (stripos($pk, 'spot uv') !== false && stripos($pv, 'no spot') !== false) {
+                                unset($paramLeavesNoSpot[$pk]);
+                            }
+                        }
+                        if ($configLeaves == $paramLeavesNoSpot) {
+                            $isMatch = true;
+                        } else {
+                            // Check if all keys present in configLeaves match paramLeaves
+                            $matchedCount = 0;
+                            foreach ($configLeaves as $ck => $cv) {
+                                if (isset($paramLeaves[$ck]) && strcasecmp(trim($paramLeaves[$ck]), trim($cv)) === 0) {
+                                    $matchedCount++;
+                                }
+                            }
+                            if ($matchedCount === count($configLeaves) && $matchedCount > 0) {
+                                $isMatch = true;
+                            }
+                        }
+                    }
                 }
 
-
-                // Params options array
-                // $paramOptions = $params['options'] ?? [];
-
-                Log::info("Config ID: {$config->id}");
-                Log::info("Config Options: " . json_encode($configOptions));
-                Log::info("Param Options: " . json_encode($paramOptions));
-
-                // 100% match check → দুই array সম্পূর্ণ সমান কি না
-                if ($configOptions == $paramOptions) {
-                    Log::info("✅ 100% MATCH FOUND");
+                if ($isMatch) {
                     $filteredConfigList->push($config);
-                } else {
-                    Log::info("❌ Not 100% match");
                 }
             }
-
-            // foreach ($priceConfigList as $config) {
-
-            //     $totalOptions = $config->optionsRel->count();
-            //     $matchedOptions = $config->optionsRel->filter(function($opt) use ($params) {
-            //         return isset($params['options'][$opt->key]) && $params['options'][$opt->key] == $opt->value;
-            //     })->count();
-
-            //     Log::info("PriceConfiguration ID: {$config->id}");
-            //     Log::info("Total Options: {$totalOptions}");
-            //     Log::info("Matched Options: {$matchedOptions}");
-
-            //     if ($matchedOptions === $totalOptions) {
-            //         Log::info("✅ All options match for this configuration.");
-            //         $filteredConfigList->push($config);
-            //     } else {
-            //         Log::info("❌ Not all options match.");
-            //     }
-            // }
-
-
-
-
 
             $priceConfigList = $filteredConfigList;
 
@@ -191,10 +200,11 @@ class HelpersFunctions
             });
 
 
-            if ($product_type === 'general') {
-                $query->where('runsize', $quantity);
+            if ($product_type === 'general' && !empty($quantity)) {
+                $priceConfig = $filteredConfigList->firstWhere('runsize', $quantity) ?? $filteredConfigList->first();
+            } else {
+                $priceConfig = $filteredConfigList->first();
             }
-            $priceConfig = $filteredConfigList->first();
 
 
             // jodi kono price configuration paoa na jay tobe akta veiable a meesage rakhte hobe response a breakdown a thakbe

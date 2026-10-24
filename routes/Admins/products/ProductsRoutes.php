@@ -13,7 +13,9 @@ use App\Http\Controllers\Global\Products\CategoryController;
 use App\Http\Controllers\Admin\Products\AdminProductController;
 use App\Http\Controllers\Admin\Products\AdminCategoryController;
 use App\Http\Controllers\Admin\Products\AdminArtworkTemplateController;
-use App\Http\Controllers\Admin\Subscriptions\PlanSubscriptionsController;
+use App\Http\Controllers\Admin\Products\PlanSubscriptionsController;
+use App\Http\Controllers\Admin\Products\FourOverFetcherController;
+use App\Http\Controllers\Admin\Products\FourOverImportController;
 
 /*
 |--------------------------------------------------------------------------
@@ -79,6 +81,8 @@ Route::prefix('admin')->middleware(AuthenticateAdmin::class)->group(function () 
     Route::patch('products/{product}/toggle-status', [AdminProductController::class, 'toggleStatus']); // Toggle active status
     Route::patch('products/{id}/update-serial', [AdminProductController::class, 'updateSerial']); // Update serial with shifting logic
     Route::get('single/product/{id}/for/edit', [AdminProductController::class, 'showForEdit']);          // Fetch product for editing
+    Route::post('four-over/fetch', [FourOverFetcherController::class, 'fetch']);                         // 4over product fetcher
+    Route::post('four-over/import', [FourOverImportController::class, 'import']);                       // 4over direct product importer
 
 
     /*

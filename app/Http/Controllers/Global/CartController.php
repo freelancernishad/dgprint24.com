@@ -238,7 +238,8 @@ class CartController extends Controller
             $configuration_id
         );
 
-        if (!$priceConfig && $product->type == "general") {
+        $productType = $product->product_type ?? $product->type;
+        if (!$priceConfig && $productType == "general") {
             return response()->json(
                 ["error" => "Invalid price configuration selected."],
                 422
