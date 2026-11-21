@@ -57,12 +57,11 @@ class AdminCategoryController extends Controller
         // Upload category image to S3
         if ($request->hasFile('catagoryImage')) {
             $file = $request->file('catagoryImage');
-            $filename = time() . '_' . $file->getClientOriginalName();
-            $label = 'category';
+            $catSlug = Str::slug($validatedData['name']) ?: 'category';
 
             $categoryImageUrl = (new FileUploadService())->uploadFileToS3(
                 $file,
-                'dgprint24/uploads/images/category/' . $label . '_' . $filename
+                'laravel-project/category/' . $catSlug
             );
         }
 
@@ -147,12 +146,11 @@ class AdminCategoryController extends Controller
         $categoryImageUrl = $category->category_image;
         if ($request->hasFile('catagoryImage')) {
             $file = $request->file('catagoryImage');
-            $filename = time() . '_' . $file->getClientOriginalName();
-            $label = 'category';
+            $catSlug = Str::slug($validatedData['name'] ?? $category->name) ?: 'category';
 
             $categoryImageUrl = (new FileUploadService())->uploadFileToS3(
                 $file,
-                'dgprint24/uploads/images/category/' . $label . '_' . $filename
+                'laravel-project/category/' . $catSlug
             );
         }
 
