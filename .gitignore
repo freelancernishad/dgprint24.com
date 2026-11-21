@@ -1,6 +1,8 @@
 *.log
 .DS_Store
-.env.backup
+.env
+.env.*
+!.env.example.backup
 .phpactor.json
 .phpunit.result.cache
 /.fleet
@@ -23,3 +25,6 @@ branch_structure.json
 temp_auto_push.bat
 temp_interactive_push.bat
 config.bat
+.env
+.env.*
+!.env.example

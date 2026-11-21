@@ -12,6 +12,7 @@ use App\Http\Controllers\Global\Products\ProductController;
 use App\Http\Controllers\Global\Products\CategoryController;
 use App\Http\Controllers\Admin\Products\AdminProductController;
 use App\Http\Controllers\Admin\Products\AdminCategoryController;
+use App\Http\Controllers\Admin\Products\AdminBulkImportController;
 use App\Http\Controllers\Admin\Products\AdminArtworkTemplateController;
 use App\Http\Controllers\Admin\Products\PlanSubscriptionsController;
 use App\Http\Controllers\Admin\Products\FourOverFetcherController;
@@ -83,6 +84,7 @@ Route::prefix('admin')->middleware(AuthenticateAdmin::class)->group(function () 
     Route::get('single/product/{id}/for/edit', [AdminProductController::class, 'showForEdit']);          // Fetch product for editing
     Route::post('four-over/fetch', [FourOverFetcherController::class, 'fetch']);                         // 4over product fetcher
     Route::post('four-over/import', [FourOverImportController::class, 'import']);                       // 4over direct product importer
+    Route::post('bulk-import', [AdminBulkImportController::class, 'import']);                           // Bulk import categories & products from JSON
 
 
     /*
