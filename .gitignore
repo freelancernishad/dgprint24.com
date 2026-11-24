@@ -2,6 +2,7 @@
 .DS_Store
 .env
 .env.*
+!.env.example
 !.env.example.backup
 .phpactor.json
 .phpunit.result.cache
@@ -21,10 +22,9 @@
 Homestead.json
 Homestead.yaml
 Thumbs.db
+init
+api.js
 branch_structure.json
 temp_auto_push.bat
 temp_interactive_push.bat
 config.bat
-.env
-.env.*
-!.env.example

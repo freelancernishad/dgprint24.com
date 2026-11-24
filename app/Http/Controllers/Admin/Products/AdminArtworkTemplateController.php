@@ -72,6 +72,7 @@ class AdminArtworkTemplateController extends Controller
         $group = ArtworkTemplateGroup::findOrFail($id);
 
         $validated = $request->validate([
+            'category_id' => 'sometimes|exists:categories,id',
             'group_label' => 'sometimes|string',
             'group_value' => 'sometimes|string',
             'sides_count' => 'sometimes|integer|min:1',
