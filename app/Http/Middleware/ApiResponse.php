@@ -23,6 +23,11 @@ class ApiResponse
             return $next($request);
         }
 
+        // Force JSON response for API routes so validation errors return 422 instead of 302 redirect
+        if ($request->is('api/*')) {
+            $request->headers->set('Accept', 'application/json');
+        }
+
         // Capture the response
         $response = $next($request);
 
